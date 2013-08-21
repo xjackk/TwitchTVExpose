@@ -1,0 +1,15 @@
+<div id="form-content-region"></div>
+{[ if(footer) { ]}
+    <footer>
+		{[ if(buttons) { ]}
+			<hr />
+			<ul class="list-inline">
+				{[ _(buttons).each(function(b) { ]}
+					<li>
+						<button type="{{b.buttonType}}" data-form-button="{{b.type}}" class="{{b.className}}">{{b.text}}</button>
+					</li>
+				{[ }) ]}
+			</ul>
+		{[ }]}
+	</footer>
+{[ } ]}

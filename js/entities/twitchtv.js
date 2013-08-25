@@ -53,7 +53,7 @@
     };
     return msgBus.reqres.setHandler("games:top:entities", function() {
       return API.getGames("games/top", {
-        limit: 5
+        limit: 12
       });
     });
   });

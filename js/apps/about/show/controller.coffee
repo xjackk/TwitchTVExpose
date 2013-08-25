@@ -3,7 +3,7 @@ define ["msgbus", "apps/about/show/views", "controller/_base"], (msgBus, Views, 
     # the module API will pass in the glogal collection of ccys
     class Controller extends AppController
         initialize:(options)->
-            entities=msgBus.reqres.request "games:top:entities"
+            #entities=msgBus.reqres.request "games:top:entities"
             #console.log entities
             @layout = @getLayoutView()
 

@@ -14,9 +14,7 @@
       }
 
       Controller.prototype.initialize = function(options) {
-        var entities,
-          _this = this;
-        entities = msgBus.reqres.request("games:top:entities");
+        var _this = this;
         this.layout = this.getLayoutView();
         this.listenTo(this.layout, "show", function() {
           _this.aboutRegion();

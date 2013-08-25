@@ -3,6 +3,7 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
     app = new Marionette.Application()
 
     app.rootRoute = "about"
+    app.authRoute = "top"
 
     app.addRegions
         headerRegion : "#header-region"
@@ -50,10 +51,10 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
             if match
                 appstate.set "accessToken",  frag.split("=")[1]
                 appstate.set "loginStatus", true
-                @navigate(@rootRoute, trigger: true)             #Backbone.history.navigate @rootRoute, trigger:true
-
+                console.log "top route", @authRoute
+                @navigate(@authRoute, trigger: true)             #Backbone.history.navigate @rootRoute, trigger:true                
             else
-
+                console.log "else statement"
                 @navigate(@rootRoute, trigger: true) if @getCurrentRoute() is null             #Backbone.history.navigate @rootRoute, trigger:true
 
     app.addInitializer (options) ->
@@ -63,6 +64,9 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
         msgBus.commands.execute "start:d3:app"
         msgBus.commands.execute "start:about:app"
         msgBus.commands.execute "start:oauth:app"
+        msgBus.commands.execute "start:top:app"
+
+
 
 
 

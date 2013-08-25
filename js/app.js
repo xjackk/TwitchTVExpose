@@ -4,6 +4,7 @@
     var app;
     app = new Marionette.Application();
     app.rootRoute = "about";
+    app.authRoute = "top";
     app.addRegions({
       headerRegion: "#header-region",
       mainRegion: "#main-region",
@@ -51,10 +52,12 @@
         if (match) {
           appstate.set("accessToken", frag.split("=")[1]);
           appstate.set("loginStatus", true);
-          return this.navigate(this.rootRoute, {
+          console.log("top route", this.authRoute);
+          return this.navigate(this.authRoute, {
             trigger: true
           });
         } else {
+          console.log("else statement");
           if (this.getCurrentRoute() === null) {
             return this.navigate(this.rootRoute, {
               trigger: true
@@ -69,7 +72,8 @@
       msgBus.commands.execute("start:footer:app");
       msgBus.commands.execute("start:d3:app");
       msgBus.commands.execute("start:about:app");
-      return msgBus.commands.execute("start:oauth:app");
+      msgBus.commands.execute("start:oauth:app");
+      return msgBus.commands.execute("start:top:app");
     });
     return app;
   });

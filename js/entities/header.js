@@ -6,6 +6,10 @@
       getHeaders: function() {
         return new Backbone.Collection([
           {
+            name: "top",
+            url: "#top",
+            title: "Top Games"
+          }, {
             name: "d3",
             url: "#d3",
             title: "Jack's App"

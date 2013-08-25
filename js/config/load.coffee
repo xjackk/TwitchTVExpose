@@ -11,6 +11,7 @@ define [
  "components/form/controller",			#form component
  "holderjs",    		                #img placeholders
  "bootstrap",        	                #twitter bootstrap
+ "globalize",
  "components/loading/controller",		#loading component
   "entities/appstate",
   "entities/author"

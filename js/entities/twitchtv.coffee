@@ -23,7 +23,7 @@ define ["entities/_backbone", "msgbus",], (_Backbone, msgBus ) ->
 
     msgBus.reqres.setHandler "games:top:entities", ->
         API.getGames "games/top",
-            limit: 5
+            limit: 12
 ###
     App.reqres.setHandler "search:movie:entities", (searchTerm) ->
         #update me

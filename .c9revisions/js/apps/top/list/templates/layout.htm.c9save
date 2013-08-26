@@ -1,0 +1,3 @@
+{"ts":1377449843134,"silentsave":true,"restoring":false,"patch":[[{"diffs":[[1,"<div id=about-region></div>\r\n<div id=alert-region></div>\r\n"]],"start1":0,"start2":0,"length1":0,"length2":58}]],"length":58}
+{"contributors":[],"silentsave":false,"ts":1377449877896,"patch":[[{"diffs":[[0," id="],[-1,"about-region></div>\r\n<div id=alert"],[1,"gametoop"],[0,"-reg"]],"start1":4,"start2":4,"length1":42,"length2":16}]],"length":32,"saved":false}
+{"ts":1377450226686,"patch":[[{"diffs":[[0," id="],[1,"\""],[0,"gameto"],[-1,"o"],[0,"p-region"],[1,"\""],[0,"></d"]],"start1":4,"start2":4,"length1":23,"length2":24}]],"length":33,"saved":false}

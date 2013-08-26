@@ -1,0 +1,129 @@
+jQuery20307121174267685972_1377443666674({
+  "_links": {
+    "next": "https://api.twitch.tv/kraken/games/top?limit=5&offset=5",
+    "self": "https://api.twitch.tv/kraken/games/top?limit=5&offset=0"
+  },
+  "_total": 496,
+  "top": [
+    {
+      "viewers": 103766,
+      "channels": 60,
+      "game": {
+        "logo": {
+          "large": "http://static-cdn.jtvnw.net/ttv-logoart/StarCraft%20II%3A%20Heart%20of%20the%20Swarm-240x144.jpg",
+          "medium": "http://static-cdn.jtvnw.net/ttv-logoart/StarCraft%20II%3A%20Heart%20of%20the%20Swarm-120x72.jpg",
+          "template": "http://static-cdn.jtvnw.net/ttv-logoart/StarCraft%20II%3A%20Heart%20of%20the%20Swarm-{width}x{height}.jpg",
+          "small": "http://static-cdn.jtvnw.net/ttv-logoart/StarCraft%20II%3A%20Heart%20of%20the%20Swarm-60x36.jpg"
+        },
+        "_links": {
+          
+        },
+        "giantbomb_id": 24078,
+        "_id": 21818,
+        "name": "StarCraft II: Heart of the Swarm",
+        "box": {
+          "large": "http://static-cdn.jtvnw.net/ttv-boxart/StarCraft%20II%3A%20Heart%20of%20the%20Swarm-272x380.jpg",
+          "medium": "http://static-cdn.jtvnw.net/ttv-boxart/StarCraft%20II%3A%20Heart%20of%20the%20Swarm-136x190.jpg",
+          "template": "http://static-cdn.jtvnw.net/ttv-boxart/StarCraft%20II%3A%20Heart%20of%20the%20Swarm-{width}x{height}.jpg",
+          "small": "http://static-cdn.jtvnw.net/ttv-boxart/StarCraft%20II%3A%20Heart%20of%20the%20Swarm-52x72.jpg"
+        }
+      }
+    },
+    {
+      "viewers": 45874,
+      "channels": 1081,
+      "game": {
+        "logo": {
+          "large": "http://static-cdn.jtvnw.net/ttv-logoart/League%20of%20Legends-240x144.jpg",
+          "medium": "http://static-cdn.jtvnw.net/ttv-logoart/League%20of%20Legends-120x72.jpg",
+          "template": "http://static-cdn.jtvnw.net/ttv-logoart/League%20of%20Legends-{width}x{height}.jpg",
+          "small": "http://static-cdn.jtvnw.net/ttv-logoart/League%20of%20Legends-60x36.jpg"
+        },
+        "_links": {
+          
+        },
+        "giantbomb_id": 24024,
+        "_id": 21779,
+        "name": "League of Legends",
+        "box": {
+          "large": "http://static-cdn.jtvnw.net/ttv-boxart/League%20of%20Legends-272x380.jpg",
+          "medium": "http://static-cdn.jtvnw.net/ttv-boxart/League%20of%20Legends-136x190.jpg",
+          "template": "http://static-cdn.jtvnw.net/ttv-boxart/League%20of%20Legends-{width}x{height}.jpg",
+          "small": "http://static-cdn.jtvnw.net/ttv-boxart/League%20of%20Legends-52x72.jpg"
+        }
+      }
+    },
+    {
+      "viewers": 34954,
+      "channels": 263,
+      "game": {
+        "logo": {
+          "large": "http://static-cdn.jtvnw.net/ttv-logoart/Dota%202-240x144.jpg",
+          "medium": "http://static-cdn.jtvnw.net/ttv-logoart/Dota%202-120x72.jpg",
+          "template": "http://static-cdn.jtvnw.net/ttv-logoart/Dota%202-{width}x{height}.jpg",
+          "small": "http://static-cdn.jtvnw.net/ttv-logoart/Dota%202-60x36.jpg"
+        },
+        "_links": {
+          
+        },
+        "giantbomb_id": 32887,
+        "_id": 29595,
+        "name": "Dota 2",
+        "box": {
+          "large": "http://static-cdn.jtvnw.net/ttv-boxart/Dota%202-272x380.jpg",
+          "medium": "http://static-cdn.jtvnw.net/ttv-boxart/Dota%202-136x190.jpg",
+          "template": "http://static-cdn.jtvnw.net/ttv-boxart/Dota%202-{width}x{height}.jpg",
+          "small": "http://static-cdn.jtvnw.net/ttv-boxart/Dota%202-52x72.jpg"
+        }
+      }
+    },
+    {
+      "viewers": 19125,
+      "channels": 29,
+      "game": {
+        "logo": {
+          "large": "http://static-cdn.jtvnw.net/ttv-logoart/Hearthstone%3A%20Heroes%20of%20Warcraft-240x144.jpg",
+          "medium": "http://static-cdn.jtvnw.net/ttv-logoart/Hearthstone%3A%20Heroes%20of%20Warcraft-120x72.jpg",
+          "template": "http://static-cdn.jtvnw.net/ttv-logoart/Hearthstone%3A%20Heroes%20of%20Warcraft-{width}x{height}.jpg",
+          "small": "http://static-cdn.jtvnw.net/ttv-logoart/Hearthstone%3A%20Heroes%20of%20Warcraft-60x36.jpg"
+        },
+        "_links": {
+          
+        },
+        "giantbomb_id": 42033,
+        "_id": 138585,
+        "name": "Hearthstone: Heroes of Warcraft",
+        "box": {
+          "large": "http://static-cdn.jtvnw.net/ttv-boxart/Hearthstone%3A%20Heroes%20of%20Warcraft-272x380.jpg",
+          "medium": "http://static-cdn.jtvnw.net/ttv-boxart/Hearthstone%3A%20Heroes%20of%20Warcraft-136x190.jpg",
+          "template": "http://static-cdn.jtvnw.net/ttv-boxart/Hearthstone%3A%20Heroes%20of%20Warcraft-{width}x{height}.jpg",
+          "small": "http://static-cdn.jtvnw.net/ttv-boxart/Hearthstone%3A%20Heroes%20of%20Warcraft-52x72.jpg"
+        }
+      }
+    },
+    {
+      "viewers": 15022,
+      "channels": 69,
+      "game": {
+        "logo": {
+          "large": "http://static-cdn.jtvnw.net/ttv-logoart/World%20of%20Tanks-240x144.jpg",
+          "medium": "http://static-cdn.jtvnw.net/ttv-logoart/World%20of%20Tanks-120x72.jpg",
+          "template": "http://static-cdn.jtvnw.net/ttv-logoart/World%20of%20Tanks-{width}x{height}.jpg",
+          "small": "http://static-cdn.jtvnw.net/ttv-logoart/World%20of%20Tanks-60x36.jpg"
+        },
+        "_links": {
+          
+        },
+        "giantbomb_id": 30567,
+        "_id": 27546,
+        "name": "World of Tanks",
+        "box": {
+          "large": "http://static-cdn.jtvnw.net/ttv-boxart/World%20of%20Tanks-272x380.jpg",
+          "medium": "http://static-cdn.jtvnw.net/ttv-boxart/World%20of%20Tanks-136x190.jpg",
+          "template": "http://static-cdn.jtvnw.net/ttv-boxart/World%20of%20Tanks-{width}x{height}.jpg",
+          "small": "http://static-cdn.jtvnw.net/ttv-boxart/World%20of%20Tanks-52x72.jpg"
+        }
+      }
+    }
+  ]
+})

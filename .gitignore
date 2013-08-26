@@ -1,2 +1,4 @@
 bower_components
-.c9revisions
+.c9*
+
+js/*.js

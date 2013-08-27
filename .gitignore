@@ -1,4 +1,5 @@
+#ignore bower components
 bower_components
-.c9*
 
-js/*.js
+#ignore any hidden cloud9 files
+.c9*

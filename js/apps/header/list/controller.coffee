@@ -4,21 +4,19 @@ define ["msgbus","apps/header/list/views", "controller/_base", "entities/header"
         initialize: ->
             links = msgBus.reqres.request "header:entities"
             @appstate = msgBus.reqres.request "get:current:appstate"
+            #console.log @appstate
             @layout = @getLayoutView()
+
+            # new appstate is now a property of the controller have the controller listen to the specific attribute
+            # so from anywhere you can set the appstate's loginStatus to T/F and this button will toggle
+            @listenTo @appstate, "change:loginStatus", (model, status) =>
+                @loginView.close() if status is true
+                @loginView.render() is status is false
 
             @listenTo @layout, "show", =>
                 @listRegion links
-                @loginView = @getLoginView @appstate  # by calling render we attache view the it's DOM @el  got it?
-                @loginView.render()  # stick-it into the DOM
-
-            # new appstate is now a property of the controller have the controller listen to the specific attribute
-            @listenTo @appstate, "change:loginStatus", (model, status) =>
-                if status is true     #then we can hide the login button
-                    #console.log "(Header List Controller)accessToken : ", @appstate, status, model
-                    @loginView?.close()
-                else
-                    @loginView = @getLoginView @appstate  # by calling render we attache view the it's DOM @el  got it?
-                    @loginView.render()  # stick-it into the DOM (not DRY enough, could be refactored)
+                @loginView = @getLoginView @appstate
+                @loginView.render()  #stick-it into the DOM
 
             @show @layout
 

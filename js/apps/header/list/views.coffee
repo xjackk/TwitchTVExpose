@@ -18,4 +18,3 @@ define ['apps/header/list/templates', 'views/_base'], (Templates, AppView) ->
         template: _.template(Templates.layout)
         regions:
             listRegion: "#list-region"
-            #loginRegion: "#login-region"

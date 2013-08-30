@@ -4,7 +4,7 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
         defaults:
             clientId: "hqxyqc9bf41e6grm6txrsdcwncoxavz"
             accessToken: false
-            loginStatus: false
+            loginStatus: null
 
     appState = new AppState
 

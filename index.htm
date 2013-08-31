@@ -11,7 +11,7 @@
     <!--[if lt IE 9]>
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" media=screen>
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media=screen>
     <style type="text/css">
     	/* fixed footer */
         html,body
@@ -23,19 +23,10 @@
         {
             padding-top: 70px;
             padding-bottom: 70px;
-
         }
-
-
-		.thumbnail:hover, .thumbnail:focus {
-			border-color: #0088cc;
-			box-shadow: 0 1px 4px rgba(0,105,214, 0.26)
-		}
-
-
-		[data-wrapper].opacity {
-			opacity: 0.5;
-		}
+        [data-wrapper].opacity {
+            opacity: 0.5;
+        }
 
         #wrap {
           min-height: 100%;
@@ -69,10 +60,13 @@
           stroke: #000;
           pointer-events: none;
         }
+
+        .text-responsive {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
 </style>
-    <style type="text/css">
-		td.price-value {text-align:right;}
-    </style>
 </head>
 <body>
     <div id="wrap">

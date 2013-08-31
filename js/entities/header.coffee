@@ -4,9 +4,9 @@ define ["backbone","msgbus"], (Backbone, msgBus ) ->
     API =
         getHeaders:->
             new Backbone.Collection [
-                    (name: "top", url: "#top", title: "Top Games")
-                    (name: "d3", url: "#d3", title: "Jack's App")
-                    (name: "About", url: "#about", title: "About Jack's App")]
+                    (name: "Top", url: "#top", title: "Top Games")
+                    (name: "D3", url: "#d3", title: "Sample D3 visualization")
+                    (name: "About", url: "#about", title: "Learn about responsive Twitch-TV")]
 
     msgBus.reqres.setHandler "header:entities", ->
         API.getHeaders()

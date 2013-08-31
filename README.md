@@ -35,29 +35,6 @@ $ bower update
 Modular design in javascript is the key to building scaleable and maintainable web applications.  However, each module can create multiple http get
 requests when our page loads.  Remove the __curse__ with [R.js](git://github.com/jrburke/r.js.git) optimizer.
 
-### [R.js](https://github.com/jrburke/r.js.git) build Optimizer
-Using [R.js](https://github.com/jrburke/r.js.git) optimizer to compress/minimize/uglify your main.js file.  Eliminate or dramatically reduce
-server requests upon you first page load.
-
-#### optimize javascript loading with R.js
-Here's how I did it for this project in __Cloud9IDE__
-
-__Build the optimized verions of main.js__
-
-Pass the [app.build.js](https://github.com/t2k/backbone.marionette-RequireJS/blob/master/assetsAMD/build/app.build.js) file as a command line
-argument to [R.js](https://github.com/jrburke/r.js.git)
-~~~
-$ cd assetsAMD/build
-$ node ../../components/r.js/dist/r.js -o app.build.js
-~~~
-***This previous step can/should be scrpted into a build process***
-
-SEE [app.build.js](https://github.com/t2k/backbone.marionette-RequireJS/blob/master/assetsAMD/build/app.build.js) for details.
-
-The optimizer 'output' builds the assetsAMD/js/main.optimized.js that gets linked to [indexAMD.html](https://github.com/t2k/backbone.marionette-RequireJS/blob/master/indexAMD.html).
-
-SEE [indexAMD.Devel.html](https://github.com/t2k/backbone.marionette-RequireJS/blob/master/indexAMD.Devel.html) for details.
-
 
 ### top[game] application
 Drill down on the modular source for the apps/book application listed below.  Notice how the apps/book/app _requires_ the apps/book/list/controller module.

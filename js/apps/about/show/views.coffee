@@ -6,10 +6,21 @@ define ['apps/about/show/templates', 'views/_base', 'd3'], (Templates, AppView) 
         template: _.template(Templates.bookitem)
         tagName: "tr"
 
+    class Oss extends AppView.ItemView
+        template: _.template(Templates.ossitem)
+        tagName: "tr"
+
+
     Books: class Books extends AppView.CompositeView
         template: _.template(Templates.books)
         itemView: Book
         itemViewContainer: "tbody"
+
+    oss: class Osslist extends AppView.CompositeView
+        template: _.template(Templates.oss)
+        itemView: Oss
+        itemViewContainer: "tbody"
+
 
 
     About: class _item extends AppView.ItemView
@@ -20,5 +31,6 @@ define ['apps/about/show/templates', 'views/_base', 'd3'], (Templates, AppView) 
         regions:
             aboutRegion: "#about-region"
             bookRegion: "#book-region"
+            ossRegion: "#oss-region"
 
 

@@ -15,5 +15,6 @@ define [
  #"holderjs",    		                #img placeholders
  "bootstrap",        	                #twitter bootstrap
  "globalize",
- "entities/book"
+ "entities/book",
+ "entities/oss"
 ], ->

@@ -8,7 +8,5 @@ define ['apps/about/show/templates', 'views/_base', 'd3'], (Templates, AppView) 
         template: _.template(Templates.layout)
         regions:
             aboutRegion: "#about-region"
-            alertRegion: "#alert-region"
+            bookRegion: "#book-region"
 
-    Alert: class Alert extends AppView.ItemView
-        template: _.template(Templates.alert)

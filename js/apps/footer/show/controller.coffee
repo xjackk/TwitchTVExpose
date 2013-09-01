@@ -4,10 +4,9 @@ define ["msgbus","apps/footer/show/views", "controller/_base"], (msgBus, View, A
     class Controller extends AppController
         initialize:->
             author = msgBus.reqres.request "get:authorModel:info"
-            console.log author
+            #console.log author
             footerView = @getFooterView author
             @show footerView
-
 
         getFooterView: (model) ->
             new View.ItemView

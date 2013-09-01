@@ -6,8 +6,6 @@ define ["entities/_backbone", "msgbus",], (_Backbone, msgBus ) ->
 
     class Stream extends _Backbone.Model
 
-
-
     class GamesCollection extends _Backbone.Collection
         model: Game
 
@@ -18,7 +16,9 @@ define ["entities/_backbone", "msgbus",], (_Backbone, msgBus ) ->
         model: Stream
 
         parse: (resp) ->
+            console.log resp
             resp.streams
+
 
     API =
         getGames: (url, params = {}) ->
@@ -31,7 +31,6 @@ define ["entities/_backbone", "msgbus",], (_Backbone, msgBus ) ->
                 reset: true
                 data: params
             games
-
 
         getStreams: (url, params = {}) ->
             _.defaults params,
@@ -51,7 +50,7 @@ define ["entities/_backbone", "msgbus",], (_Backbone, msgBus ) ->
     msgBus.reqres.setHandler "search:stream:entities", (game)->
         API.getStreams "search/streams",
             q: game
-            limit: 12
+            limit: 8
 
 ###
     App.reqres.setHandler "search:movie:entities", (searchTerm) ->

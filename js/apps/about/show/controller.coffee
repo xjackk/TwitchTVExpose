@@ -9,16 +9,22 @@ define ["msgbus", "apps/about/show/views", "controller/_base"], (msgBus, Views, 
 
             @listenTo @layout, "show", =>
                 @aboutRegion()
-                @alertRegion()
+                @bookRegion()
 
             @show @layout
+
 
         aboutRegion:  ->
             view = @getAboutView()
             @layout.aboutRegion.show view
-        alertRegion:  ->
-            view = @getAlertView()
-            @layout.alertRegion.show view
+
+
+        bookRegion:  ->
+            view = @getbookView()
+            @layout.aboutRegion.show view
+
+        getBookView: ->
+            new Views.Book
 
         getAboutView:  ->
             new Views.About
@@ -26,5 +32,4 @@ define ["msgbus", "apps/about/show/views", "controller/_base"], (msgBus, Views, 
         getLayoutView: ->
             new Views.Layout
 
-        getAlertView: ->
-            new Views.Alert
+

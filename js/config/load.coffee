@@ -8,11 +8,12 @@ define [
  "entities/_fetch",						#promise based fetch; handle 'when:fetched' event
  "entities/abstract/buttons",    		#button abstract classes (save/cancel) for form/controller
  "entities/twitchtv",
+ "entities/appstate",
+ "entities/author",
  "components/form/controller",			#form component
- "holderjs",    		                #img placeholders
+ "components/loading/controller",		#loading component
+ #"holderjs",    		                #img placeholders
  "bootstrap",        	                #twitter bootstrap
  "globalize",
- "components/loading/controller",		#loading component
-  "entities/appstate",
-  "entities/author"
+ "entities/book"
 ], ->

@@ -3,7 +3,7 @@ define ["entities/_backbone", "msgbus",], (_Backbone, msgBus ) ->
     # this _fetch is our private property added to overridden config backbone sync
 
     class Game extends _Backbone.Model
-    
+
     class Stream extends _Backbone.Model
 
 
@@ -49,7 +49,7 @@ define ["entities/_backbone", "msgbus",], (_Backbone, msgBus ) ->
             limit: 12
 
     msgBus.reqres.setHandler "search:stream:entities", (game)->
-        API.getStream "search/streams",
+        API.getStreams "search/streams",
             q: game
             limit: 12
 

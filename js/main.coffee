@@ -16,21 +16,18 @@ require.config
         d3: "../bower_components/d3/d3"
         spin: "../bower_components/spin.js/spin"
         jqueryspin: "../bower_components/spin.js/jquery.spin"
-        mockjax: "../bower_components/jquery-mockjax/jquery.mockjax"
-        mockjson: "../bower_components/mockJSON/js/jquery.mockjson"
-        holderjs:"../bower_components/holderjs/holder"
+        #mockjax: "../bower_components/jquery-mockjax/jquery.mockjax"
+        #mockjson: "../bower_components/mockJSON/js/jquery.mockjson"
+        #holderjs:"../bower_components/holderjs/holder"
         bootstrap:"../bower_components/bootstrap/dist/js/bootstrap"
 
     shim:
-        mockjax: ["jquery"]
-        mockjson: ["jquery"]
+        #mockjax: ["jquery"]
+        #mockjson: ["jquery"]
         bootstrap: ["jquery"]
 
 
 
 	require ["config/load", "app" ], (_config, app) -> # ensure that base application settings are loaded before we can call the app.  Templates, settings and jquery plugins
-		# call webservice asyncronously to get the .NET currentUser  tkUtil defines getCurrentUser() into $ namespace
-		# dependency inject this into the application
-		# this/ legacy ajax/asmx call returns json in a .d wrapper note it requires an http: post instead of an http:get
         #console.log "starting app"
         app.start()

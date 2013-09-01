@@ -3,15 +3,17 @@ define ["msgbus", "apps/about/show/views", "controller/_base"], (msgBus, Views, 
     # the module API will pass in the glogal collection of ccys
     class Controller extends AppController
         initialize:(options)->
-            #entities=msgBus.reqres.request "games:top:entities"
-            #console.log entities
+            entities=msgBus.reqres.request "book:entities"
+            console.log entities
             @layout = @getLayoutView()
 
             @listenTo @layout, "show", =>
                 @aboutRegion()
-                @bookRegion()
+                @bookRegion entities
 
-            @show @layout
+            @show @layout,
+                loading:
+                    entities: entities
 
 
         aboutRegion:  ->
@@ -19,12 +21,13 @@ define ["msgbus", "apps/about/show/views", "controller/_base"], (msgBus, Views, 
             @layout.aboutRegion.show view
 
 
-        bookRegion:  ->
-            view = @getbookView()
-            @layout.aboutRegion.show view
+        bookRegion: (collection) ->
+            view = @getBookView collection
+            @layout.bookRegion.show view
 
-        getBookView: ->
-            new Views.Book
+        getBookView: (collection) ->
+            new Views.Books
+                collection: collection
 
         getAboutView:  ->
             new Views.About

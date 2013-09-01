@@ -1,6 +1,17 @@
 # list currency views
 define ['apps/about/show/templates', 'views/_base', 'd3'], (Templates, AppView) ->
 
+
+    class Book extends AppView.ItemView
+        template: _.template(Templates.bookitem)
+        tagName: "tr"
+
+    Books: class Books extends AppView.CompositeView
+        template: _.template(Templates.books)
+        itemView: Book
+        itemViewContainer: "tbody"
+
+
     About: class _item extends AppView.ItemView
         template: _.template(Templates.about)
 
@@ -9,4 +20,5 @@ define ['apps/about/show/templates', 'views/_base', 'd3'], (Templates, AppView) 
         regions:
             aboutRegion: "#about-region"
             bookRegion: "#book-region"
+
 

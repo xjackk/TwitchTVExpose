@@ -26,8 +26,5 @@ require.config
         #mockjson: ["jquery"]
         bootstrap: ["jquery"]
 
-
-
 	require ["config/load", "app" ], (_config, app) -> # ensure that base application settings are loaded before we can call the app.  Templates, settings and jquery plugins
-        #console.log "starting app"
         app.start()

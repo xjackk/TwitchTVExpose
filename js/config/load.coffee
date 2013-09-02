@@ -10,11 +10,11 @@ define [
  "entities/twitchtv",
  "entities/appstate",
  "entities/author",
+ "entities/book",
+ "entities/oss",
  "components/form/controller",			#form component
  "components/loading/controller",		#loading component
  #"holderjs",    		                #img placeholders
  "bootstrap",        	                #twitter bootstrap
- "globalize",
- "entities/book",
- "entities/oss"
+ "globalize"
 ], ->

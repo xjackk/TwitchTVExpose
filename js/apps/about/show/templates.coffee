@@ -6,3 +6,5 @@ define (require) ->
     bookitem: require("text!apps/about/show/templates/bookitem.htm")
     oss: require("text!apps/about/show/templates/oss.htm")
     ossitem: require("text!apps/about/show/templates/ossitem.htm")
+    osscaro: require("text!apps/about/show/templates/osscaro.htm")
+    osscaroitem: require("text!apps/about/show/templates/osscaroitem.htm")

@@ -5,13 +5,14 @@ define ["msgbus", "apps/about/show/views", "controller/_base"], (msgBus, Views, 
         initialize:(options)->
             entities=msgBus.reqres.request "book:entities"
             ossentities=msgBus.reqres.request "oss:entities"
-            console.log entities
+            #console.log ossentities
             @layout = @getLayoutView()
 
             @listenTo @layout, "show", =>
                 @aboutRegion()
                 @bookRegion entities
                 @ossRegion ossentities
+                @ossCaroRegion ossentities
 
             @show @layout,
                 loading:
@@ -28,11 +29,19 @@ define ["msgbus", "apps/about/show/views", "controller/_base"], (msgBus, Views, 
             @layout.bookRegion.show view
 
         ossRegion: (collection) ->
-            view = @getOSSView collection
+            view = @getOssView collection
             @layout.ossRegion.show view
 
-        getOSSView: (collection) ->
-            new Views.oss
+        ossCaroRegion: (collection) ->
+            view = @getOssCaroView collection
+            @layout.ossCaroRegion.show view
+
+        getOssView: (collection) ->
+            new Views.Oss
+                collection: collection
+
+        getOssCaroView: (collection) ->
+            new Views.OssCaro
                 collection: collection
 
         getBookView: (collection) ->

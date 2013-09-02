@@ -11,7 +11,7 @@
   ],
   "dependencies": {
     "jquery": "~2.0.3",
-    "bootstrap": "~3.0.0",
+    "bootstrap": "3.0.0",
     "requirejs": "~2.1.8",
     "marionette": "~1.0.4",
     "requirejs-text": "~2.0.9",

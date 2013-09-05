@@ -10,7 +10,8 @@ define [
  "entities/twitchtv",
  "entities/appstate",
  "entities/author",
- "entities/book",
+ #"entities/book",
+ "entities/reference",
  "entities/oss",
  "components/form/controller",			#form component
  "components/loading/controller",		#loading component

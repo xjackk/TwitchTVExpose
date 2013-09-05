@@ -60,5 +60,6 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
         msgBus.commands.execute "start:d3:app"
         msgBus.commands.execute "start:about:app"
         msgBus.commands.execute "start:games:app"
+        msgBus.commands.execute "start:playa:app"
 
     app

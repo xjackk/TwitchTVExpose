@@ -1,4 +1,3 @@
-# LS currency app/module
 define ["msgbus", "marionette", "apps/about/show/controller"], (msgBus, Marionette, Controller) ->
 
     class Router extends Marionette.AppRouter

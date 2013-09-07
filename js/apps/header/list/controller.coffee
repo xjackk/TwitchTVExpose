@@ -11,7 +11,7 @@ define ["msgbus","apps/header/list/views", "controller/_base", "entities/header"
             # so from anywhere you can set the appstate's loginStatus to T/F and this button will toggle
             @listenTo @appstate, "change:loginStatus", (model, status) =>
                 @loginView.close() if status is true
-                @loginView.render() is status is false
+                @loginView.render() if status is false
 
             @listenTo @layout, "show", =>
                 @listRegion links

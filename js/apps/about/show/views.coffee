@@ -1,4 +1,3 @@
-# list currency views
 define ['apps/about/show/templates', 'views/_base', 'd3'], (Templates, AppView) ->
 
     class Book extends AppView.ItemView

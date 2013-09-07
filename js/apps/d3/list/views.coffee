@@ -1,4 +1,3 @@
-# list currency views
 define ['apps/d3/list/templates', 'views/_base', 'd3'], (Templates, AppView) ->
 
     DataVis1: class _item extends AppView.ItemView

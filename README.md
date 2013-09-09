@@ -1,14 +1,21 @@
 TwitchTVExpose
 ==============
 
-<blockquote>A Single Page Web App implementing TwitchTV's API functionality. Uses Marionette, AMD, RequireJS, Coffeescript, and D3.</blockquote>
+<br>
 
-#To Login !
-
-<blockquote>Gain authorization with your Twitch TV account by logging in via the button.</blockquote>
+<h3>A Single Page Web App implementing TwitchTV's API functionality. Uses Marionette, AMD, RequireJS, Coffeescript, and D3.</h3>
 
 <br>
 
+#See It Live!
+
+>[Live Site on Cloud9!](https://c9.io/xjackk/twitchtvexpose/workspace/index.htm)
+
+#To Login !
+
+Gain authorization with your Twitch TV account by logging in via the button.
+
+<br>
 
 Installing Import Stuff...
 ==============

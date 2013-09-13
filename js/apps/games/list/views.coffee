@@ -6,14 +6,12 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus'], (Templates, AppVi
         className: "col-lg-3 col-md-4 col-sm-6 col-xs-12"
         triggers:
             "click" : "game:item:clicked"
-            "scroll" : ->
-                console.log "scrolled"
 
     TopGameList: class TopGameList extends AppView.CompositeView
         template: _.template(Templates.topgame)
         itemView: GameItem
         itemViewContainer: "#gameitems"
-        events: 
+        events:
             'scroll': 'checkScroll'
 
         checkScroll: (e) ->
@@ -23,7 +21,6 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus'], (Templates, AppVi
                 console.log "trigger:scroll"
                 @collection.offset += 1 #Load next page
                 msgBus.events.trigger "games:fetchmore", @collection.offset
-
 
 
     Hero: class Hero extends AppView.ItemView

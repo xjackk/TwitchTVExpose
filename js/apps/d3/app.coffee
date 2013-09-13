@@ -3,10 +3,10 @@ define ["msgbus", "marionette", "apps/d3/list/controller"], (msgBus, Marionette,
 
 	class Router extends Marionette.AppRouter
 		appRoutes:
-			"d3": "poopie"
+			"d3": "tedifyouseethisyousmell"
 
 	API =
-		poopie: ->
+		tedifyouseethisyousmell: ->
 			new Controller
 
 	msgBus.commands.setHandler "start:d3:app", ->

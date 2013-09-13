@@ -1,4 +1,4 @@
-# TO DO:  Jack.. investigate the TwitchTV api.  do you need and API key and the uri stuff etc
+
 define ["entities/_backbone", "msgbus",], (_Backbone, msgBus ) ->
     # this _fetch is our private property added to overridden config backbone sync
 

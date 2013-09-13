@@ -8,10 +8,10 @@ define ["apps/d3/list/views", "controller/_base"], (Views, AppController) ->
             @show @layout
 
         visRegion:  ->
-            view1 = @getDataVisView1()
-            view2 = @getDataVisView2()
-            @layout.dataVisRegion1.show view1
-            @layout.dataVisRegion2.show view2
+            region1 = @getDataVisView1()
+            region2 = @getDataVisView2()
+            @layout.dataVisRegion1.show region1
+            @layout.dataVisRegion2.show region2
 
         getDataVisView1:  ->
             new Views.DataVis1

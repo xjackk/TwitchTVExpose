@@ -28,9 +28,10 @@ define ["entities/_backbone", "msgbus",], (_Backbone, msgBus ) ->
             games = new GamesCollection
             games.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
             games.fetch
-                reset: true
+                reset: if params.offset is 0 then true else false
                 data: params
             games
+
 
         getStreams: (url, params = {}) ->
             _.defaults params,
@@ -45,12 +46,20 @@ define ["entities/_backbone", "msgbus",], (_Backbone, msgBus ) ->
 
     msgBus.reqres.setHandler "games:top:entities", ->
         API.getGames "games/top",
-            limit: 10
+            limit: 25
+            offset: 0
+
+    msgBus.reqres.setHandler "games:scroll", (page) ->
+        API.getGames "games/top",
+            limit: 25
+            offset: page 
+
 
     msgBus.reqres.setHandler "search:stream:entities", (game)->
         API.getStreams "search/streams",
             q: game
-            limit: 10
+            limit: 12
+            offset: 0
 
 ###
     App.reqres.setHandler "search:movie:entities", (searchTerm) ->

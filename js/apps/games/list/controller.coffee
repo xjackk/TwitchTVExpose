@@ -18,6 +18,11 @@ define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (ms
                 Backbone.history.navigate "games/streaming/#{args.model.get("game").name}", trigger:false
                 msgBus.commands.execute "app:stream:list", @layout.streamRegion, args.model
 
+            @listenTo view, "games:fetchmore", (page) -> 
+                #console.log "game:item:clicked" , args.model
+                msgBus.reqres.request "games:scroll", page
+
+
             @layout.gameRegion.show view
 
         getGameView: (collection) ->
@@ -33,3 +38,5 @@ define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (ms
         showHeroView: ->
             @heroView = @getHeroView()
             @show @heroView, region: @layout.streamRegion
+            
+ 

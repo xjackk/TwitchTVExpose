@@ -11,7 +11,6 @@ define ["marionette", "msgbus"], (Marionette, msgBus) ->
     	close: (args...) ->
     		delete @region
     		delete @options
-    		#App.execute "unregister:instance", @, @_instance_id
     		msgBus.commands.execute "unregister:instance", @, @_instance_id
     		super args
 

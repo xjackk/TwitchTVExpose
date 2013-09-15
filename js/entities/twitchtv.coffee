@@ -8,8 +8,8 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
         model: Game
 
         initialize: ->
-            #msgBus.events.on "games:fetchmore", =>
-            #    @moreGames()
+            msgBus.reqres.setHandler "games:fetchmore", =>
+                @moreGames()
 
             @limit = 20
             @offset = 0
@@ -18,19 +18,19 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             @_total = null
 
         moreGames: ->
-            return true  if @loading or @length >= @_total  #length is the size of this collection, _total is parsed from the API
+            return true  if @loading or @length >= @_total
             @loading=true
             @offset++
-            console.log "fetching page #{@offset+1} of games"
-            games = @fetch
+            #console.log "fetching page #{@offset+1} of games"
+            loaded = @fetch
                 remove: false  # remove false appends new games to the existing collection
                 data:
                     oauth_token: msgBus.reqres.request "get:current:token"
                     limit: @limit
                     offset: @offset
-            $.when(games).then =>
+            $.when(loaded).then =>
                 @loading=false
-                console.log "Page#: ", @offset+1, "Games fetched:", @length, "Total Games Available to fetch ", @_total
+                console.log "Loaded page", @offset+1, "Games fetched so far", @length, "Total games available to fetch ", @_total
 
         parse: (response) ->
             {@_total}=response  # pull of the _total items in the list here
@@ -45,30 +45,15 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             resp.streams
 
     API =
-        games = new GamesCollection
-        page=0
-
         getGames: (url, params = {}) ->
-            page=0
             _.defaults params,
                 oauth_token: msgBus.reqres.request "get:current:token"
+            games = new GamesCollection
             games.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
             games.fetch
                 reset: true
                 data: params
             games
-
-        moreGames: (url) ->
-            page++
-            games.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
-            games.fetch
-                remove:false  #
-                data:
-                    oauth_token: msgBus.reqres.request "get:current:token"
-                    limit:20
-                    offset: page
-            games
-
 
         getStreams: (url, params = {}) ->
             _.defaults params,
@@ -79,10 +64,6 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
                 reset: true
                 data: params
             streams
-
-    msgBus.reqres.setHandler "games:fetchmore", ->
-        API.moreGames "games/top"
-
 
     msgBus.reqres.setHandler "games:top:entities", ->
         API.getGames "games/top",
@@ -95,23 +76,6 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             limit: 12
             offset: 0
 
-
-#    App.reqres.setHandler "search:movie:entities", (searchTerm) ->
-#        #update me
-#    	API.getMovies "movies",
-#    		q: $.trim(searchTerm)
-
-#    App.reqres.setHandler "theatre:movie:entities", ->
-#        #update me
-#    	API.getMovies "lists/movies/in_theaters",
-#    		page_limit: 10
-#    		page: 1
-
-#    App.reqres.setHandler "upcoming:movie:entities", ->
-#        #update me
-#    	API.getMovies "lists/movies/upcoming",
-#    		page_limit: 10
-#    		page: 1
 
 # Use this in your browser's console to initialize a JSONP request to see the API in action.
 # $.getJSON("http://api.rottentomatoes.com/api/public/v1.0/movies.json?callback=?", {apikey: "vzjnwecqq7av3mauck2238uj", q: "shining"})

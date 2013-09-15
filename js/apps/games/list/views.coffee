@@ -20,10 +20,10 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus'], (Templates, AppVi
             console.log "onClose called"
 
         checkScroll: (e) =>
-            virtualHeight = @$("> div").height()          #important this div must have css 100% height so we can calculate the virtual height scroll
+            virtualHeight = @$("> div").height()          #important this div must have css height: 100% to enable calculattion of virtual height scroll
             scrollTop = @$el.scrollTop() + @$el.height()
             margin = 200
-            console.log "virtualHeight:", virtualHeight, "scrollTop:", scrollTop, "elHeight", @$el.height()
+            #console.log "virtualHeight:", virtualHeight, "scrollTop:", scrollTop, "elHeight", @$el.height()
             if ((scrollTop + margin) >= virtualHeight)
                 @trigger "scroll:more"
 

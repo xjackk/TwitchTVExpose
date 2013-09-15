@@ -2,10 +2,10 @@ define ["msgbus", "marionette", "apps/about/show/controller"], (msgBus, Marionet
 
     class Router extends Marionette.AppRouter
         appRoutes:
-            "about": "kyliesmellsgreat"
+            "about": "about"
 
     API =
-        kyliesmellsgreat: ->
+        about: ->
             new Controller
 
     msgBus.commands.setHandler "start:about:app", ->

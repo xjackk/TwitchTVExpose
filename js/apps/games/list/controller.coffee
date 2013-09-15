@@ -21,7 +21,6 @@ define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (ms
                 msgBus.commands.execute "app:stream:list", @layout.streamRegion, args.model
 
             @listenTo view, "scroll:more", -> 
-                console.log "scroll:more"
                 msgBus.reqres.request "games:fetchmore"
                 
             @layout.gameRegion.show view

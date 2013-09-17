@@ -6,7 +6,7 @@ define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (ms
 
             @listenTo @layout, "show", =>
                 @gameRegion entities
-                @showHeroView()
+                @showIntroView()
 
             @show @layout,
                 loading:
@@ -14,15 +14,15 @@ define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (ms
 
         gameRegion: (collection)  ->
             view = @getGameView collection
-            
+
             @listenTo view, "childview:game:item:clicked", (child, args) ->  # listen to events from itemview (we've overridden the eventnamePrefix to childview)
                 #console.log "game:item:clicked" , args.model
                 Backbone.history.navigate "games/streaming/#{args.model.get("game").name}", trigger:false
                 msgBus.commands.execute "app:stream:list", @layout.streamRegion, args.model
 
-            @listenTo view, "scroll:more", -> 
+            @listenTo view, "scroll:more", ->
                 msgBus.reqres.request "games:fetchmore"
-                
+
             @layout.gameRegion.show view
 
         getGameView: (collection) ->
@@ -32,9 +32,9 @@ define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (ms
         getLayoutView: ->
             new Views.Layout
 
-        getHeroView: ->
-            new Views.Hero
+        getIntroView: ->
+            new Views.Intro
 
-        showHeroView: ->
-            @heroView = @getHeroView()
-            @show @heroView, region: @layout.streamRegion
+        showIntroView: ->
+            @introView = @getIntroView()
+            @show @introView, region: @layout.streamRegion

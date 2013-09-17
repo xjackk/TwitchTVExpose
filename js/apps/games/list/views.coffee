@@ -16,9 +16,6 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus'], (Templates, AppVi
         events:
             "scroll": "checkScroll"
 
-        onClose:->
-            console.log "onClose called"
-
         checkScroll: (e) =>
             virtualHeight = @$("> div").height()          #important this div must have css height: 100% to enable calculattion of virtual height scroll
             scrollTop = @$el.scrollTop() + @$el.height()
@@ -27,8 +24,8 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus'], (Templates, AppVi
             if ((scrollTop + margin) >= virtualHeight)
                 @trigger "scroll:more"
 
-    Hero: class Hero extends AppView.ItemView
-        template: _.template(Templates.hero)
+    Intro: class Intro extends AppView.ItemView
+        template: _.template(Templates.intro)
 
     Layout: class GamesLayout extends AppView.Layout
         template: _.template(Templates.layout)

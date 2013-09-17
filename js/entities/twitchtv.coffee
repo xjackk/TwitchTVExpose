@@ -11,7 +11,7 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             msgBus.reqres.setHandler "games:fetchmore", =>
                 @moreGames()
 
-            @limit = 20
+            @limit = 50
             @offset = 0
             @loading = false
             @previousSearch = null
@@ -27,7 +27,7 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
                 data:
                     oauth_token: msgBus.reqres.request "get:current:token"
                     limit: @limit
-                    offset: @offset
+                    offset: @offset * @limit
             $.when(loaded).then =>
                 @loading=false
                 console.log "Loaded page", @offset+1, "Games fetched so far", @length, "Total games available to fetch ", @_total
@@ -40,8 +40,34 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
     class StreamCollection extends _Backbone.Collection
         model: Stream
 
+        initialize: ->
+            msgBus.reqres.setHandler "streams:fetchmore", =>
+                @moreStreams()
+
+            @limit = 12
+            @offset = 0
+            @loading = false
+            @previousSearch = null
+            @_total = null
+
+        moreStreams: ->
+            return true  if @loading or @length >= @_total
+            @loading=true
+            @offset++
+            #console.log "fetching page #{@offset+1} of games"
+            loaded = @fetch
+                remove: false  # remove false appends new games to the existing collection
+                data:
+                    oauth_token: msgBus.reqres.request "get:current:token"
+                    limit: @limit
+                    offset: @offset * @limit
+            $.when(loaded).then =>
+                @loading=false
+                console.log "Loaded page", @offset+1, "Streams fetched so far", @length, "Total streams available to fetch ", @_total
+        
+
         parse: (resp) ->
-            #console.log resp
+            {@_total}=resp
             resp.streams
 
     API =
@@ -67,7 +93,7 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
 
     msgBus.reqres.setHandler "games:top:entities", ->
         API.getGames "games/top",
-            limit: 20
+            limit: 50
             offset: 0
 
     msgBus.reqres.setHandler "search:stream:entities", (game)->

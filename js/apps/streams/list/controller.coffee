@@ -9,6 +9,11 @@ define ["msgbus", "apps/streams/list/views", "controller/_base"  ], (msgBus, Vie
                 #console.log "game:item:clicked" , args.model
                 msgBus.events.trigger "app:playa:show", args.model
 
+            @listenTo view, "scroll:more", ->
+                console.log "listen to scroll:more"
+                msgBus.reqres.request "streams:fetchmore"
+                
+
             @show view,
                 loading: true
 

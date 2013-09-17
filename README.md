@@ -6,10 +6,6 @@ TwitchTVExpose
 
 <h4>See It Live! [Live Site on Cloud9!](https://c9.io/xjackk/twitchtvexpose/workspace/index.htm)</h4>
 
-#To Login !
-
-Gain authorization with your Twitch TV account by logging in via the button.
-
 <h3>Using Coffeescript</h3>
 
 Using Coffeescript has saved me writing much code as it compiles into JS. The Coffeescript syntax is a bit Python/Ruby esque, therefore attracting more and more attention recently.
@@ -105,14 +101,14 @@ Lastly, we add some execute commands, to start all of our apps, all right in one
 The About App
 ==============
 
-<h4>The about app starts with the [app.coffee File.](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/app.coffee)</h4>
+<h4>The about app starts with the [app coffee File](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/app.coffee)</h4>
 
 This file acts as the starting point of the app where we add a controller, and set an event handler to "start" off this app, as all these apps will be loaded beforehand, elsewhere.
 We will go into more detail later about that.
 
-</h6>About Controller</h6>
+</h5>About Controller</h5>
 
-[About Controller](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/show/controller.coffee)
+[My Code for the About Controller](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/show/controller.coffee)
 
 The about Controller sets up sets up the three regions we will be adding data too.
 
@@ -154,16 +150,16 @@ Also here in the controller we set up the getting of our three views.
             new Views.Layout
 ```
 
-<h6>About Templates</h6>
+<h5>About Templates</h5>
 
-[About Templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/show/templates.coffee)
+[My Code for the About Templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/show/templates.coffee)
 
 Here we load our templates for our regions. Nothing too crazy here.
 
 
-<h6>About Views</h6>
+<h5>About Views</h5>
 
-[About Views](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/show/views.coffee)
+[My Code for the About Views](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/show/views.coffee)
 
 Here is where the magic happens.
 

@@ -4,7 +4,7 @@ TwitchTVExpose
 
 <h3>A Single Page Web App implementing TwitchTV's API functionality. Uses Marionette, AMD, RequireJS, Coffeescript, and D3.</h3>
 
-<h4>See It Live! [Live Site on Cloud9!](https://c9.io/xjackk/twitchtvexpose/workspace/index.htm)</h4>
+<h4>See It Live! [Live Site on Cloud9!](https://c9.io/xjackk/twitchtvexpose/workspace/indexdev.htm)</h4>
 
 <h3>Using Coffeescript</h3>
 
@@ -20,6 +20,8 @@ $ npm install -g coffee-script
 ~~~
 $ coffee -o js/ -cw js/
 ~~~
+
+<hr>
 
 <h3>Project Dependencies</h3>
 
@@ -39,7 +41,7 @@ $ bower update
 
 This does as it seems, and will keep your bower dependencies up to date.
 
-<br>
+<hr>
 
 <h3>Using AMD</h3>
 
@@ -62,6 +64,39 @@ Anytime you add an app, we need to make sure we are adding it to this list. A sm
 
 In our [config load](https://github.com/xjackk/TwitchTVExpose/blob/master/js/config/load.coffee) file, we load dependencies also from other areas in our app. Make sure you load these, as they are important.
 
+<hr>
+
+<h5>Entities</h5>
+
+Its important to know that most of the calls we are going to be making using our msgBus, is all going to our Entities.
+In our entities, we have things such as our [appstate](), our [author info](), [header info](), and most importantly our [twitch.tv API calls]()
+
+You will see frequent calls to things things via msgBus in the code.
+
+<h5>How this all works. (Featuring `msgBus`)</h5>
+
+You may be wondering how our msgBus works. The sole purpose of msgBus is that it allows us to set handlers to listen to, as well as execute these events.
+Since we need to pull this info somehow, msgBus provides a way of listening to these events, or handlers that are set.
+
+A perfect example of this is how we pull in the info for our `header:entities`
+
+This decoupled code right here provides us with a way to dynamically pull in these entities into our header, without repeating ourselves. This keeps a very "modular" approach to building this app.
+
+```
+define ["backbone","msgbus"], (Backbone, msgBus ) ->
+
+    API =
+        getHeaders:->
+            new Backbone.Collection [
+                    (name: "Games", url: "#games", title: "Live Games", cssClass: "glyphicon glyphicon-hdd" )
+                    (name: "D3", url: "#d3", title: "Sample D3 visualization", cssClass: "glyphicon glyphicon-list")
+                    (name: "About", url: "#about", title: "Learn about responsive Twitch-TV", cssClass: "glyphicon glyphicon-align-justify")
+                    ]
+
+    msgBus.reqres.setHandler "header:entities", ->
+        API.getHeaders()
+
+```
 
 <hr>
 
@@ -182,8 +217,18 @@ Also here in the controller we set up the getting of our three views.
 
 Here we load our templates for our regions. Following our AMD approach.
 
-<hr>
+```
+define (require) ->
+    about: require("text!apps/about/show/templates/about.htm")
+    layout: require("text!apps/about/show/templates/layout.htm")
+    books: require("text!apps/about/show/templates/books.htm")
+    bookitem: require("text!apps/about/show/templates/bookitem.htm")
+    oss: require("text!apps/about/show/templates/oss.htm")
+    ossitem: require("text!apps/about/show/templates/ossitem.htm")
 
+```
+
+<hr>
 
 <h5>About Views</h5>
 
@@ -204,7 +249,7 @@ class Book extends AppView.ItemView
         tagName: "tr"
 ```
 
-After this, we pass those item views into our composite views with an "itemviewcontainer" like so.
+After this, we pass those item views into our composite views with an `itemviewcontainer` like so.
 
 
 ```
@@ -282,6 +327,17 @@ Here we keep running through our processes and we load our [Header templates](ht
 
 Not much more to be said here.
 
+```
+define (require) ->
+    item: require("text!apps/header/list/templates/itemview.htm")
+    header: require("text!apps/header/list/templates/header.htm")
+    login: require("text!apps/header/list/templates/login.htm")
+    layout: require("text!apps/header/list/templates/layout.htm")
+
+```
+
+<hr>
+
 <h5>Header Views</h5>
 
 Our header view is just us putting these templates into our ItemViews. We give it a tagName of `li` to attach it to the DOM element.
@@ -319,7 +375,7 @@ The Footer App
 
 The footer [app](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/footer/app.coffee) is virtually the same thing as the header app. We are going for that fixed footer look.
 
-Here is our [markup](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/footer/show/templates/footer.htm)for the footer. Just some more bootstrapping.
+Here is our [markup](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/footer/show/templates/footer.htm) for the footer. Just some more bootstrapping.
 
 <hr>
 
@@ -353,4 +409,118 @@ Here we are once again following our AMD approach and loading our [templates](ht
 <hr>
 
 <h5>Footer Views</h5>
+
+Our footer view is just a simple Itemview, like so
+
+```
+# show footer views.
+define ['views/_base', 'apps/footer/show/templates'], (AppViews, Templates) ->
+
+	ItemView: class ShowFooterView extends AppViews.ItemView
+		template: _.template(Templates.footer)
+
+		modelEvents:
+			"change" : "render"
+```
+
+<hr>
+
+The Games App
+==============
+
+The games app is probably the the most (or one of the most...) important apps that we will be taking a look at.
+
+This is where we will be showing our `top/games` call from. From there, we can pick everything thing else out we want from Twitch's API. We stuff all the games into a composite view.
+
+Here is the start of our app, where we create <strong>two</strong> controllers. Check it out.
+
+```
+
+define ["msgbus", "marionette", "backbone", "apps/games/list/controller","apps/games/detail/controller"], (msgBus, Marionette, Backbone, ListController, DetailController) ->
+
+    class Router extends Marionette.AppRouter
+        appRoutes:
+            "games": "list"
+            "games/:id/detail": "detail"
+
+    API =
+        list: ->
+            new ListController
+
+        detail: (id, model) ->
+            new DetailController
+                gameName: id
+                gameModel: model
+
+
+    msgBus.events.on "app:game:detail", (model) ->
+        Backbone.history.navigate "games/#{model.get("game").name}/detail", trigger:false
+        console.log "APP:GAMES:LIST=> (from list controller) MODEL", model
+        API.detail model.get("game").name, model
+
+    msgBus.commands.setHandler "start:games:app", ->
+        new Router
+            controller: API
+
+```
+
+Here we create our `list` controller, as well as our `detail` controller. This is because we essentially want to create two views of this.
+
+We have some fancy `backbone.history()` code going on, but this is specifically for routing. We will go into more detail later about routing our app properly.
+
+One view is going to be where the games are all shown, and the other where one selected game is shown, thus, the `detail` controller.
+
+<hr>
+
+<h5>Games Controllers</h5>
+
+Let's get right down to it, starting with the `list` controller.
+
+```
+define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (msgBus, Views, AppController, Backbone) ->
+    class Controller extends AppController
+        initialize: (options={})->
+            entities=msgBus.reqres.request "games:top:entities"
+            @layout = @getLayoutView()
+
+            @listenTo @layout, "show", =>
+                @gameRegion entities
+                #@showIntroView()
+
+            @show @layout,
+                loading:
+                    entities: entities
+
+        gameRegion: (collection)  ->
+            view = @getGameView collection
+            @listenTo view, "childview:game:item:clicked", (child, args) ->  # listen to events from itemview (we've overridden the eventnamePrefix to childview)
+                console.log "game:item:clicked => model", args.model
+                msgBus.events.trigger "app:game:detail", args.model
+
+            @listenTo view, "scroll:more", ->
+                msgBus.reqres.request "games:fetchmore"
+
+            @layout.gameRegion.show view
+
+        getGameView: (collection) ->
+            new Views.TopGameList
+                collection: collection
+
+        getLayoutView: ->
+            new Views.Layout
+
+#        getIntroView: ->
+#            new Views.Intro
+
+#        showIntroView: ->
+#            @introView = @getIntroView()
+#            @show @introView, region: @layout.streamRegion
+
+```
+
+This controller is all about working directly with our Twitch API. We set entities as our msgBus request to get the `"games:top:entities"`
+
+We define our `gameRegion` and pass through our collection of
+
+
 

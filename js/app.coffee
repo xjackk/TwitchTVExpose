@@ -46,7 +46,7 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
                 appstate.set "accessToken",  frag.split("=")[1]
                 appstate.set "loginStatus", true
                 #console.log "top route", @authRoute
-                @navigate(@authRoute, trigger: true)             #Backbone.history.navigate @rootRoute, trigger:true
+                @navigate(@authRoute, trigger: true)
             else
                 appstate.set "loginStatus", false
                 #console.log appstate.get("loginStatus"), "value of login status"

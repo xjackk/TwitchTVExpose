@@ -37,6 +37,11 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
                 @loading=false
                 console.log "Loaded page", @offset+1, "Games fetched so far", @length, "Total games available to fetch ", @_total
 
+        searchName: (_name)->
+            @find (model)->
+                model.get("game").name is _name
+
+
         parse: (response) ->
             {@_total}=response  # pull of the _total items in the list here
             response.top        # the .top array get loaded into our backbone collection
@@ -81,10 +86,10 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
 
     API =
         getGames: (url, params = {}) ->
-            now = new Date()
-            diff = (now - games.timeStamp ) / 1000
-            elapsedSeconds = Math.round(diff % 60)
-            console.log "elapsed seconds", elapsedSeconds, now, games.timeStamp
+            #now = new Date()
+            #diff = ((new Date() - games.timeStamp ) / 1000)
+            elapsedSeconds = Math.round(((new Date() - games.timeStamp ) / 1000) % 60)
+            #console.log "elapsed seconds", elapsedSeconds, now, games.timeStamp
             if elapsedSeconds > 45 or games.length is 0
                 _.defaults params,
                     oauth_token: msgBus.reqres.request "get:current:token"
@@ -122,11 +127,14 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             limit: 50
             offset: 0
 
-# shiny and new
+    # shiny and new  this doesn't seem to work...
     msgBus.reqres.setHandler "game:search", (query)->
         API.searchGames "games/search",
-            q: encodeURIComponent "Star"
+            q: encodeURIComponent query
             type: "suggest"
+
+    msgBus.reqres.setHandler "games:searchName", (query)->
+        games.searchName query
 
     msgBus.reqres.setHandler "search:stream:entities", (game)->
         API.getStreams "search/streams",

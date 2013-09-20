@@ -1,12 +1,10 @@
-TwitchTVExpose
-==============
+#TwitchTVExpose
 
+A Single Page Client App implementing TwitchTV's API functionality. Using Backbone.Marionette, RequireJS, Coffeescript, and little D3.
 
-<h3>A Single Page Web App implementing TwitchTV's API functionality. Uses Marionette, AMD, RequireJS, Coffeescript, and D3.</h3>
+**See [TwitchTVExpose](https://c9.io/xjackk/twitchtvexpose/workspace/index.htm) live, hosted on my Cloud9 site**
 
-<h4>See It Live! [Live Site on Cloud9!](https://c9.io/xjackk/twitchtvexpose/workspace/indexdev.htm)</h4>
-
-<h3>Using Coffeescript</h3>
+##Use Coffeescript##
 
 Using Coffeescript has saved me writing much code as it compiles into JS. The Coffeescript syntax is a bit Python/Ruby esque, therefore attracting more and more attention recently.
 I have switched over to using Coffeescript, and I really really do love it. It saves me syntax headaches, and is just a breeze to write in. I reccomend trying it.
@@ -15,7 +13,7 @@ I have switched over to using Coffeescript, and I really really do love it. It s
 $ npm install -g coffee-script
 ~~~
 
-<strong>Keep in mind, you need to make sure you are watching proper directories for compiling your coffeescript. In this command, I output my JS folder</strong>
+Keep in mind the watching directory and the output directory for compiling coffeescript to javascript. In this command, the **js** folder
 
 ~~~
 $ coffee -o js/ -cw js/
@@ -23,37 +21,32 @@ $ coffee -o js/ -cw js/
 
 <hr>
 
-<h3>Project Dependencies</h3>
+##Project Dependencies##
 
-<strong>See [bower.json](https://github.com/xjackk/twitchtvexpose/blob/master/bower.json) to see this project's dependencies</strong>
+**Check out the [bower.json](https://github.com/xjackk/twitchtvexpose/blob/master/bower.json) file see this project's open-source dependencies**
 
-Here, with one command, we can install all of our dependencies.
+With [BOWER](https://github.com/bower/bower), just one command and all of the project dependencies are installed:
 
 ~~~
 $ bower install
 ~~~
 
-As time passes on, you can update the project with one command as well.
+As time marches on, update project dependencies with one command:
 
 ~~~
 $ bower update
 ~~~
 
-This does as it seems, and will keep your bower dependencies up to date.
+##Using Asyncronous Module Definition AMD  [RequireJS](http://requirejs.org)
 
-<hr>
+This project uses a "Rails esque" approach. Keeping everything as modular as possible, and straying away from "spaghetti" codeing.
 
-<h3>Using AMD</h3>
-
-In this project we are using a very "Rails esque" approach. We keep everything as modular as possible, and stray away from "spaghetti" codeing.
-
-This follows Brian Mann's Marionette approach using RequireJS with Javascript patterns.
+It follows an approach similar to Brian Mann's (he used Marionette.module implementation), however we're using RequireJS with Javascript patterns and a Rails convention.
 
 <hr>
 
 
-Before we can start...
-==============
+##Before we can start...
 
 Before we can start with our AMD app, we need to make sure we are loading everything properly. In the [Js/apps](https://github.com/xjackk/TwitchTVExpose/tree/master/js/apps) folder, we have a [load.coffee](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/load.coffee)
 file dynamically loads all of our apps before they are started.

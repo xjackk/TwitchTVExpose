@@ -1,12 +1,12 @@
 define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (msgBus, Views, AppController, Backbone) ->
     class Controller extends AppController
-        initialize: (options)->
+        initialize: (options={})->
             entities=msgBus.reqres.request "games:top:entities"
             @layout = @getLayoutView()
 
             @listenTo @layout, "show", =>
                 @gameRegion entities
-                @showIntroView()
+                #@showIntroView()
 
             @show @layout,
                 loading:
@@ -14,11 +14,9 @@ define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (ms
 
         gameRegion: (collection)  ->
             view = @getGameView collection
-
             @listenTo view, "childview:game:item:clicked", (child, args) ->  # listen to events from itemview (we've overridden the eventnamePrefix to childview)
-                #console.log "game:item:clicked" , args.model
-                Backbone.history.navigate "games/streaming/#{args.model.get("game").name}", trigger:false
-                msgBus.commands.execute "app:stream:list", @layout.streamRegion, args.model
+                console.log "game:item:clicked => model", args.model
+                msgBus.events.trigger "app:game:detail", args.model
 
             @listenTo view, "scroll:more", ->
                 msgBus.reqres.request "games:fetchmore"
@@ -32,9 +30,9 @@ define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (ms
         getLayoutView: ->
             new Views.Layout
 
-        getIntroView: ->
-            new Views.Intro
+#        getIntroView: ->
+#            new Views.Intro
 
-        showIntroView: ->
-            @introView = @getIntroView()
-            @show @introView, region: @layout.streamRegion
+#        showIntroView: ->
+#            @introView = @getIntroView()
+#            @show @introView, region: @layout.streamRegion

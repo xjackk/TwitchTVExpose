@@ -9,7 +9,7 @@ TwitchTVExpose
 <h3>Using Coffeescript</h3>
 
 Using Coffeescript has saved me writing much code as it compiles into JS. The Coffeescript syntax is a bit Python/Ruby esque, therefore attracting more and more attention recently.
-I have switched over to using Coffeescript, and I really really do love it. It saves me syntax headaches, and is just a breeze to write it. I reccomend trying it.
+I have switched over to using Coffeescript, and I really really do love it. It saves me syntax headaches, and is just a breeze to write in. I reccomend trying it.
 
 ~~~
 $ npm install -g coffee-script
@@ -40,6 +40,30 @@ $ bower update
 This does as it seems, and will keep your bower dependencies up to date.
 
 <br>
+
+<h3>Using AMD</h3>
+
+In this project we are using a very "Rails esque" approach. We keep everything as modular as possible, and stray away from "spaghetti" codeing.
+
+This follows Brian Mann's Marionette approach using RequireJS with Javascript patterns.
+
+<hr>
+
+
+Before we can start...
+==============
+
+Before we can start with our AMD app, we need to make sure we are loading everything properly. In the [Js/apps](https://github.com/xjackk/TwitchTVExpose/tree/master/js/apps) folder, we have a [load.coffee](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/load.coffee)
+file dynamically loads all of our apps before they are started.
+
+Anytime you add an app, we need to make sure we are adding it to this list. A small mistake I've made in the past that I hope you can avoid. (:
+
+<h5>Config</h5>
+
+In our [config load](https://github.com/xjackk/TwitchTVExpose/blob/master/js/config/load.coffee) file, we load dependencies also from other areas in our app. Make sure you load these, as they are important.
+
+
+<hr>
 
 Starting our App
 ==============
@@ -106,6 +130,8 @@ The About App
 This file acts as the starting point of the app where we add a controller, and set an event handler to "start" off this app, as all these apps will be loaded beforehand, elsewhere.
 We will go into more detail later about that.
 
+<hr>
+
 </h5>About Controller</h5>
 
 [My Code for the About Controller](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/show/controller.coffee)
@@ -154,7 +180,9 @@ Also here in the controller we set up the getting of our three views.
 
 [My Code for the About Templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/show/templates.coffee)
 
-Here we load our templates for our regions. Nothing too crazy here.
+Here we load our templates for our regions. Following our AMD approach.
+
+<hr>
 
 
 <h5>About Views</h5>
@@ -190,4 +218,139 @@ After this, we pass those item views into our composite views with an "itemviewc
         itemView: Oss
         itemViewContainer: "tbody"
 ```
+
+
+The Header App
+==============
+
+<h4>The header app starts with it's corrosponding [app](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/app.coffee) file, which creates out list controller, and starts the app.</h4>
+
+Once we have this, we can move on to our app itself. We begin to layout everything using [Bootstrap](getbootstrap.com) in our header.
+
+[Header.htm](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/list/templates/header.htm)
+
+We only have one region for this header, and we lay it out, like so.
+
+[Layout.htm](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/list/templates/layout.htm)
+
+Lastly, we need a login button, to authorize ourselves with Twitch TV's API.
+
+[Twitch.TV Login](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/list/templates/login.htm)
+
+After we layout all of our html, we can move onto working with our controllers, templates, and views.
+
+<hr>
+
+<h5>Header Controller</h5>
+
+
+Here we have our [Header Controller](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/list/controller.coffee), where we start doing some work for our API's.
+
+
+```
+
+            links = msgBus.reqres.request "header:entities"
+            @appstate = msgBus.reqres.request "get:current:appstate"
+            #console.log @appstate
+            @layout = @getLayoutView()
+
+            # new appstate is now a property of the controller have the controller listen to the specific attribute
+            # so from anywhere you can set the appstate's loginStatus to T/F and this button will toggle
+            @listenTo @appstate, "change:loginStatus", (model, status) =>
+                @loginView.close() if status is true
+                @loginView.render() if status is false
+
+            @listenTo @layout, "show", =>
+                @listRegion links
+                @loginView = @getLoginView @appstate
+                @loginView.render()  #stick-it into the DOM
+
+            @show @layout
+
+```
+
+We need to set up our msgbug requrests for getting our header and update our "appstate". Our new appstate is a property of our controller and we can listen
+to specific events going on. In our case, we want to see if we are logged in, or not.
+
+Our last line,`loginview.render()` will stick our loginview right into our DOM. Perfect.
+
+<hr>
+
+<h5>Header Templates</h5>
+
+Here we keep running through our processes and we load our [Header templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/list/templates.coffee) all in one file.
+
+Not much more to be said here.
+
+<h5>Header Views</h5>
+
+Our header view is just us putting these templates into our ItemViews. We give it a tagName of `li` to attach it to the DOM element.
+
+You can see in our Layout view that the only thing we need to do is specific the region which we already layed out in our HTML. `#list-region`
+
+
+```
+define ['apps/header/list/templates', 'views/_base'], (Templates, AppView) ->
+
+    class _itemview extends AppView.ItemView
+        template: _.template(Templates.item)
+        tagName: "li"
+
+    LoginView: class Loginview extends AppView.ItemView
+        template: _.template(Templates.login)
+        el: "#login"
+
+    HeaderView: class ListHeaders extends AppView.CompositeView
+        template: _.template(Templates.header)
+        itemView: _itemview
+        itemViewContainer: "ul"
+
+    Layout: class Header extends AppView.Layout
+        template: _.template(Templates.layout)
+        regions:
+            listRegion: "#list-region"
+
+```
+
+<hr>
+
+The Footer App
+==============
+
+The footer [app](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/footer/app.coffee) is virtually the same thing as the header app. We are going for that fixed footer look.
+
+Here is our [markup](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/footer/show/templates/footer.htm)for the footer. Just some more bootstrapping.
+
+<hr>
+
+<h5>Footer Controller</h5>
+
+In the [controller](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/footer/show/controller.coffee) we are just pulling in our `"authorModel:info` and setting our `@footerView`
+
+`getFooterView` passes through our model in an Itemview.
+
+
+```
+    class Controller extends AppController
+        initialize:->
+            author = msgBus.reqres.request "get:authorModel:info"
+            #console.log author
+            footerView = @getFooterView author
+            @show footerView
+
+        getFooterView: (model) ->
+            new View.ItemView
+                model: model
+
+```
+
+<hr>
+
+<h5>Footer Templates</h5>
+
+Here we are once again following our AMD approach and loading our [templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/footer/show/templates.coffee) in like so.
+
+<hr>
+
+<h5>Footer Views</h5>
 

@@ -28,7 +28,6 @@ define ["msgbus", "apps/about/show/views", "controller/_base"], (msgBus, Views, 
             view = @getOssView collection
             @layout.ossRegion.show view
 
-
         getOssView: (collection) ->
             new Views.Oss
                 collection: collection

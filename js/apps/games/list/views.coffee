@@ -3,7 +3,7 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus'], (Templates, AppVi
     class GameItem extends AppView.ItemView
         template: _.template(Templates.gameitem)
         tagName: "li"
-        className: "col-lg-3 col-md-4 col-sm-6 col-xs-12 game"
+        className: "col-md-2 col-sm-4 col-xs-12 game"
         triggers:
             "click" : "game:item:clicked"
 
@@ -31,4 +31,4 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus'], (Templates, AppVi
         template: _.template(Templates.layout)
         regions:
             gameRegion:  "#game-region"
-            streamRegion:   "#stream-region"
+            #streamRegion:   "#stream-region"

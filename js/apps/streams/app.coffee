@@ -1,10 +1,10 @@
 define [ "msgbus", "apps/streams/list/controller" ], (msgBus, Controller) ->
 
     API =
-        list:(region, model) ->
+        list:(region, name) ->
             new Controller
                 region: region
-                model: model
+                name: name
 
-    msgBus.commands.setHandler "app:stream:list", (region, model) ->
-        API.list region, model
+    msgBus.commands.setHandler "app:stream:list", (region, name) ->
+        API.list region, name

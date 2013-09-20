@@ -41,8 +41,7 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
         if Backbone.history
             Backbone.history.start()
             frag = Backbone.history.fragment
-            match = /access_token/i.test frag  # hey jack I like this better than .indexOf ...
-            #console.log match, "<< match access_token"
+            match = /access_token/i.test frag
             if match
                 appstate.set "accessToken",  frag.split("=")[1]
                 appstate.set "loginStatus", true

@@ -4,6 +4,11 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
     class Game extends _Backbone.Model
     class Stream extends _Backbone.Model
 
+    class SearchCollection extends _Backbone.Collection
+        model: Game
+        parse: (response) ->
+            response.games
+
     class GamesCollection extends _Backbone.Collection
         model: Game
 
@@ -63,23 +68,44 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
                     offset: @offset * @limit
             $.when(loaded).then =>
                 @loading=false
-                console.log "Loaded page", @offset+1, "Streams fetched so far", @length, "Total streams available to fetch ", @_total
-        
+                #console.log "Loaded page", @offset+1, "Streams fetched so far", @length, "Total streams available to fetch ", @_total
+
 
         parse: (resp) ->
             {@_total}=resp
             resp.streams
 
+    # keep a permanent copy of the games collection only refresh every 45 seconds for speedier page action
+    games = new GamesCollection
+    games.timeStamp = new Date()  #archive
+
     API =
         getGames: (url, params = {}) ->
+            now = new Date()
+            diff = (now - games.timeStamp ) / 1000
+            elapsedSeconds = Math.round(diff % 60)
+            console.log "elapsed seconds", elapsedSeconds, now, games.timeStamp
+            if elapsedSeconds > 45 or games.length is 0
+                _.defaults params,
+                    oauth_token: msgBus.reqres.request "get:current:token"
+                games = new GamesCollection
+                games.timeStamp = new Date()  #new time stamp
+                games.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
+                games.fetch
+                    reset: true
+                    data: params
+            games
+
+        searchGames: (url, params = {}) ->
             _.defaults params,
                 oauth_token: msgBus.reqres.request "get:current:token"
-            games = new GamesCollection
-            games.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
-            games.fetch
+            sgames = new SearchCollection
+            sgames.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
+            sgames.fetch
                 reset: true
                 data: params
-            games
+            sgames
+
 
         getStreams: (url, params = {}) ->
             _.defaults params,
@@ -95,6 +121,12 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
         API.getGames "games/top",
             limit: 50
             offset: 0
+
+# shiny and new
+    msgBus.reqres.setHandler "game:search", (query)->
+        API.searchGames "games/search",
+            q: encodeURIComponent "Star"
+            type: "suggest"
 
     msgBus.reqres.setHandler "search:stream:entities", (game)->
         API.getStreams "search/streams",

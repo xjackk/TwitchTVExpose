@@ -69,6 +69,7 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
                 remove: false  # remove false appends new games to the existing collection
                 data:
                     oauth_token: msgBus.reqres.request "get:current:token"
+                    q: @game
                     limit: @limit
                     offset: @offset * @limit
             $.when(loaded).then =>
@@ -116,6 +117,7 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             _.defaults params,
                 oauth_token: msgBus.reqres.request "get:current:token"
             streams = new StreamCollection
+            streams.game=params.q
             streams.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
             streams.fetch
                 reset: true

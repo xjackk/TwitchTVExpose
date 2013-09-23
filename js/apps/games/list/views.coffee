@@ -31,4 +31,3 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus'], (Templates, AppVi
         template: _.template(Templates.layout)
         regions:
             gameRegion:  "#game-region"
-            #streamRegion:   "#stream-region"

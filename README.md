@@ -513,7 +513,140 @@ define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (ms
 
 This controller is all about working directly with our Twitch API. We set entities as our msgBus request to get the `"games:top:entities"`
 
-We define our `gameRegion` and pass through our collection of
+We define our `gameRegion` and pass through our collection. You can see we're listening to a `childview:game:item:clicked`. This is listening to events from our itemview.
+
+This will trigger our `app:game:detail` event. We also have our next `@listenTo` which listens to the view for a `scroll:more`. This launches our `games:fetchmore` which works as a "endless scrolling" feature.
+
+Lastly in this controller, we have our `getGameView` function which passes a collection into a new view.
+
+
+<strong>Detail Controller</strong>
+
+After our `list` controller, we have our `detail` controller. This controller will be dealing with our games detail view. Let's check it out.
+
+```
+
+define ["msgbus", "apps/games/detail/views", "controller/_base", "backbone" ], (msgBus, Views, AppController, Backbone) ->
+    class Controller extends AppController
+        initialize: (options) ->
+            {gameName, gameModel} = options
+            console.log "OPTIONS passed to detail controller", options
+
+            if gameModel is undefined
+                gameModel = msgBus.reqres.request "games:searchName", gameName
+                console.log "GameModel", gameModel
+
+            @layout = @getLayoutView()
+            @listenTo @layout, "show", =>
+                @gameRegion gameModel
+
+            @show @layout,
+                loading:
+                    entities: gameModel
+
+
+        gameRegion: (model) ->
+            view = @getGameView model
+            msgBus.commands.execute "app:stream:list", @layout.streamRegion, model.get("game").name
+            @layout.gameRegion.show view
+
+
+        getGameView: (model) ->
+            new Views.Detail
+                model: model
+
+        getLayoutView: ->
+            new Views.Layout
+
+```
+
+You can see right from the define statement, this controller is going to be working directly with our `games/detail/view`.
+
+In our `initialize` function we are pasing through `gameName`, and `gameModel` as options.
+
+We then have our `if` statement, which says if our `gameModel` is undefined, then its going to make a `msgBus.reqres.request` for `games:searchName` which passes through a `gameName`.
+
+Next, we are getting our layoutview, and listening to our show event. Nothing new here. Our `@gameRegion` is passing through our `gameModel`
+
+Finally we have our functions for this controller.
+
+`gameRegion` passes through the model and sets its view for that function the `getGameView`. To get our game name here, we make a `msgBus.commands.execute` for the `app:stream:list`.
+
+`getGameView` passes through a model as well and makes a new detail view.
+
+<hr>
+
+<h5>List Templates</h5>
+
+Continuing on with our `list` section of our games app, we have our [templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/games/list/templates.coffee).
+
+<hr>
+
+<h5>List Views</h5>
+
+More to say about our `list` View, we have quite a bit going on here.
+
+```
+
+define ['apps/games/list/templates', 'views/_base', 'msgbus'], (Templates, AppView, msgBus) ->
+
+    class GameItem extends AppView.ItemView
+        template: _.template(Templates.gameitem)
+        tagName: "li"
+        className: "col-md-2 col-sm-4 col-xs-12 game"
+        triggers:
+            "click" : "game:item:clicked"
+
+    TopGameList: class TopGameList extends AppView.CompositeView
+        template: _.template(Templates.gamelist)
+        itemView: GameItem
+        id: "gamelist"
+        itemViewContainer: "#gameitems"
+
+        events:
+            "scroll": "checkScroll"
+
+        checkScroll: (e) =>
+            virtualHeight = @$("> div").height()          #important this div must have css height: 100% to enable calculattion of virtual height scroll
+            scrollTop = @$el.scrollTop() + @$el.height()
+            margin = 200
+            #console.log "virtualHeight:", virtualHeight, "scrollTop:", scrollTop, "elHeight", @$el.height()
+            if ((scrollTop + margin) >= virtualHeight)
+                @trigger "scroll:more"
+
+    Intro: class Intro extends AppView.ItemView
+        template: _.template(Templates.intro)
+
+    Layout: class GamesLayout extends AppView.Layout
+        template: _.template(Templates.layout)
+        regions:
+            gameRegion:  "#game-region"
+            #streamRegion:   "#stream-region"
+
+
+```
+
+Our first class `GameItem` is simply an ItemView with a familiar looking `className`. You should recognize this as bootstrapping. We need to give this GameItem a click event as well for more or less obvious reasons.
+
+Next we have our `TopGameList` class which is a CompositeView. This takes our `GameItem` class as its itemView, and gives it an `id` of `gamelist`. We need a container to put this it too, right? Of course.
+we give it an `itemViewContainer` of `#gameitems`.
+
+Before we end this class, we need an event for our endless scroll so we set `scroll:` as `checkScroll`.
+
+Here we hve our `checkScroll` function which passes through one arg. Before we go into the code line by line, we need to understand how this works.
+
+`VirtualHeight` here is very important, as it works as the height of the actual page. It's almost imaginary in a way because we aren't going to be seeing the whole height, as it is in a module smaller than the size of the whole page.
+this `div` must have the css height of `100%` to enable proper calculation of the `VirtualHeight`.
+
+We then set `scrollTop` which is this `el`'s height plus the `scrolltop`. We set our `margin` to 200px.
+
+Lastly, we have our `if` statement which is saying if the `scrollTop` + `margin` is greater than our `virtualHeight`, it will trigger an event to `scroll:more`.
+You can kinda see wher ewe are going with this.
+
+On a less important note, we have a `Layout` class that does this thing where it passes a template though to some regions. Neat.
+
+<hr>
+
 
 
 

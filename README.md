@@ -318,16 +318,12 @@ Our last line,`loginview.render()` will stick our loginview right into our DOM. 
 
 Here we keep running through our processes and we load our [Header templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/list/templates.coffee) all in one file.
 
-Not much more to be said here.
+Not much more to be said here. Here are our header htm templates.
 
-```
-define (require) ->
-    item: require("text!apps/header/list/templates/itemview.htm")
-    header: require("text!apps/header/list/templates/header.htm")
-    login: require("text!apps/header/list/templates/login.htm")
-    layout: require("text!apps/header/list/templates/layout.htm")
-
-```
+[Header](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/list/templates/header.htm)
+[Itemview](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/list/templates/itemview.htm)
+[Layout](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/list/templates/layout.htm)
+[Login](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/list/templates/login.htm)
 
 <hr>
 
@@ -398,6 +394,10 @@ In the [controller](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps
 <h5>Footer Templates</h5>
 
 Here we are once again following our AMD approach and loading our [templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/footer/show/templates.coffee) in like so.
+
+Our footer htm template as well.
+
+[Footer](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/footer/show/templates/footer.htm)
 
 <hr>
 
@@ -580,6 +580,13 @@ Finally we have our functions for this controller.
 
 Continuing on with our `list` section of our games app, we have our [templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/games/list/templates.coffee).
 
+Our htm templates as well for our `list`.
+
+[Gameitem](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/games/list/templates/gameitem.htm)
+[Gamelist](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/games/list/templates/gamelist.htm)
+[Intro](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/games/list/templates/intro.htm)
+[Layout](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/games/list/templates/layout.htm)
+
 <hr>
 
 <h5>List Views</h5>
@@ -646,6 +653,48 @@ You can kinda see wher ewe are going with this.
 On a less important note, we have a `Layout` class that does this thing where it passes a template though to some regions. Neat.
 
 <hr>
+
+<h5>Detail Templates</h5>
+
+Not much to write about the templates. I keep it pretty dry. Check em [out](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/games/detail/templates.coffee).
+
+Our htm templates too are nice to look at.
+
+[Gamedetail](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/games/detail/templates/gamedetail.htm)
+[Layout](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/games/detail/templates/layout.htm)
+
+<hr>
+
+<h5>Detail Views</h5>
+
+Here we have just an `ItemView` and a `Layout`.
+
+```
+
+define ['apps/games/detail/templates', 'views/_base', 'msgbus'], (Templates, AppView, msgBus) ->
+
+    Detail: class GameDetail extends AppView.ItemView
+        template: _.template(Templates.gamedetail)
+        className: "col-xs-12"
+        #triggers:
+        #    "click" : "game:item:clicked"
+
+
+    Layout: class GamesLayout extends AppView.Layout
+        template: _.template(Templates.layout)
+        regions:
+            gameRegion:  "#game-region"
+            streamRegion:   "#stream-region"
+
+```
+
+This class `GameDetail` is our Itemview. We are passing in our `gamedetail` template, and giving it a bootstrap `className`.
+
+Our class `GamesLayout` just gives us our `gameRegion` and `streamRegion`.
+
+<hr>
+
+
 
 
 

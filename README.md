@@ -4,16 +4,30 @@ A Single Page Client App implementing TwitchTV's API functionality. Using Backbo
 
 **See [TwitchTVExpose](https://c9.io/xjackk/twitchtvexpose/workspace/index.htm) live, hosted on my Cloud9 site**
 
-##Use Coffeescript##
+<hr>
 
-Using Coffeescript has saved me writing much code as it compiles into JS. The Coffeescript syntax is a bit Python/Ruby esque, therefore attracting more and more attention recently.
-I have switched over to using Coffeescript, and I really really do love it. It saves me syntax headaches, and is just a breeze to write in. I reccomend trying it.
+##Why Did You Do It, Jack?##
+
+Over the summer I did a lot of research on what I really wanted my first project to be. I am a frequent user of the site [Twitch.tv](www.twitch.tv), and saw that their site could be reworked for a better user experience.
+
+From there, I decided it would be a perfect first project to take what twitch had, and do it better. Using Marionette for a responsive front-end app was too perfect. I got to work all summer, and this was the outcome.
+
+When people go to twitch, they just want to be able to watch their favorite stream. My app takes twitch, and makes viewing a stream a seamless process. No hassles with page-postbacks and such. All client-side JS, in a single-page app.
+
+For a list of resources I used to create this app, you can visit the About page (the home page!) on my app to see what I used to make this happen !
+
+Cheers !
+
+##Using Coffeescript##
+
+Using Coffeescript has saved me writing much code as it compiles right into JS. The Coffeescript syntax is a bit Python/Ruby esque, therefore attracting more and more attention recently.
+I have switched over to using Coffeescript fulltime, and I really do love it. It saves me syntax headaches, and is just a breeze to write in. I reccomend trying it.
 
 ~~~
 $ npm install -g coffee-script
 ~~~
 
-Keep in mind the watching directory and the output directory for compiling coffeescript to javascript. In this command, the **js** folder
+Keep in mind the watching directory and the output directory for compiling coffeescript to javascript. In this command, the `js` folder
 
 ~~~
 $ coffee -o js/ -cw js/
@@ -66,7 +80,10 @@ In our entities, we have things such as our [appstate](), our [author info](), [
 
 You will see frequent calls to things things via msgBus in the code.
 
-<h5>How this all works. (Featuring `msgBus`)</h5>
+<hr>
+
+
+<h5>How this all works. (Featuring msgBus)</h5>
 
 You may be wondering how our msgBus works. The sole purpose of msgBus is that it allows us to set handlers to listen to, as well as execute these events.
 Since we need to pull this info somehow, msgBus provides a way of listening to these events, or handlers that are set.
@@ -153,7 +170,9 @@ Lastly, we add some execute commands, to start all of our apps, all right in one
 The About App
 ==============
 
-<h4>The about app starts with the [app coffee File](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/app.coffee)</h4>
+<h4>The about app starts with the respective app file.</h4>
+
+[App File](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/app.coffee)
 
 This file acts as the starting point of the app where we add a controller, and set an event handler to "start" off this app, as all these apps will be loaded beforehand, elsewhere.
 We will go into more detail later about that.
@@ -261,7 +280,9 @@ After this, we pass those item views into our composite views with an `itemviewc
 The Header App
 ==============
 
-<h4>The header app starts with it's corrosponding [app](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/app.coffee) file, which creates out list controller, and starts the app.</h4>
+<h4>The header app starts with it's corrosponding app file, which creates out list controller, and starts the app.</h4>
+
+[App file](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/app.coffee)
 
 Once we have this, we can move on to our app itself. We begin to layout everything using [Bootstrap](getbootstrap.com) in our header.
 
@@ -694,6 +715,139 @@ Our class `GamesLayout` just gives us our `gameRegion` and `streamRegion`.
 
 <hr>
 
+
+The Streams App
+==============
+
+After all has been said and done with our Games App, we can move on to our Streams section.
+
+```
+
+define [ "msgbus", "apps/streams/list/controller" ], (msgBus, Controller) ->
+
+    API =
+        list:(region, name) ->
+            new Controller
+                region: region
+                name: name
+
+    msgBus.commands.setHandler "app:stream:list", (region, name) ->
+        API.list region, name
+
+```
+
+Here is our Streams App, where we start our `list` API, and pass in a region and name to the controller.
+
+Lastly we have our trusty `msgBus` comand, to the `app:stream:list`.
+
+<hr>
+
+<h5>Streams Controller</h5>
+
+Our streams [controller](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/streams/list/controller.coffee)
+
+Lets check it out.
+
+```
+
+define ["msgbus", "apps/streams/list/views", "controller/_base"  ], (msgBus, Views, AppController) ->
+    class Controller extends AppController
+        initialize:(options={})->
+            {name} = options
+            console.log "streams:list:controller OPTIONS", options
+            streamEntities = msgBus.reqres.request "search:stream:entities", name
+            view = @getListView streamEntities
+
+            @listenTo view, "childview:stream:item:clicked", (child, args) ->  # listen to events from itemview (we've overridden the eventnamePrefix to childview)
+                #console.log "game:item:clicked" , args.model
+                msgBus.events.trigger "app:playa:show", args.model
+
+            @listenTo view, "scroll:more", ->
+                #console.log "listen to scroll:more"
+                msgBus.reqres.request "streams:fetchmore"
+
+
+            @show view,
+                loading: true
+
+        getListView: (collection) ->
+            new Views.ListView
+                collection: collection
+
+```
+
+In our `initalize` function we are passing in our options. We slyly pass in name as a hash to options.
+
+Our `streamEntities` is just a `msgBus.reqres.request` to our `search:stream:entities`, where we pass through name as an arg.
+
+To finish off our `initalize` we are setting the view as `@getListView` and passing in our `streamEntities`.
+
+In our next block of code, we are listening to the click event the same way we have before. We need to listen to the events from our `itemview`.
+As you can see, we have `msgBus.events.trigger` to trigger `app:playa:show` on this `@listenTo`.
+
+Lastly we are creating our `getListView` function where we pass through our collection as a new view. Nothing we haven't seen before.
+
+<hr>
+
+<h5>Stream Templates</h5>
+
+Same as always, here we are loading our stream [templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/streams/list/templates.coffee). So nice.
+
+Also here are our htm templates for this.
+
+[Streamitem](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/streams/list/templates/streamitem.htm)
+
+[Streams](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/streams/list/templates/streams.htm)
+
+<hr>
+
+<h5>Stream Views</h5>
+
+Following our Templates, we have our views. Heeeeeere we go.
+
+```
+define ['views/_base', 'apps/streams/list/templates'], (AppViews, Templates) ->
+
+    class StreamItem extends AppViews.ItemView
+        template: _.template(Templates.streamitem)
+        tagName: "li"
+        className: "col-md-6 col-xs-12"
+        triggers:
+            "click" : "stream:item:clicked"
+
+    ListView: class StreamList extends AppViews.CompositeView
+        template: _.template(Templates.streams)
+        itemView: StreamItem
+        itemViewContainer: "#items"
+        id: "streamlist"
+
+        events:
+            "scroll": "checkScroll"
+
+        checkScroll: (e) =>
+            virtualHeight = @$("> div").height()          #important this div must have css height: 100% to enable calculattion of virtual height scroll
+            scrollTop = @$el.scrollTop() + @$el.height()
+            margin = 200
+            console.log "virtualHeight:", virtualHeight, "scrollTop:", scrollTop, "elHeight", @$el.height()
+            if ((scrollTop + margin) >= virtualHeight)
+                console.log "scroll:more"
+                @trigger "scroll:more"
+
+```
+
+Our `StreamItem` class is our ItemView. We give it a `li` tagname and the same `className` that we have been seeing for a while. I hope this looks rather familiar.
+
+Of course our itemview is going to need a `click` event, so we add the appropriate `triggers`.
+
+Our next class is our `StreamList` which is none other than our CompositeView.
+
+`StreamList` simply pulls our `itemView` into our Compositeview, and sets our `itemViewContainer` as `#items`. Looks familiar also, eh?
+
+Lastly we have our classic endless scroll function.
+
+I went over how it worked before in the `Games` app, so I'm not sure if i should repeat myself. You get it now.
+
+<hr>
 
 
 

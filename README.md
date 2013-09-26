@@ -76,7 +76,7 @@ In our [config load](https://github.com/xjackk/TwitchTVExpose/blob/master/js/con
 <h5>Entities</h5>
 
 Its important to know that most of the calls we are going to be making using our msgBus, is all going to our Entities.
-In our entities, we have things such as our [appstate](), our [author info](), [header info](), and most importantly our [twitch.tv API calls]()
+In our entities, we have things such as our [appstate](https://github.com/xjackk/TwitchTVExpose/blob/master/js/entities/appstate.coffee), our [author info](https://github.com/xjackk/TwitchTVExpose/blob/master/js/entities/author.coffee), [header info](https://github.com/xjackk/TwitchTVExpose/blob/master/js/entities/header.coffee), and most importantly our [twitch.tv API calls](https://github.com/xjackk/TwitchTVExpose/blob/master/js/entities/twitchtv.coffee)
 
 You will see frequent calls to things things via msgBus in the code.
 
@@ -849,7 +849,285 @@ I went over how it worked before in the `Games` app, so I'm not sure if i should
 
 <hr>
 
+The Player App
+==============
+
+The last thing we're going to go into is our actual Player [application.](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/playa/app.coffee)
+
+In our app, we're setting a new controller and passing a model through to it. Nothing new here.
+
+The `msgBus.events.on` you see is purely for routing. We can talk about this later.
+
+<hr>
+
+<h5>Player Controller</h5>
+
+In our player [controller](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/playa/show/controller.coffee) we are bascially passing our model to everything.
+
+```
+
+define ["apps/playa/show/views", "controller/_base"], (Views, AppController) ->
+
+    class Controller extends AppController
+        initialize:(options={})->
+            {model} = options
+            @layout = @getLayoutView()
+            @listenTo @layout, "show", =>
+                @playerRegion model
+                @userRegion model
+                @chatRegion model
+
+            @show @layout
+
+        playerRegion: (model)  ->
+            player = @getPlayerView model
+            @layout.playerRegion.show player
+
+        chatRegion: (model)  ->
+            chat = @getChatView model
+            @layout.chatRegion.show chat
+
+        userRegion: (model)  ->
+            userView = @getUserView model
+            @layout.userRegion.show userView
+
+        getPlayerView: (model)  ->
+            new Views.Player
+                model: model
+
+        getChatView: (model)  ->
+            new Views.Chat
+                model: model
+
+        getUserView: (model)  ->
+            new Views.User
+                model: model
+
+        getLayoutView: ->
+            new Views.Layout
+
+```
+
+In oour `initialize` function we are passing through options, yet cleverly hasing in `{model}` to options.
+Next is almost a standard procedure. We need to listen for our show event, where we have a `@playerRegion`, `@userRegion`, and a `@chatRegion`, which all passes `model` through.
+
+In our `playerRegion` function, we are simply getting our player view, and showing it.
+This is the same for the `chatRegion` and `userRegion` respectively.
+
+our `get` functions are the same idea, just passing through model, and making a new view. Cool. Let's move on.
+
+<hr>
+
+<h5>Player Templates</h5>
+
+More [templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/playa/show/templates.coffee). What'd you expect?
+
+Our htm snippits as well, fool.
+
+[Chat](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/playa/show/templates/chat.htm)
+
+[Layout](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/playa/show/templates/layout.htm)
+
+[Player](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/playa/show/templates/player.htm)
+
+[User](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/playa/show/templates/user.htm)
+
+<hr>
+
+<h5>Player View</h5>
+
+In the player [view](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/playa/show/views.coffee), we are only dealing with `ItemViews`. No `CompositeViews` of any sort; nothing tricky here.
+
+```
+define ['apps/playa/show/templates', 'views/_base'], (Templates, AppView) ->
+
+    Player: class Player extends AppView.ItemView
+        template: _.template(Templates.player)
+
+    User: class User extends AppView.ItemView
+        template: _.template(Templates.user)
+
+    Chat: class Chat extends AppView.ItemView
+        template: _.template(Templates.chat)
+
+    Layout: class Layout extends AppView.Layout
+        template: _.template(Templates.layout)
+        regions:
+            playerRegion: "#player-region"
+            userRegion: "#user-region"
+            chatRegion: "#chat-region"
+
+```
+
+The `Player` class is just an `ItemView` just like the rest of these three classes you see. Nothing crazy at all here... actually the most simple view we've seen so far.
+
+`User` and `Chat` are doing the same... simply passing the template into the `ItemView`. Kids stuff.
+
+Lastly we have our `Layout`, where we are doing a <strong>bit</strong> more work than before, yet still, nothing to sweat over.
+
+We need three regions for these classes, as they are all seperate `ItemViews`, therefore we have `playerRegion`,`userRegion` and `chatRegion`.
+
+<hr>
+
+More About Our Twitch API
+==============
+
+This app was built solely around a popular streaming site's API. Almost all the calls we are making are to Twitch, and not properly documenting how exactly we go about this would be a shame.
+
+We can take a direct look at the huge block of code that we know as our [Twitch Entities](https://github.com/xjackk/TwitchTVExpose/blob/master/js/entities/twitchtv.coffee).
+
+```
+
+define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
+    # this _fetch is our private property added to overridden config backbone sync
+
+    class Game extends _Backbone.Model
+    class Stream extends _Backbone.Model
+
+    class SearchCollection extends _Backbone.Collection
+        model: Game
+        parse: (response) ->
+            response.games
+
+    class GamesCollection extends _Backbone.Collection
+        model: Game
+
+        initialize: ->
+            msgBus.reqres.setHandler "games:fetchmore", =>
+                @moreGames()
+
+            @limit = 50
+            @offset = 0
+            @loading = false
+            @previousSearch = null
+            @_total = null
+
+        moreGames: ->
+            return true  if @loading or @length >= @_total
+            @loading=true
+            @offset++
+            #console.log "fetching page #{@offset+1} of games"
+            loaded = @fetch
+                remove: false  # remove false appends new games to the existing collection
+                data:
+                    oauth_token: msgBus.reqres.request "get:current:token"
+                    limit: @limit
+                    offset: @offset * @limit
+            $.when(loaded).then =>
+                @loading=false
+                console.log "Loaded page", @offset+1, "Games fetched so far", @length, "Total games available to fetch ", @_total
+
+        searchName: (_name)->
+            @find (model)->
+                model.get("game").name is _name
 
 
+        parse: (response) ->
+            {@_total}=response  # pull of the _total items in the list here
+            response.top        # the .top array get loaded into our backbone collection
+
+
+    class StreamCollection extends _Backbone.Collection
+        model: Stream
+
+        initialize: ->
+            msgBus.reqres.setHandler "streams:fetchmore", =>
+                @moreStreams()
+
+            @limit = 12
+            @offset = 0
+            @loading = false
+            @previousSearch = null
+            @_total = null
+
+        moreStreams: ->
+            return true  if @loading or @length >= @_total
+            @loading=true
+            @offset++
+            #console.log "fetching page #{@offset+1} of games"
+            loaded = @fetch
+                remove: false  # remove false appends new games to the existing collection
+                data:
+                    oauth_token: msgBus.reqres.request "get:current:token"
+                    q: @game
+                    limit: @limit
+                    offset: @offset * @limit
+            $.when(loaded).then =>
+                @loading=false
+                #console.log "Loaded page", @offset+1, "Streams fetched so far", @length, "Total streams available to fetch ", @_total
+
+
+        parse: (resp) ->
+            {@_total}=resp
+            resp.streams
+
+    # keep a permanent copy of the games collection only refresh every 45 seconds for speedier page action
+    games = new GamesCollection
+    games.timeStamp = new Date()  #archive
+
+    API =
+        getGames: (url, params = {}) ->
+            #now = new Date()
+            #diff = ((new Date() - games.timeStamp ) / 1000)
+            elapsedSeconds = Math.round(((new Date() - games.timeStamp ) / 1000) % 60)
+            #console.log "elapsed seconds", elapsedSeconds, now, games.timeStamp
+            if elapsedSeconds > 45 or games.length is 0
+                _.defaults params,
+                    oauth_token: msgBus.reqres.request "get:current:token"
+                games = new GamesCollection
+                games.timeStamp = new Date()  #new time stamp
+                games.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
+                games.fetch
+                    reset: true
+                    data: params
+            games
+
+        searchGames: (url, params = {}) ->
+            _.defaults params,
+                oauth_token: msgBus.reqres.request "get:current:token"
+            sgames = new SearchCollection
+            sgames.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
+            sgames.fetch
+                reset: true
+                data: params
+            sgames
+
+
+        getStreams: (url, params = {}) ->
+            _.defaults params,
+                oauth_token: msgBus.reqres.request "get:current:token"
+            streams = new StreamCollection
+            streams.game=params.q
+            streams.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
+            streams.fetch
+                reset: true
+                data: params
+            streams
+
+    msgBus.reqres.setHandler "games:top:entities", ->
+        API.getGames "games/top",
+            limit: 50
+            offset: 0
+
+    # shiny and new  this doesn't seem to work...
+    msgBus.reqres.setHandler "game:search", (query)->
+        API.searchGames "games/search",
+            q: encodeURIComponent query
+            type: "suggest"
+
+    msgBus.reqres.setHandler "games:searchName", (query)->
+        games.searchName query
+
+    msgBus.reqres.setHandler "search:stream:entities", (game)->
+        API.getStreams "search/streams",
+            q: game
+            limit: 12
+            offset: 0
+
+
+# Use this in your browser's console to initialize a JSONP request to see the API in action.
+# $.getJSON("http://api.rottentomatoes.com/api/public/v1.0/movies.json?callback=?", {apikey: "vzjnwecqq7av3mauck2238uj", q: "shining"})
+
+```
 
 

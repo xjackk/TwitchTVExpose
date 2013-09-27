@@ -13,7 +13,8 @@ require.config
         moment: "../bower_components/moment/moment"
         globalize: "../bower_components/globalize/lib/globalize"
         text: "../bower_components/requirejs-text/text"
-        d3: "../bower_components/d3/d3"
+        d3: "../bower_components/d3/d3",
+        swf: "../bower_components/swfobject-amd/swfobject",
         spin: "../bower_components/spin.js/spin"
         jqueryspin: "../bower_components/spin.js/jquery.spin"
         #mockjax: "../bower_components/jquery-mockjax/jquery.mockjax"

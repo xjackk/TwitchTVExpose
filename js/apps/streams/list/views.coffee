@@ -18,7 +18,7 @@ define ['views/_base', 'apps/streams/list/templates'], (AppViews, Templates) ->
             "scroll": "checkScroll"
 
         checkScroll: (e) =>
-            virtualHeight = @$("> div").height()          #important this div must have css height: 100% to enable calculattion of virtual height scroll
+            virtualHeight = @$("> div").height()
             scrollTop = @$el.scrollTop() + @$el.height()
             margin = 200
             console.log "virtualHeight:", virtualHeight, "scrollTop:", scrollTop, "elHeight", @$el.height()

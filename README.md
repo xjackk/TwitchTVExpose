@@ -1,43 +1,45 @@
 #TwitchTVExpose
 
-A Single Page Client App implementing TwitchTV's API functionality. Using Backbone.Marionette, RequireJS, Coffeescript, and little D3.
+TwitchTVExpose is a Single Page Client App implementing TwitchTV's API functionality. Using Backbone.Marionette, RequireJS, Coffeescript, and a little D3 view to mix things up.
 
-**See [TwitchTVExpose](https://c9.io/xjackk/twitchtvexpose/workspace/index.htm) live, hosted on my Cloud9 site**
+Try [TwitchTVExpose](https://c9.io/xjackk/twitchtvexpose/workspace/index.htm) live, hosted on my Cloud9 site
 
-<hr>
+---
 
-##Why Did You Do It, Jack?##
+###Why Did You Do It, Jack?
 
-Over the summer I did a lot of research on what I really wanted my first project to be. I am a frequent user of the site [Twitch.tv](www.twitch.tv), and saw that their site could be reworked for a better user experience.
+Over the summer I did a lot of research on what I really wanted my first open source project to be about. Since I am a gamer and frequent user of the [Twitch.tv](http://www.twitch.tv) site I began to realize ways their site could be reworked for a better user experience.
 
-From there, I decided it would be a perfect first project to take what twitch had, and do it better. Using Marionette for a responsive front-end app was too perfect. I got to work all summer, and this was the outcome.
+From there, I decided it would be a perfect first project to take what twitchtv had, and do it better.  I'd views alot of Brian Manns' [BackboneRails](http://backbonerails.com) tutorials and decided to use Backbone Marionette to build a responsive front-end app. I got to work all summer and this was the outcome.
 
-When people go to twitch, they just want to be able to watch their favorite stream. My app takes twitch, and makes viewing a stream a seamless process. No hassles with page-postbacks and such. All client-side JS, in a single-page app.
+When I land at twitch.tv, I just want to find favorite games with their live streams and watch it quickly. This app takes twitchtv, and makes the selection and viewing process faster and a better experience for the user. No hassles with page-postbacks and such. All client-side JS, in a single-page app.
 
-For a list of resources I used to create this app, you can visit the About page (the home page!) on my app to see what I used to make this happen !
+For a list of resources I used to create this app, visit the About page on my app to see what I used to make this happen...
 
 Cheers !
 
-##Using Coffeescript##
 
-Using Coffeescript has saved me writing much code as it compiles right into JS. The Coffeescript syntax is a bit Python/Ruby esque, therefore attracting more and more attention recently.
+##Coffeescript
+
+Using Coffeescript has saved me writing much code as it compiles right into JS. The Coffeescript syntax is a bit Python/Ruby-esque, therefore attracting more and more attention recently.
 I have switched over to using Coffeescript fulltime, and I really do love it. It saves me syntax headaches, and is just a breeze to write in. I reccomend trying it.
 
 ~~~
 $ npm install -g coffee-script
 ~~~
 
-Keep in mind the watching directory and the output directory for compiling coffeescript to javascript. In this command, the `js` folder
+Keep in mind the watching directory and the output directory for compiling coffeescript to javascript. In this command, the `js` folder contains both my coffee files and js output.
 
 ~~~
 $ coffee -o js/ -cw js/
 ~~~
 
-<hr>
+---
 
 ##Project Dependencies##
 
-**Check out the [bower.json](https://github.com/xjackk/twitchtvexpose/blob/master/bower.json) file see this project's open-source dependencies**
+Check out [bower.json](https://github.com/xjackk/twitchtvexpose/blob/master/bower.json) to see the project's complete open-source dependencies.
+
 
 With [BOWER](https://github.com/bower/bower), just one command and all of the project dependencies are installed:
 
@@ -51,102 +53,100 @@ As time marches on, update project dependencies with one command:
 $ bower update
 ~~~
 
-##Using Asyncronous Module Definition AMD  [RequireJS](http://requirejs.org)
+###Asyncronous Module Definition (AMD) and [RequireJS](http://requirejs.org)
 
-This project uses a "Rails esque" approach. Keeping everything as modular as possible, and straying away from "spaghetti" codeing.
+This project uses a "Rails-esque" approach favoring convention over configuration. Apps are organized and kept in a conventional way with: Apps => Controller(s) => Views => Templates.  All templates use [underscore](http://underscorejs.org) [configured for Mustache](https://github.com/xjackk/TwitchTVExpose/blob/master/js/config/underscore/templatesettings.coffee) **AMD** keeps everything in modules and I follow an approach similar to Brian Mann's [BackboneRails](http://backbonerails.com) except he used Rails and Marionette.module, however we're using RequireJS with Javascript patterns and a Rails convention.  Sort of a Rails/AMD hybrid...
 
-It follows an approach similar to Brian Mann's (he used Marionette.module implementation), however we're using RequireJS with Javascript patterns and a Rails convention.
+---
 
-<hr>
+###Boot-up the AMD Asset Pipeline
 
+Before the [js/app.coffee](https://github.com/xjackk/TwitchTVExpose/tree/master/js/app.coffee) can be started, number of modules must be loaded first. **RequireJS** helps in this regard however the explicit dependencies must be established and the loading process managed.  Unfortunately this is something that is not automagically done and must be handled with a little common sense. For this highly modular app a number of Configuraion, Enity and App modules are required before the Marionette.application can start.
 
-##Before we can start...
+> **Asset Pipeline**
 
-Before we can start with our AMD app, we need to make sure we are loading everything properly. In the [Js/apps](https://github.com/xjackk/TwitchTVExpose/tree/master/js/apps) folder, we have a [load.coffee](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/load.coffee)
-file dynamically loads all of our apps before they are started.
+>   [js/main.coffee](https://github.com/xjackk/TwitchTVExpose/blob/master/js/main.coffee)  >> defines app dependencies
 
-Anytime you add an app, we need to make sure we are adding it to this list. A small mistake I've made in the past that I hope you can avoid. (:
+>   [config/load.coffee](https://github.com/xjackk/TwitchTVExpose/blob/master/js/config/load.coffee) >> load app configuration  and entities
 
-<h5>Config</h5>
-
-In our [config load](https://github.com/xjackk/TwitchTVExpose/blob/master/js/config/load.coffee) file, we load dependencies also from other areas in our app. Make sure you load these, as they are important.
-
-<hr>
-
-<h5>Entities</h5>
-
-Its important to know that most of the calls we are going to be making using our msgBus, is all going to our Entities.
-In our entities, we have things such as our [appstate](https://github.com/xjackk/TwitchTVExpose/blob/master/js/entities/appstate.coffee), our [author info](https://github.com/xjackk/TwitchTVExpose/blob/master/js/entities/author.coffee), [header info](https://github.com/xjackk/TwitchTVExpose/blob/master/js/entities/header.coffee), and most importantly our [twitch.tv API calls](https://github.com/xjackk/TwitchTVExpose/blob/master/js/entities/twitchtv.coffee)
-
-You will see frequent calls to things things via msgBus in the code.
-
-<hr>
+>   [js/apps/load.coffee](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/load.coffee) >> loads apps and sub-apps prior to the main app
 
 
-<h5>How this all works. (Featuring msgBus)</h5>
+This is roughly equivalent to the Rails asset pipeline demonstated in Brian Mann's tutorials.
 
-You may be wondering how our msgBus works. The sole purpose of msgBus is that it allows us to set handlers to listen to, as well as execute these events.
-Since we need to pull this info somehow, msgBus provides a way of listening to these events, or handlers that are set.
+---
+
+###Entities
+
+The [**js/entities**](https://github.com/xjackk/TwitchTVExpose/tree/master/js/entities) folder contains the project data models. It's important to see how the entities use the [js/msgbus.coffee](https://github.com/xjackk/TwitchTVExpose/blob/master/js/msgbus.coffee) pattern for intra-app communication.
+
+The primary entity used throughout is [js/entities/twitchtv.coffee](https://github.com/xjackk/TwitchTVExpose/blob/master/js/entities/twitchtv.coffee)  It uses backbone collections and implements endless scrolling for the games and streams API
+
+---
+
+####How this all works. (Featuring msgBus)
+
+You may be wondering how our msgBus works. The msgBus allows app modules to set handlers for events, request/response and commands handlers. These *msgbus* patterns, (pub/sub, reqest/response and commands) are used throughout the app and decouple modules.
 
 A perfect example of this is how we pull in the info for our `header:entities`
 
 This decoupled code right here provides us with a way to dynamically pull in these entities into our header, without repeating ourselves. This keeps a very "modular" approach to building this app.
 
+[`js/entities/header.coffee`](https://github.com/xjackk/TwitchTVExpose/blob/master/js/entities/header.coffee)
 ```
 define ["backbone","msgbus"], (Backbone, msgBus ) ->
 
-    API =
-        getHeaders:->
-            new Backbone.Collection [
-                    (name: "Games", url: "#games", title: "Live Games", cssClass: "glyphicon glyphicon-hdd" )
-                    (name: "D3", url: "#d3", title: "Sample D3 visualization", cssClass: "glyphicon glyphicon-list")
-                    (name: "About", url: "#about", title: "Learn about responsive Twitch-TV", cssClass: "glyphicon glyphicon-align-justify")
-                    ]
+API =
+getHeaders:->
+new Backbone.Collection [
+(name: "Games", url: "#games", title: "Live Games", cssClass: "glyphicon glyphicon-hdd" )
+(name: "D3", url: "#d3", title: "Sample D3 visualization", cssClass: "glyphicon glyphicon-list")
+(name: "About", url: "#about", title: "Learn about responsive Twitch-TV", cssClass: "glyphicon glyphicon-align-justify")
+]
 
-    msgBus.reqres.setHandler "header:entities", ->
-        API.getHeaders()
+msgBus.reqres.setHandler "header:entities", ->
+API.getHeaders()
 
 ```
 
-<hr>
+---
 
-Starting our App
-==============
+##Starting the App
 
-[Main.coffee](https://github.com/xjackk/TwitchTVExpose/blob/master/js/main.coffee)
+###[Main.coffee](https://github.com/xjackk/TwitchTVExpose/blob/master/js/main.coffee)
 
-Here is our main file where we preload all of our dependencies. We like to keep a very "modular" approach to building this app, so this is where we load everything, then start the app.
+Here is the main file where we preload all of our dependencies. It very "modular" approach to building this app, so this is where we load everything, then start the app.
 
-Before I dive into each seperate app, I am going to introduce the initial "app" for this project. This is where We start all of our apps from event handlers.
+Before diving into each seperate app, I'll introduce the initial "app" for this project. This is where the Marionette.Application is created control of the sub-app startup process is controlled.
 
-[App.coffee](https://github.com/xjackk/TwitchTVExpose/blob/master/js/app.coffee)
+[js/app.coffee](https://github.com/xjackk/TwitchTVExpose/blob/master/js/app.coffee)
 
-In this big guy here, we add some "planning" for the rest of our project. We add our regions of the app, as well as the main routes and where we are starting.
+In this big guy here, we add some "planning" for the rest of our project. We add our primary regions of the single page app, as well as the default routing.
 
 Here are all of our handlers for our regions.
 
 ```
-    app.on "initialize:before", (options={}) ->
-        #console.log "init:before", options
 
-    msgBus.reqres.setHandler "default:region",->
-        app.mainRegion
+msgBus.reqres.setHandler "default:region",->
+    app.mainRegion
 
-    msgBus.reqres.setHandler "header:region", ->
-        app.headerRegion
+msgBus.reqres.setHandler "header:region", ->
+    app.headerRegion
 
-    msgBus.reqres.setHandler "footer:region", ->
-        app.footerRegion
+msgBus.reqres.setHandler "footer:region", ->
+    app.footerRegion
 
-    msgBus.reqres.setHandler "main:region", ->
-        app.mainRegion
+msgBus.reqres.setHandler "main:region", ->
+    app.mainRegion
 
-    msgBus.commands.setHandler "register:instance", (instance, id) ->
-        app.register instance, id
+#debugging support
+msgBus.commands.setHandler "register:instance", (instance, id) ->
+    app.register instance, id
 
-    msgBus.commands.setHandler "unregister:instance", (instance, id) ->
-        app.unregister instance, id
+msgBus.commands.setHandler "unregister:instance", (instance, id) ->
+    app.unregister instance, id
 ```
+
 After all this good stuff, we have our "Init after" where we are making a request to get our current Appstate. We will go into more detail later about this.
 Under this you will see a a backbone.history set where we work some magic for Twitch's API. We will also be going into more detail later about this.
 
@@ -154,34 +154,33 @@ Lastly, we add some execute commands, to start all of our apps, all right in one
 
 ```
 
-    app.addInitializer (options) ->
-        #console.log "addinitializers"
-        msgBus.commands.execute "start:header:app"
-        msgBus.commands.execute "start:footer:app"
-        msgBus.commands.execute "start:d3:app"
-        msgBus.commands.execute "start:about:app"
-        msgBus.commands.execute "start:games:app"
-        msgBus.commands.execute "start:playa:app"
+app.addInitializer (options) ->
+    #console.log "addinitializers"
+    msgBus.commands.execute "start:header:app"
+    msgBus.commands.execute "start:footer:app"
+    msgBus.commands.execute "start:d3:app"
+    msgBus.commands.execute "start:about:app"
+    msgBus.commands.execute "start:games:app"
+    msgBus.commands.execute "start:playa:app"
 
-    app
+app
 
 ```
 
-The About App
-==============
+---
+###The About App
+The about app starts with the respective app file.
 
-<h4>The about app starts with the respective app file.</h4>
-
-[App File](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/app.coffee)
+[`js/apps/about/app.coffee`](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/app.coffee)
 
 This file acts as the starting point of the app where we add a controller, and set an event handler to "start" off this app, as all these apps will be loaded beforehand, elsewhere.
 We will go into more detail later about that.
 
-<hr>
+---
 
-</h5>About Controller</h5>
+###About Show Controller
 
-[My Code for the About Controller](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/show/controller.coffee)
+[`js/apps/about/show/controller.coffee`](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/show/controller.coffee)
 
 The about Controller sets up sets up the three regions we will be adding data too.
 
@@ -191,41 +190,40 @@ The about Controller sets up sets up the three regions we will be adding data to
 
 
 ```
-     aboutRegion:  ->
-            view = @getAboutView()
-            @layout.aboutRegion.show view
+aboutRegion: ->
+    view = @getAboutView()
+    @layout.aboutRegion.show view
 
-        bookRegion: (collection) ->
-            view = @getBookView collection
-            @layout.bookRegion.show view
+bookRegion: (collection) ->
+    view = @getBookView collection
+    @layout.bookRegion.show view
 
-        ossRegion: (collection) ->
-            view = @getOssView collection
-            @layout.ossRegion.show view
+ossRegion: (collection) ->
+    view = @getOssView collection
+    @layout.ossRegion.show view
 
 ```
 
 Also here in the controller we set up the getting of our three views.
 
 ```
-        getOssView: (collection) ->
-            new Views.Oss
-                collection: collection
+getOssView: (collection) ->
+    new Views.Oss
+    collection: collection
 
-        getBookView: (collection) ->
-            new Views.Books
-                collection: collection
+getBookView: (collection) ->
+    new Views.Books
+    collection: collection
 
-        getAboutView:  ->
-            new Views.About
+getAboutView: ->
+    new Views.About
 
-        getLayoutView: ->
-            new Views.Layout
+getLayoutView: ->
+    new Views.Layout
 ```
 
-<h5>About Templates</h5>
-
-[My Code for the About Templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/show/templates.coffee)
+###About Templates
+[`js/apps/about/show/templates.coffee`](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/show/templates.coffee)
 
 Here we load our templates for our regions. Following our AMD approach.
 
@@ -240,11 +238,11 @@ define (require) ->
 
 ```
 
-<hr>
+---
 
-<h5>About Views</h5>
+###About Views
 
-[My Code for the About Views](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/show/views.coffee)
+[`js/apps/about/show/views.coffee`](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/about/show/views.coffee)
 
 Here is where the magic happens.
 
@@ -253,34 +251,32 @@ We create two classes here, one for our Book, and one for our OSS. These are two
 
 ```
 class Book extends AppView.ItemView
-        template: _.template(Templates.bookitem)
-        tagName: "tr"
+    template: _.template(Templates.bookitem)
+    tagName: "tr"
 
-    class Oss extends AppView.ItemView
-        template: _.template(Templates.ossitem)
-        tagName: "tr"
+class Oss extends AppView.ItemView
+    template: _.template(Templates.ossitem)
+    tagName: "tr"
 ```
 
 After this, we pass those item views into our composite views with an `itemviewcontainer` like so.
 
 
 ```
-   Books: class Books extends AppView.CompositeView
-        template: _.template(Templates.books)
-        itemView: Book
-        itemViewContainer: "tbody"
+Books: class Books extends AppView.CompositeView
+    template: _.template(Templates.books)
+    itemView: Book
+    itemViewContainer: "tbody"
 
-    Oss: class Osslist extends AppView.CompositeView
-        template: _.template(Templates.oss)
-        itemView: Oss
-        itemViewContainer: "tbody"
+Oss: class Osslist extends AppView.CompositeView
+    template: _.template(Templates.oss)
+    itemView: Oss
+    itemViewContainer: "tbody"
 ```
 
-
-The Header App
-==============
-
-<h4>The header app starts with it's corrosponding app file, which creates out list controller, and starts the app.</h4>
+---
+###The Header App
+The header app starts with it's corrosponding app file, which creates out list controller, and starts the app.
 
 [App file](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/app.coffee)
 
@@ -308,23 +304,23 @@ Here we have our [Header Controller](https://github.com/xjackk/TwitchTVExpose/bl
 
 ```
 
-            links = msgBus.reqres.request "header:entities"
-            @appstate = msgBus.reqres.request "get:current:appstate"
-            #console.log @appstate
-            @layout = @getLayoutView()
+links = msgBus.reqres.request "header:entities"
+@appstate = msgBus.reqres.request "get:current:appstate"
+#console.log @appstate
+@layout = @getLayoutView()
 
-            # new appstate is now a property of the controller have the controller listen to the specific attribute
-            # so from anywhere you can set the appstate's loginStatus to T/F and this button will toggle
-            @listenTo @appstate, "change:loginStatus", (model, status) =>
-                @loginView.close() if status is true
-                @loginView.render() if status is false
+# new appstate is now a property of the controller have the controller listen to the specific attribute
+# so from anywhere you can set the appstate's loginStatus to T/F and this button will toggle
+@listenTo @appstate, "change:loginStatus", (model, status) =>
+    @loginView.close() if status is true
+    @loginView.render() if status is false
 
-            @listenTo @layout, "show", =>
-                @listRegion links
-                @loginView = @getLoginView @appstate
-                @loginView.render()  #stick-it into the DOM
+    @listenTo @layout, "show", =>
+    @listRegion links
+    @loginView = @getLoginView @appstate
+    @loginView.render() #stick-it into the DOM
 
-            @show @layout
+    @show @layout
 
 ```
 
@@ -333,9 +329,9 @@ to specific events going on. In our case, we want to see if we are logged in, or
 
 Our last line,`loginview.render()` will stick our loginview right into our DOM. Perfect.
 
-<hr>
+---
 
-<h5>Header Templates</h5>
+####Header Templates
 
 Here we keep running through our processes and we load our [Header templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/list/templates.coffee) all in one file.
 
@@ -346,9 +342,9 @@ Not much more to be said here. Here are our header htm templates.
 [Layout](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/list/templates/layout.htm)
 [Login](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/list/templates/login.htm)
 
-<hr>
+---
 
-<h5>Header Views</h5>
+####Header Views
 
 Our header view is just us putting these templates into our ItemViews. We give it a tagName of `li` to attach it to the DOM element.
 
@@ -358,38 +354,36 @@ You can see in our Layout view that the only thing we need to do is specific the
 ```
 define ['apps/header/list/templates', 'views/_base'], (Templates, AppView) ->
 
-    class _itemview extends AppView.ItemView
-        template: _.template(Templates.item)
-        tagName: "li"
+class _itemview extends AppView.ItemView
+    template: _.template(Templates.item)
+    tagName: "li"
 
-    LoginView: class Loginview extends AppView.ItemView
-        template: _.template(Templates.login)
-        el: "#login"
+LoginView: class Loginview extends AppView.ItemView
+    template: _.template(Templates.login)
+    el: "#login"
 
-    HeaderView: class ListHeaders extends AppView.CompositeView
-        template: _.template(Templates.header)
-        itemView: _itemview
-        itemViewContainer: "ul"
+HeaderView: class ListHeaders extends AppView.CompositeView
+    template: _.template(Templates.header)
+    itemView: _itemview
+    itemViewContainer: "ul"
 
-    Layout: class Header extends AppView.Layout
-        template: _.template(Templates.layout)
-        regions:
-            listRegion: "#list-region"
+Layout: class Header extends AppView.Layout
+    template: _.template(Templates.layout)
+    regions:
+        listRegion: "#list-region"
 
 ```
 
-<hr>
-
-The Footer App
-==============
+---
+###The Footer App
 
 The footer [app](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/footer/app.coffee) is virtually the same thing as the header app. We are going for that fixed footer look.
 
 Here is our [markup](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/footer/show/templates/footer.htm) for the footer. Just some more bootstrapping.
 
-<hr>
+---
 
-<h5>Footer Controller</h5>
+###Footer Controller
 
 In the [controller](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/footer/show/controller.coffee) we are just pulling in our `"authorModel:info` and setting our `@footerView`
 
@@ -397,32 +391,30 @@ In the [controller](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps
 
 
 ```
-    class Controller extends AppController
-        initialize:->
-            author = msgBus.reqres.request "get:authorModel:info"
-            #console.log author
-            footerView = @getFooterView author
-            @show footerView
+class Controller extends AppController
+    initialize:->
+        author = msgBus.reqres.request "get:authorModel:info"
+        #console.log author
+        footerView = @getFooterView author
+        @show footerView
 
-        getFooterView: (model) ->
-            new View.ItemView
-                model: model
+    getFooterView: (model) ->
+        new View.ItemView
+        model: model
 
 ```
 
-<hr>
-
-<h5>Footer Templates</h5>
+###Footer Templates
 
 Here we are once again following our AMD approach and loading our [templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/footer/show/templates.coffee) in like so.
 
 Our footer htm template as well.
 
-[Footer](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/footer/show/templates/footer.htm)
+[`Footer`](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/footer/show/templates/footer.htm)
 
-<hr>
+---
 
-<h5>Footer Views</h5>
+###Footer Views
 
 Our footer view is just a simple Itemview, like so
 
@@ -430,19 +422,20 @@ Our footer view is just a simple Itemview, like so
 # show footer views.
 define ['views/_base', 'apps/footer/show/templates'], (AppViews, Templates) ->
 
-	ItemView: class ShowFooterView extends AppViews.ItemView
-		template: _.template(Templates.footer)
+ItemView: class ShowFooterView extends AppViews.ItemView
+    template: _.template(Templates.footer)
 
-		modelEvents:
-			"change" : "render"
+    modelEvents:
+        "change" : "render"
 ```
 
-<hr>
+---
 
-The Games App
-==============
+##The Games App
 
-The games app is probably the the most (or one of the most...) important apps that we will be taking a look at.
+The games app is the the most important app in this project.  The games app is responsible for routing msgbus two controllers:
++   games list
++   game detail
 
 This is where we will be showing our `top/games` call from. From there, we can pick everything thing else out we want from Twitch's API. We stuff all the games into a composite view.
 
@@ -452,29 +445,29 @@ Here is the start of our app, where we create <strong>two</strong> controllers. 
 
 define ["msgbus", "marionette", "backbone", "apps/games/list/controller","apps/games/detail/controller"], (msgBus, Marionette, Backbone, ListController, DetailController) ->
 
-    class Router extends Marionette.AppRouter
-        appRoutes:
-            "games": "list"
-            "games/:id/detail": "detail"
+class Router extends Marionette.AppRouter
+    appRoutes:
+    "games": "list"
+    "games/:id/detail": "detail"
 
-    API =
-        list: ->
-            new ListController
+API =
+    list: ->
+        new ListController
 
-        detail: (id, model) ->
-            new DetailController
-                gameName: id
-                gameModel: model
+    detail: (id, model) ->
+        new DetailController
+        gameName: id
+        gameModel: model
 
 
-    msgBus.events.on "app:game:detail", (model) ->
-        Backbone.history.navigate "games/#{model.get("game").name}/detail", trigger:false
-        console.log "APP:GAMES:LIST=> (from list controller) MODEL", model
-        API.detail model.get("game").name, model
+msgBus.events.on "app:game:detail", (model) ->
+    Backbone.history.navigate "games/#{model.get("game").name}/detail", trigger:false
+    console.log "APP:GAMES:LIST=> (from list controller) MODEL", model
+    API.detail model.get("game").name, model
 
-    msgBus.commands.setHandler "start:games:app", ->
-        new Router
-            controller: API
+msgBus.commands.setHandler "start:games:app", ->
+    new Router
+        controller: API
 
 ```
 
@@ -484,7 +477,7 @@ We have some fancy `backbone.history()` code going on, but this is specifically 
 
 One view is going to be where the games are all shown, and the other where one selected game is shown, thus, the `detail` controller.
 
-<hr>
+---
 
 <h5>Games Controllers</h5>
 
@@ -492,43 +485,43 @@ Let's get right down to it, starting with the `list` controller.
 
 ```
 define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (msgBus, Views, AppController, Backbone) ->
-    class Controller extends AppController
-        initialize: (options={})->
-            entities=msgBus.reqres.request "games:top:entities"
-            @layout = @getLayoutView()
+class Controller extends AppController
+    initialize: (options={})->
+        entities=msgBus.reqres.request "games:top:entities"
+        @layout = @getLayoutView()
 
-            @listenTo @layout, "show", =>
-                @gameRegion entities
-                #@showIntroView()
+        @listenTo @layout, "show", =>
+        @gameRegion entities
+        #@showIntroView()
 
-            @show @layout,
-                loading:
-                    entities: entities
+        @show @layout,
+            loading:
+                entities: entities
 
-        gameRegion: (collection)  ->
-            view = @getGameView collection
-            @listenTo view, "childview:game:item:clicked", (child, args) ->  # listen to events from itemview (we've overridden the eventnamePrefix to childview)
-                console.log "game:item:clicked => model", args.model
-                msgBus.events.trigger "app:game:detail", args.model
+    gameRegion: (collection) ->
+        view = @getGameView collection
+        @listenTo view, "childview:game:item:clicked", (child, args) -> # listen to events from itemview (we've overridden the eventnamePrefix to childview)
+        console.log "game:item:clicked => model", args.model
+        msgBus.events.trigger "app:game:detail", args.model
 
-            @listenTo view, "scroll:more", ->
-                msgBus.reqres.request "games:fetchmore"
+        @listenTo view, "scroll:more", ->
+        msgBus.reqres.request "games:fetchmore"
 
-            @layout.gameRegion.show view
+        @layout.gameRegion.show view
 
-        getGameView: (collection) ->
-            new Views.TopGameList
-                collection: collection
+    getGameView: (collection) ->
+        new Views.TopGameList
+        collection: collection
 
-        getLayoutView: ->
-            new Views.Layout
+    getLayoutView: ->
+        new Views.Layout
 
-#        getIntroView: ->
-#            new Views.Intro
+    # getIntroView: ->
+        # new Views.Intro
 
-#        showIntroView: ->
-#            @introView = @getIntroView()
-#            @show @introView, region: @layout.streamRegion
+    # showIntroView: ->
+    # @introView = @getIntroView()
+    # @show @introView, region: @layout.streamRegion
 
 ```
 
@@ -541,43 +534,43 @@ This will trigger our `app:game:detail` event. We also have our next `@listenTo`
 Lastly in this controller, we have our `getGameView` function which passes a collection into a new view.
 
 
-<strong>Detail Controller</strong>
+###Detail Controller
 
 After our `list` controller, we have our `detail` controller. This controller will be dealing with our games detail view. Let's check it out.
 
 ```
 
 define ["msgbus", "apps/games/detail/views", "controller/_base", "backbone" ], (msgBus, Views, AppController, Backbone) ->
-    class Controller extends AppController
-        initialize: (options) ->
-            {gameName, gameModel} = options
-            console.log "OPTIONS passed to detail controller", options
+class Controller extends AppController
+    initialize: (options) ->
+        {gameName, gameModel} = options
+        console.log "OPTIONS passed to detail controller", options
 
-            if gameModel is undefined
-                gameModel = msgBus.reqres.request "games:searchName", gameName
-                console.log "GameModel", gameModel
+        if gameModel is undefined
+            gameModel = msgBus.reqres.request "games:searchName", gameName
+            console.log "GameModel", gameModel
 
-            @layout = @getLayoutView()
-            @listenTo @layout, "show", =>
-                @gameRegion gameModel
+        @layout = @getLayoutView()
+        @listenTo @layout, "show", =>
+        @gameRegion gameModel
 
-            @show @layout,
-                loading:
-                    entities: gameModel
-
-
-        gameRegion: (model) ->
-            view = @getGameView model
-            msgBus.commands.execute "app:stream:list", @layout.streamRegion, model.get("game").name
-            @layout.gameRegion.show view
+        @show @layout,
+            loading:
+                entities: gameModel
 
 
-        getGameView: (model) ->
-            new Views.Detail
-                model: model
+    gameRegion: (model) ->
+        view = @getGameView model
+        msgBus.commands.execute "app:stream:list", @layout.streamRegion, model.get("game").name
+        @layout.gameRegion.show view
 
-        getLayoutView: ->
-            new Views.Layout
+
+    getGameView: (model) ->
+        new Views.Detail
+        model: model
+
+    getLayoutView: ->
+        new Views.Layout
 
 ```
 
@@ -595,9 +588,9 @@ Finally we have our functions for this controller.
 
 `getGameView` passes through a model as well and makes a new detail view.
 
-<hr>
+---
 
-<h5>List Templates</h5>
+###List Templates
 
 Continuing on with our `list` section of our games app, we have our [templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/games/list/templates.coffee).
 
@@ -608,9 +601,9 @@ Our htm templates as well for our `list`.
 [Intro](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/games/list/templates/intro.htm)
 [Layout](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/games/list/templates/layout.htm)
 
-<hr>
+---
 
-<h5>List Views</h5>
+###List Views
 
 More to say about our `list` View, we have quite a bit going on here.
 
@@ -618,39 +611,38 @@ More to say about our `list` View, we have quite a bit going on here.
 
 define ['apps/games/list/templates', 'views/_base', 'msgbus'], (Templates, AppView, msgBus) ->
 
-    class GameItem extends AppView.ItemView
-        template: _.template(Templates.gameitem)
-        tagName: "li"
-        className: "col-md-2 col-sm-4 col-xs-12 game"
-        triggers:
-            "click" : "game:item:clicked"
+class GameItem extends AppView.ItemView
+    template: _.template(Templates.gameitem)
+    tagName: "li"
+    className: "col-md-2 col-sm-4 col-xs-12 game"
+    triggers:
+        "click" : "game:item:clicked"
 
-    TopGameList: class TopGameList extends AppView.CompositeView
-        template: _.template(Templates.gamelist)
-        itemView: GameItem
-        id: "gamelist"
-        itemViewContainer: "#gameitems"
+TopGameList: class TopGameList extends AppView.CompositeView
+    template: _.template(Templates.gamelist)
+    itemView: GameItem
+    id: "gamelist"
+    itemViewContainer: "#gameitems"
 
-        events:
-            "scroll": "checkScroll"
+    events:
+        "scroll": "checkScroll"
 
-        checkScroll: (e) =>
-            virtualHeight = @$("> div").height()          #important this div must have css height: 100% to enable calculattion of virtual height scroll
-            scrollTop = @$el.scrollTop() + @$el.height()
-            margin = 200
-            #console.log "virtualHeight:", virtualHeight, "scrollTop:", scrollTop, "elHeight", @$el.height()
-            if ((scrollTop + margin) >= virtualHeight)
-                @trigger "scroll:more"
+    checkScroll: (e) =>
+        virtualHeight = @$("> div").height() #important this div must have css height: 100% to enable calculattion of virtual height scroll
+        scrollTop = @$el.scrollTop() + @$el.height()
+        margin = 200
+        #console.log "virtualHeight:", virtualHeight, "scrollTop:", scrollTop, "elHeight", @$el.height()
+        if ((scrollTop + margin) >= virtualHeight)
+        @trigger "scroll:more"
 
-    Intro: class Intro extends AppView.ItemView
-        template: _.template(Templates.intro)
+Intro: class Intro extends AppView.ItemView
+    template: _.template(Templates.intro)
 
-    Layout: class GamesLayout extends AppView.Layout
-        template: _.template(Templates.layout)
-        regions:
-            gameRegion:  "#game-region"
-            #streamRegion:   "#stream-region"
-
+Layout: class GamesLayout extends AppView.Layout
+    template: _.template(Templates.layout)
+    regions:
+        gameRegion: "#game-region"
+        #streamRegion: "#stream-region"
 
 ```
 
@@ -673,9 +665,9 @@ You can kinda see wher ewe are going with this.
 
 On a less important note, we have a `Layout` class that does this thing where it passes a template though to some regions. Neat.
 
-<hr>
+---
 
-<h5>Detail Templates</h5>
+###Detail Templates
 
 Not much to write about the templates. I keep it pretty dry. Check em [out](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/games/detail/templates.coffee).
 
@@ -684,9 +676,9 @@ Our htm templates too are nice to look at.
 [Gamedetail](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/games/detail/templates/gamedetail.htm)
 [Layout](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/games/detail/templates/layout.htm)
 
-<hr>
+---
 
-<h5>Detail Views</h5>
+###Detail Views
 
 Here we have just an `ItemView` and a `Layout`.
 
@@ -694,18 +686,18 @@ Here we have just an `ItemView` and a `Layout`.
 
 define ['apps/games/detail/templates', 'views/_base', 'msgbus'], (Templates, AppView, msgBus) ->
 
-    Detail: class GameDetail extends AppView.ItemView
-        template: _.template(Templates.gamedetail)
-        className: "col-xs-12"
-        #triggers:
-        #    "click" : "game:item:clicked"
+Detail: class GameDetail extends AppView.ItemView
+    template: _.template(Templates.gamedetail)
+    className: "col-xs-12"
+    #triggers:
+        # "click" : "game:item:clicked"
 
 
-    Layout: class GamesLayout extends AppView.Layout
-        template: _.template(Templates.layout)
-        regions:
-            gameRegion:  "#game-region"
-            streamRegion:   "#stream-region"
+Layout: class GamesLayout extends AppView.Layout
+    template: _.template(Templates.layout)
+    regions:
+        gameRegion: "#game-region"
+        streamRegion: "#stream-region"
 
 ```
 
@@ -713,11 +705,10 @@ This class `GameDetail` is our Itemview. We are passing in our `gamedetail` temp
 
 Our class `GamesLayout` just gives us our `gameRegion` and `streamRegion`.
 
-<hr>
+---
 
 
-The Streams App
-==============
+##The Streams App
 
 After all has been said and done with our Games App, we can move on to our Streams section.
 
@@ -727,22 +718,21 @@ define [ "msgbus", "apps/streams/list/controller" ], (msgBus, Controller) ->
 
     API =
         list:(region, name) ->
-            new Controller
-                region: region
-                name: name
+        new Controller
+        region: region
+        name: name
 
     msgBus.commands.setHandler "app:stream:list", (region, name) ->
         API.list region, name
-
 ```
 
 Here is our Streams App, where we start our `list` API, and pass in a region and name to the controller.
 
 Lastly we have our trusty `msgBus` comand, to the `app:stream:list`.
 
-<hr>
+---
 
-<h5>Streams Controller</h5>
+###Streams Controller
 
 Our streams [controller](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/streams/list/controller.coffee)
 
@@ -750,7 +740,7 @@ Lets check it out.
 
 ```
 
-define ["msgbus", "apps/streams/list/views", "controller/_base"  ], (msgBus, Views, AppController) ->
+define ["msgbus", "apps/streams/list/views", "controller/_base" ], (msgBus, Views, AppController) ->
     class Controller extends AppController
         initialize:(options={})->
             {name} = options
@@ -758,13 +748,13 @@ define ["msgbus", "apps/streams/list/views", "controller/_base"  ], (msgBus, Vie
             streamEntities = msgBus.reqres.request "search:stream:entities", name
             view = @getListView streamEntities
 
-            @listenTo view, "childview:stream:item:clicked", (child, args) ->  # listen to events from itemview (we've overridden the eventnamePrefix to childview)
-                #console.log "game:item:clicked" , args.model
-                msgBus.events.trigger "app:playa:show", args.model
+            @listenTo view, "childview:stream:item:clicked", (child, args) -> # listen to events from itemview (we've overridden the eventnamePrefix to childview)
+            #console.log "game:item:clicked" , args.model
+            msgBus.events.trigger "app:playa:show", args.model
 
             @listenTo view, "scroll:more", ->
-                #console.log "listen to scroll:more"
-                msgBus.reqres.request "streams:fetchmore"
+            #console.log "listen to scroll:more"
+            msgBus.reqres.request "streams:fetchmore"
 
 
             @show view,
@@ -772,7 +762,7 @@ define ["msgbus", "apps/streams/list/views", "controller/_base"  ], (msgBus, Vie
 
         getListView: (collection) ->
             new Views.ListView
-                collection: collection
+            collection: collection
 
 ```
 
@@ -787,9 +777,9 @@ As you can see, we have `msgBus.events.trigger` to trigger `app:playa:show` on t
 
 Lastly we are creating our `getListView` function where we pass through our collection as a new view. Nothing we haven't seen before.
 
-<hr>
+---
 
-<h5>Stream Templates</h5>
+###Stream Templates
 
 Same as always, here we are loading our stream [templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/streams/list/templates.coffee). So nice.
 
@@ -799,9 +789,9 @@ Also here are our htm templates for this.
 
 [Streams](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/streams/list/templates/streams.htm)
 
-<hr>
+---
 
-<h5>Stream Views</h5>
+###Stream Views
 
 Following our Templates, we have our views. Heeeeeere we go.
 
@@ -825,13 +815,13 @@ define ['views/_base', 'apps/streams/list/templates'], (AppViews, Templates) ->
             "scroll": "checkScroll"
 
         checkScroll: (e) =>
-            virtualHeight = @$("> div").height()          #important this div must have css height: 100% to enable calculattion of virtual height scroll
+            virtualHeight = @$("> div").height() #important this div must have css height: 100% to enable calculattion of virtual height scroll
             scrollTop = @$el.scrollTop() + @$el.height()
             margin = 200
             console.log "virtualHeight:", virtualHeight, "scrollTop:", scrollTop, "elHeight", @$el.height()
             if ((scrollTop + margin) >= virtualHeight)
-                console.log "scroll:more"
-                @trigger "scroll:more"
+            console.log "scroll:more"
+            @trigger "scroll:more"
 
 ```
 
@@ -847,10 +837,10 @@ Lastly we have our classic endless scroll function.
 
 I went over how it worked before in the `Games` app, so I'm not sure if i should repeat myself. You get it now.
 
-<hr>
+---
 
-The Player App
-==============
+##The Player App
+
 
 The last thing we're going to go into is our actual Player [application.](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/playa/app.coffee)
 
@@ -858,9 +848,9 @@ In our app, we're setting a new controller and passing a model through to it. No
 
 The `msgBus.events.on` you see is purely for routing. We can talk about this later.
 
-<hr>
+---
 
-<h5>Player Controller</h5>
+###Player Controller
 
 In our player [controller](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/playa/show/controller.coffee) we are bascially passing our model to everything.
 
@@ -873,35 +863,35 @@ define ["apps/playa/show/views", "controller/_base"], (Views, AppController) ->
             {model} = options
             @layout = @getLayoutView()
             @listenTo @layout, "show", =>
-                @playerRegion model
-                @userRegion model
-                @chatRegion model
+            @playerRegion model
+            @userRegion model
+            @chatRegion model
 
             @show @layout
 
-        playerRegion: (model)  ->
+        playerRegion: (model) ->
             player = @getPlayerView model
             @layout.playerRegion.show player
 
-        chatRegion: (model)  ->
+        chatRegion: (model) ->
             chat = @getChatView model
             @layout.chatRegion.show chat
 
-        userRegion: (model)  ->
+        userRegion: (model) ->
             userView = @getUserView model
             @layout.userRegion.show userView
 
-        getPlayerView: (model)  ->
+        getPlayerView: (model) ->
             new Views.Player
-                model: model
+            model: model
 
-        getChatView: (model)  ->
+        getChatView: (model) ->
             new Views.Chat
-                model: model
+            model: model
 
-        getUserView: (model)  ->
+        getUserView: (model) ->
             new Views.User
-                model: model
+            model: model
 
         getLayoutView: ->
             new Views.Layout
@@ -916,9 +906,9 @@ This is the same for the `chatRegion` and `userRegion` respectively.
 
 our `get` functions are the same idea, just passing through model, and making a new view. Cool. Let's move on.
 
-<hr>
+---
 
-<h5>Player Templates</h5>
+###Player Templates
 
 More [templates](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/playa/show/templates.coffee). What'd you expect?
 
@@ -932,9 +922,9 @@ Our htm snippits as well, fool.
 
 [User](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/playa/show/templates/user.htm)
 
-<hr>
+---
 
-<h5>Player View</h5>
+###Player View
 
 In the player [view](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/playa/show/views.coffee), we are only dealing with `ItemViews`. No `CompositeViews` of any sort; nothing tricky here.
 
@@ -967,10 +957,10 @@ Lastly we have our `Layout`, where we are doing a <strong>bit</strong> more work
 
 We need three regions for these classes, as they are all seperate `ItemViews`, therefore we have `playerRegion`,`userRegion` and `chatRegion`.
 
-<hr>
+---
 
-More About Our Twitch API
-==============
+###More About Our Twitch API
+
 
 This app was built solely around a popular streaming site's API. Almost all the calls we are making are to Twitch, and not properly documenting how exactly we go about this would be a shame.
 
@@ -979,7 +969,7 @@ We can take a direct look at the huge block of code that we know as our [Twitch 
 ```
 
 define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
-    # this _fetch is our private property added to overridden config backbone sync
+# this _fetch is our private property added to overridden config backbone sync
 
     class Game extends _Backbone.Model
     class Stream extends _Backbone.Model
@@ -994,7 +984,7 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
 
         initialize: ->
             msgBus.reqres.setHandler "games:fetchmore", =>
-                @moreGames()
+            @moreGames()
 
             @limit = 50
             @offset = 0
@@ -1003,16 +993,16 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             @_total = null
 
         moreGames: ->
-            return true  if @loading or @length >= @_total
+            return true if @loading or @length >= @_total
             @loading=true
             @offset++
             #console.log "fetching page #{@offset+1} of games"
             loaded = @fetch
-                remove: false  # remove false appends new games to the existing collection
-                data:
-                    oauth_token: msgBus.reqres.request "get:current:token"
-                    limit: @limit
-                    offset: @offset * @limit
+            remove: false # remove false appends new games to the existing collection
+            data:
+            oauth_token: msgBus.reqres.request "get:current:token"
+            limit: @limit
+            offset: @offset * @limit
             $.when(loaded).then =>
                 @loading=false
                 console.log "Loaded page", @offset+1, "Games fetched so far", @length, "Total games available to fetch ", @_total
@@ -1023,8 +1013,8 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
 
 
         parse: (response) ->
-            {@_total}=response  # pull of the _total items in the list here
-            response.top        # the .top array get loaded into our backbone collection
+            {@_total}=response # pull of the _total items in the list here
+            response.top # the .top array get loaded into our backbone collection
 
 
     class StreamCollection extends _Backbone.Collection
@@ -1032,7 +1022,7 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
 
         initialize: ->
             msgBus.reqres.setHandler "streams:fetchmore", =>
-                @moreStreams()
+            @moreStreams()
 
             @limit = 12
             @offset = 0
@@ -1040,21 +1030,20 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             @previousSearch = null
             @_total = null
 
-        moreStreams: ->
-            return true  if @loading or @length >= @_total
-            @loading=true
-            @offset++
-            #console.log "fetching page #{@offset+1} of games"
-            loaded = @fetch
-                remove: false  # remove false appends new games to the existing collection
+            moreStreams: ->
+                return true if @loading or @length >= @_total
+                @loading=true
+                @offset++
+                #console.log "fetching page #{@offset+1} of games"
+                loaded = @fetch
+                remove: false # remove false appends new games to the existing collection
                 data:
                     oauth_token: msgBus.reqres.request "get:current:token"
                     q: @game
                     limit: @limit
                     offset: @offset * @limit
-            $.when(loaded).then =>
-                @loading=false
-                #console.log "Loaded page", @offset+1, "Streams fetched so far", @length, "Total streams available to fetch ", @_total
+                $.when(loaded).then =>
+                    @loading=false
 
 
         parse: (resp) ->
@@ -1063,7 +1052,7 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
 
     # keep a permanent copy of the games collection only refresh every 45 seconds for speedier page action
     games = new GamesCollection
-    games.timeStamp = new Date()  #archive
+    games.timeStamp = new Date() #archive
 
     API =
         getGames: (url, params = {}) ->
@@ -1074,12 +1063,12 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             if elapsedSeconds > 45 or games.length is 0
                 _.defaults params,
                     oauth_token: msgBus.reqres.request "get:current:token"
-                games = new GamesCollection
-                games.timeStamp = new Date()  #new time stamp
-                games.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
-                games.fetch
-                    reset: true
-                    data: params
+            games = new GamesCollection
+            games.timeStamp = new Date() #new time stamp
+            games.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
+            games.fetch
+                reset: true
+                data: params
             games
 
         searchGames: (url, params = {}) ->
@@ -1109,25 +1098,25 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             limit: 50
             offset: 0
 
-    # shiny and new  this doesn't seem to work...
+        # shiny and new this doesn't seem to work...
     msgBus.reqres.setHandler "game:search", (query)->
         API.searchGames "games/search",
             q: encodeURIComponent query
             type: "suggest"
 
-    msgBus.reqres.setHandler "games:searchName", (query)->
-        games.searchName query
+        msgBus.reqres.setHandler "games:searchName", (query)->
+            games.searchName query
 
-    msgBus.reqres.setHandler "search:stream:entities", (game)->
-        API.getStreams "search/streams",
-            q: game
-            limit: 12
-            offset: 0
+        msgBus.reqres.setHandler "search:stream:entities", (game)->
+            API.getStreams "search/streams",
+                q: game
+                limit: 12
+                offset: 0
 
-
-# Use this in your browser's console to initialize a JSONP request to see the API in action.
-# $.getJSON("http://api.rottentomatoes.com/api/public/v1.0/movies.json?callback=?", {apikey: "vzjnwecqq7av3mauck2238uj", q: "shining"})
 
 ```
 
+
+
+ex nihilo omnia...
 

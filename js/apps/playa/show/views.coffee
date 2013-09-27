@@ -5,14 +5,13 @@ define ['apps/playa/show/templates', 'views/_base', 'swf'], (Templates, AppView,
         ui:
             panelbody: ".panel-body"
 
-        #initialize: (options) ->
+        # initialize: (options) ->
         #    console.log "resizing..."
         #    $(window).on 'resize', @onShow
 
 
         onShow: ->
             $panel = @$(".panel-body")
-
             $width 	= @ui.panelbody.outerWidth(false)
             $height = Math.floor $width * 9 / 16
             flashvars=false

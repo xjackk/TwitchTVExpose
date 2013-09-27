@@ -32,7 +32,6 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
         app.unregister instance, id
 
     app.on "initialize:after", (options={})->
-        #console.log "init:after"
         appstate = msgBus.reqres.request "get:current:appstate"
         # trigger a specific event when the loginStatus ever changes (to be handled by our header list controller to show/hide login UI
         # appstate.on "change:loginStatus" (model, status)->
@@ -50,7 +49,7 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
             else
                 appstate.set "loginStatus", false
                 #console.log appstate.get("loginStatus"), "value of login status"
-                @navigate(@rootRoute, trigger: true) if @getCurrentRoute() is null             #Backbone.history.navigate @rootRoute, trigger:true
+                @navigate(@rootRoute, trigger: true) if @getCurrentRoute() is null
 
     app.addInitializer (options) ->
         #console.log "addinitializers"

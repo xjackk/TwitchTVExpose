@@ -7,11 +7,9 @@ define ["msgbus", "apps/streams/list/views", "controller/_base"  ], (msgBus, Vie
             view = @getListView streamEntities
 
             @listenTo view, "childview:stream:item:clicked", (child, args) ->  # listen to events from itemview (we've overridden the eventnamePrefix to childview)
-                #console.log "game:item:clicked" , args.model
                 msgBus.events.trigger "app:playa:show", args.model
 
             @listenTo view, "scroll:more", ->
-                #console.log "listen to scroll:more"
                 msgBus.reqres.request "streams:fetchmore"
 
 

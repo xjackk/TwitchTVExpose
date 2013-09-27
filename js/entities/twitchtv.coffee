@@ -28,7 +28,7 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             @offset++
             #console.log "fetching page #{@offset+1} of games"
             loaded = @fetch
-                remove: false  # remove false appends new games to the existing collection
+                remove: false
                 data:
                     oauth_token: msgBus.reqres.request "get:current:token"
                     limit: @limit
@@ -43,8 +43,8 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
 
 
         parse: (response) ->
-            {@_total}=response  # pull of the _total items in the list here
-            response.top        # the .top array get loaded into our backbone collection
+            {@_total}=response
+            response.top
 
 
     class StreamCollection extends _Backbone.Collection
@@ -64,9 +64,8 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             return true  if @loading or @length >= @_total
             @loading=true
             @offset++
-            #console.log "fetching page #{@offset+1} of games"
             loaded = @fetch
-                remove: false  # remove false appends new games to the existing collection
+                remove: false
                 data:
                     oauth_token: msgBus.reqres.request "get:current:token"
                     q: @game
@@ -74,28 +73,24 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
                     offset: @offset * @limit
             $.when(loaded).then =>
                 @loading=false
-                #console.log "Loaded page", @offset+1, "Streams fetched so far", @length, "Total streams available to fetch ", @_total
 
 
         parse: (resp) ->
             {@_total}=resp
             resp.streams
 
-    # keep a permanent copy of the games collection only refresh every 45 seconds for speedier page action
     games = new GamesCollection
-    games.timeStamp = new Date()  #archive
+    games.timeStamp = new Date()
+
 
     API =
         getGames: (url, params = {}) ->
-            #now = new Date()
-            #diff = ((new Date() - games.timeStamp ) / 1000)
             elapsedSeconds = Math.round(((new Date() - games.timeStamp ) / 1000) % 60)
-            #console.log "elapsed seconds", elapsedSeconds, now, games.timeStamp
             if elapsedSeconds > 45 or games.length is 0
                 _.defaults params,
                     oauth_token: msgBus.reqres.request "get:current:token"
                 games = new GamesCollection
-                games.timeStamp = new Date()  #new time stamp
+                games.timeStamp = new Date()
                 games.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
                 games.fetch
                     reset: true
@@ -129,7 +124,6 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             limit: 50
             offset: 0
 
-    # shiny and new  this doesn't seem to work...
     msgBus.reqres.setHandler "game:search", (query)->
         API.searchGames "games/search",
             q: encodeURIComponent query
@@ -145,5 +139,3 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             offset: 0
 
 
-# Use this in your browser's console to initialize a JSONP request to see the API in action.
-# $.getJSON("http://api.rottentomatoes.com/api/public/v1.0/movies.json?callback=?", {apikey: "vzjnwecqq7av3mauck2238uj", q: "shining"})

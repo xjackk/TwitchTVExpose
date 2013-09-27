@@ -1,4 +1,4 @@
-#TwitchTVExpose
+##TwitchTVExpose
 
 TwitchTVExpose is a Single Page Client App implementing TwitchTV's API functionality. Using Backbone.Marionette, RequireJS, Coffeescript, and a little D3 view to mix things up.
 
@@ -96,16 +96,16 @@ This decoupled code right here provides us with a way to dynamically pull in the
 ```
 define ["backbone","msgbus"], (Backbone, msgBus ) ->
 
-API =
-getHeaders:->
-new Backbone.Collection [
-(name: "Games", url: "#games", title: "Live Games", cssClass: "glyphicon glyphicon-hdd" )
-(name: "D3", url: "#d3", title: "Sample D3 visualization", cssClass: "glyphicon glyphicon-list")
-(name: "About", url: "#about", title: "Learn about responsive Twitch-TV", cssClass: "glyphicon glyphicon-align-justify")
-]
+    API =
+        getHeaders:->
+            new Backbone.Collection [
+            (name: "Games", url: "#games", title: "Live Games", cssClass: "glyphicon glyphicon-hdd" )
+            (name: "D3", url: "#d3", title: "Sample D3 visualization", cssClass: "glyphicon glyphicon-list")
+            (name: "About", url: "#about", title: "Learn about responsive Twitch-TV", cssClass: "glyphicon glyphicon-align-justify")
+            ]
 
-msgBus.reqres.setHandler "header:entities", ->
-API.getHeaders()
+    msgBus.reqres.setHandler "header:entities", ->
+        API.getHeaders()
 
 ```
 

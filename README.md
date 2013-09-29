@@ -142,11 +142,43 @@ define ["backbone","msgbus"], (Backbone, msgBus ) ->
         API.getHeaders()
 ~~~
 
-Notice how the header entity module listens for a `header:entities` request.  It responds with a static `Backbone.Cllection`
+Notice how the header entity module listens for a `header:entities` request and responds with a static `Backbone.Collection`
 
 ---
 
 ###Starting the App
+First, lets take a look at the index.htm markup.  It is very brief:
+~~~
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Twitch-TV Expose</title>
+    <meta name="description" content="Single Page Application Backbone Marionette RequireJS">
+    <meta name="author" content="Jack Killilea">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media=screen>
+    <link href="css/main.css" rel="stylesheet" media=screen>
+    <style type="text/css">
+</style>
+</head>
+<body>
+    <div id="wrap">
+        <div id="header-region"></div>
+        <div id="main-region" class="container"></div>
+    </div>
+    <div id="footer-region"></div>
+    <script data-main="js/main.optimized" src="bower_components/requirejs/require.js" type="text/javascript"></script>
+</body>
+</html>
+~~~
+
+The index markup contains a #header-region, #main-region and a #footer-region.  The wrap is the bootstrap suggested way of creating a fixed footer.
 
 ####[Main.coffee](https://github.com/xjackk/TwitchTVExpose/blob/master/js/main.coffee)
 

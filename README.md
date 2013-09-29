@@ -2,9 +2,9 @@
 
 TwitchTVExpose is a Single Page Client App implementing TwitchTV's API functionality. Using Backbone.Marionette, RequireJS, Coffeescript, and a little D3 view to mix things up.
 
-Hosted live: [TwitchTVExpose](https://c9.io/xjackk/twitchtvexpose/workspace/index.htm)
+Check out the live site: [TwitchTVExpose](https://c9.io/xjackk/twitchtvexpose/workspace/index.htm)
 
-####Screenshot
+
 ![Screenshot][ss]
 
 [ss]: https://github.com/xjackk/twitchtvexpose/raw/master/doc/image/TwitchTVExpose.png "Screen shot: TwitchTV Expose"
@@ -60,15 +60,18 @@ $ bower update
 
 ###Asyncronous Module Definition (AMD) and [RequireJS](http://requirejs.org)
 
-This project uses a "Rails-esque" approach-- *convention over configuration.* Apps are organized and kept in a conventional way [insert image here](1) 
+This project uses a "Rails-esque" approach-- *convention over configuration.* Apps are organized and kept in a conventional way ![About App][about_app]
 with: Apps => Controller(s) => Views => Templates.  All templates use [underscore](http://underscorejs.org) 
 [configured for Mustache](https://github.com/xjackk/TwitchTVExpose/blob/master/js/config/underscore/templatesettings.coffee) 
 **AMD** keeps everything in modules and I follow an approach similar to Brian Mann's [BackboneRails](http://backbonerails.com) except he used Rails and 
 Marionette.module, however we're using RequireJS with Javascript patterns and a Rails convention.  Sort of a Rails/AMD hybrid...
 
+[about_app]: https://github.com/xjackk/twitchtvexpose/raw/master/doc/image/abputapp.png "modular app convention"
+
+
 ---
 
-###Boot-up the AMD Asset Pipeline
+###Boot-up: *AMD Asset Pipeline*
 
 Before the [js/app.coffee](https://github.com/xjackk/TwitchTVExpose/tree/master/js/app.coffee) can be started, number of modules must be loaded first. **RequireJS** helps in this regard however the explicit dependencies must be established and the loading process managed.  Unfortunately this is something that is not automagically done and must be handled with a little common sense. Before this modular app can load a number of Configuraion, Enity and App modules will need to be pre-loaded before the Marionette.application can start.
 
@@ -135,25 +138,24 @@ In this big guy here, we add some "planning" for the rest of our project. We add
 Here are all of our handlers for our regions.
 
 ```
-
-msgBus.reqres.setHandler "default:region",->
-    app.mainRegion
-
-msgBus.reqres.setHandler "header:region", ->
-    app.headerRegion
-
-msgBus.reqres.setHandler "footer:region", ->
-    app.footerRegion
-
-msgBus.reqres.setHandler "main:region", ->
-    app.mainRegion
-
-#debugging support
-msgBus.commands.setHandler "register:instance", (instance, id) ->
-    app.register instance, id
-
-msgBus.commands.setHandler "unregister:instance", (instance, id) ->
-    app.unregister instance, id
+    msgBus.reqres.setHandler "default:region",->
+        app.mainRegion
+    
+    msgBus.reqres.setHandler "header:region", ->
+        app.headerRegion
+    
+    msgBus.reqres.setHandler "footer:region", ->
+        app.footerRegion
+    
+    msgBus.reqres.setHandler "main:region", ->
+        app.mainRegion
+    
+    #debugging support
+    msgBus.commands.setHandler "register:instance", (instance, id) ->
+        app.register instance, id
+    
+    msgBus.commands.setHandler "unregister:instance", (instance, id) ->
+        app.unregister instance, id
 ```
 
 After all this good stuff, we have our "Init after" where we are making a request to get our current Appstate. We will go into more detail later about this.
@@ -162,17 +164,16 @@ Under this you will see a a backbone.history set where we work some magic for Tw
 Lastly, we add some execute commands, to start all of our apps, all right in one place.
 
 ```
-
-app.addInitializer (options) ->
-    #console.log "addinitializers"
-    msgBus.commands.execute "start:header:app"
-    msgBus.commands.execute "start:footer:app"
-    msgBus.commands.execute "start:d3:app"
-    msgBus.commands.execute "start:about:app"
-    msgBus.commands.execute "start:games:app"
-    msgBus.commands.execute "start:playa:app"
-
-app
+    app.addInitializer (options) ->
+        #console.log "addinitializers"
+        msgBus.commands.execute "start:header:app"
+        msgBus.commands.execute "start:footer:app"
+        msgBus.commands.execute "start:d3:app"
+        msgBus.commands.execute "start:about:app"
+        msgBus.commands.execute "start:games:app"
+        msgBus.commands.execute "start:playa:app"
+    
+    app
 
 ```
 

@@ -126,7 +126,8 @@ A perfect example of this is how we pull in the info for our `header:entities`
 This decoupled code right here provides us with a way to dynamically pull in these entities into our header, without repeating ourselves. This keeps a very "modular" approach to building this app.
 
 [`js/entities/header.coffee`](https://github.com/xjackk/TwitchTVExpose/blob/master/js/entities/header.coffee)
-```
+
+~~~
 define ["backbone","msgbus"], (Backbone, msgBus ) ->
 
     API =
@@ -139,9 +140,10 @@ define ["backbone","msgbus"], (Backbone, msgBus ) ->
 
     msgBus.reqres.setHandler "header:entities", ->
         API.getHeaders()
+~~~
 
-```
 Notice how the header entity module listens for a `header:entities` request.  It responds with a static `Backbone.Cllection`
+
 ---
 
 ###Starting the App

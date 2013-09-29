@@ -2,11 +2,12 @@
 
 TwitchTVExpose is a Single Page Client App implementing TwitchTV's API functionality. Using Backbone.Marionette, RequireJS, Coffeescript, and a little D3 view to mix things up.
 
-Try [TwitchTVExpose](https://c9.io/xjackk/twitchtvexpose/workspace/index.htm) live, hosted on my Cloud9 site
+Hosted live: [TwitchTVExpose](https://c9.io/xjackk/twitchtvexpose/workspace/index.htm)
 
+####Screenshot
 ![Screenshot][ss]
 
-[ss]: https://github.com/xjackk/twitchtvexpose/raw/master/doc/image/TwitchTVExpose.png "TwitchTV Expose"
+[ss]: https://github.com/xjackk/twitchtvexpose/raw/master/doc/image/TwitchTVExpose.png "Screen shot: TwitchTV Expose"
 
 ---
 

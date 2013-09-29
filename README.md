@@ -68,12 +68,12 @@ All templates use [underscore](http://underscorejs.org) [configured for Mustache
 I follow an approach *similar* to Brian Mann's [BackboneRails](http://backbonerails.com) tutorials except he is using Rails and 
 Marionette.modules and I am using RequireJS/AMD modules with a Rails convention.  Sort of a Rails/AMD hybrid that works very well for me.
 
-**Notice the About app above, see how the files are organized:**
-+apps/about/app.coffee
-+apps/about/show/controller.coffee
-+apps/about/show/templates/*.htm
-+apps/about/show/views.coffee
-+apps/about/show/templates.coffee
+**Notice the About app above, see how the files are organized:**  
++ apps/about/app.coffee
++ apps/about/show/controller.coffee
++ apps/about/show/templates/*.htm
++ apps/about/show/views.coffee
++ apps/about/show/templates.coffee
 
 I follow this convention for all apps in this project!
 

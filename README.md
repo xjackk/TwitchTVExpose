@@ -64,9 +64,18 @@ This project uses a "Rails-esque" approach-- *convention over configuration.*  A
 
 ![About App][about_app]
 
-All templates use [underscore](http://underscorejs.org) [configured for Mustache](https://github.com/xjackk/TwitchTVExpose/blob/master/js/config/underscore/templatesettings.coffee) 
-**AMD** keeps everything in modules and I follow an approach similar to Brian Mann's [BackboneRails](http://backbonerails.com) except he used Rails and 
-Marionette.modules, however I am using RequireJS with AMD modules and a Rails convention.  Sort of a Rails/AMD hybrid that works very well for me.
+All templates use [underscore](http://underscorejs.org) [configured for Mustache](https://github.com/xjackk/TwitchTVExpose/blob/master/js/config/underscore/templatesettings.coffee). 
+I follow an approach *similar* to Brian Mann's [BackboneRails](http://backbonerails.com) tutorials except he is using Rails and 
+Marionette.modules and I am using RequireJS/AMD modules with a Rails convention.  Sort of a Rails/AMD hybrid that works very well for me.
+
+**Notice the About app above, see how the files are organized:**
++apps/about/app.coffee
++apps/about/show/controller.coffee
++apps/about/show/templates/*.htm
++apps/about/show/views.coffee
++apps/about/show/templates.coffee
+
+I follow this convention for all apps in this project!
 
 [about_app]: https://github.com/xjackk/twitchtvexpose/raw/master/doc/image/aboutapp.png "modular app convention"
 

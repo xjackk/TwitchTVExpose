@@ -147,7 +147,7 @@ Notice how the header entity module listens for a `header:entities` request and 
 ---
 
 ###Starting the App
-First, lets take a look at the index.htm markup.  It is very brief:
+Before describing code, lets take a look at the index.htm markup, it's very brief:
 ~~~
 <!DOCTYPE html>
 <html lang="en">
@@ -178,7 +178,10 @@ First, lets take a look at the index.htm markup.  It is very brief:
 </html>
 ~~~
 
-The index markup contains a #header-region, #main-region and a #footer-region.  The wrap is the bootstrap suggested way of creating a fixed footer.
+The body contains a `<div id="header-region"></div>`,  `<div id="main-region" class="container"></div>` and a `<div id="footer-region"></div>`.  The #wrap is the [bootstrap](http://getbootstrap.com/examples/sticky-footer/) suggested way of creating a sticky footer. 
+So this being a client side app, the UI interactions will be taking place inside the #main-region:
+
+
 
 ####[Main.coffee](https://github.com/xjackk/TwitchTVExpose/blob/master/js/main.coffee)
 

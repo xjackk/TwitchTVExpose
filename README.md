@@ -68,14 +68,14 @@ All templates use [underscore](http://underscorejs.org) [configured for Mustache
 I follow an approach *similar* to Brian Mann's [BackboneRails](http://backbonerails.com) tutorials except he is using Rails and 
 Marionette.modules and I am using RequireJS/AMD modules with a Rails convention.  Sort of a Rails/AMD hybrid that works very well for me.
 
-**Notice the About app above, see how the files are organized:**  
-+ apps/about/app.coffee
-+ apps/about/show/controller.coffee
-+ apps/about/show/templates/*.htm
-+ apps/about/show/views.coffee
-+ apps/about/show/templates.coffee
+Take a look at the About app above, see how the files are organized:
++ apps/about/app.coffee  (the application)
++ apps/about/show/controller.coffee (the show controller)
++ apps/about/show/templates/*.htm  (various templates)
++ apps/about/show/views.coffee  (modular views)
++ apps/about/show/templates.coffee (modular templates)
 
-I follow this convention for all apps in this project!
+*I follow this convention for all the apps in this project...*
 
 [about_app]: https://github.com/xjackk/twitchtvexpose/raw/master/doc/image/aboutapp.png "modular app convention"
 
@@ -108,7 +108,18 @@ The primary entity used throughout is [js/entities/twitchtv.coffee](https://gith
 
 ####How this all works. (Featuring msgBus)
 
-You may be wondering how our msgBus works. The msgBus allows app modules to set handlers for events, request/response and commands handlers. These *msgbus* patterns, (pub/sub, reqest/response and commands) are used throughout the app and decouple modules.
+You may be wondering how our msgBus works. 
+
+~~~
+# msgbus decoupled from app
+define ["backbone.wreqr"], (Wreqr) ->    
+    reqres: new Wreqr.RequestResponse()
+    commands: new Wreqr.Commands()
+    events: new Wreqr.EventAggregator()
+~~~
+
+The msgBus allows app modules to set handlers for events, request/response and commands handlers. These three patterns, *pub/sub, reqest/response and command* are bundled together in a ***msgbus*** module.  
+The msgbus is used throughout the application and it provides an effective architecture for building de-couple modules.  This enables the application to scale effectively.
 
 A perfect example of this is how we pull in the info for our `header:entities`
 

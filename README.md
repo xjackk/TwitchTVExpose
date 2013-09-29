@@ -66,7 +66,7 @@ with: Apps => Controller(s) => Views => Templates.  All templates use [underscor
 **AMD** keeps everything in modules and I follow an approach similar to Brian Mann's [BackboneRails](http://backbonerails.com) except he used Rails and 
 Marionette.module, however we're using RequireJS with Javascript patterns and a Rails convention.  Sort of a Rails/AMD hybrid...
 
-[about_app]: https://github.com/xjackk/twitchtvexpose/raw/master/doc/image/abputapp.png "modular app convention"
+[about_app]: https://github.com/xjackk/twitchtvexpose/raw/master/doc/image/aboutapp.png "modular app convention"
 
 
 ---

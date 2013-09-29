@@ -6,7 +6,7 @@ Try [TwitchTVExpose](https://c9.io/xjackk/twitchtvexpose/workspace/index.htm) li
 
 ![Screenshot][ss]
 
-[ss]: https://github.com/xjackk/twitchtvexpose/blob/master/doc/image/TwitchTVExpose.png "TwitchTV Expose"
+[ss]: https://github.com/xjackk/twitchtvexpose/raw/master/doc/image/TwitchTVExpose.png "TwitchTV Expose"
 
 ---
 

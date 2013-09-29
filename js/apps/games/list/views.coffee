@@ -8,7 +8,7 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus'], (Templates, AppVi
             "click" : "game:item:clicked"
 
     TopGameList: class TopGameList extends AppView.CompositeView
-        template: _.template(Templates.gamelist)
+        template: _.template(Templates.gameslist)
         itemView: GameItem
         id: "gamelist"
         itemViewContainer: "#gameitems"
@@ -24,10 +24,21 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus'], (Templates, AppVi
             if ((scrollTop + margin) >= virtualHeight)
                 @trigger "scroll:more"
 
-    Intro: class Intro extends AppView.ItemView
-        template: _.template(Templates.intro)
+    GamesBubbleView: class GamesBubbleView extends AppView.ItemView
+        template: _.template(Templates.gamesbubble)
+        id: "gamesbubble"
+
 
     Layout: class GamesLayout extends AppView.Layout
         template: _.template(Templates.layout)
         regions:
             gameRegion:  "#game-region"
+        events:
+                "click .bubble":    "bubble"
+                "click .grid":      "grid"
+
+        bubble:->
+            @trigger "show:bubble"
+            
+        grid:->
+            @trigger "show"

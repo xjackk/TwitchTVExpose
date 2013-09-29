@@ -4,6 +4,8 @@ TwitchTVExpose is a Single Page Client App implementing TwitchTV's API functiona
 
 Try [TwitchTVExpose](https://c9.io/xjackk/twitchtvexpose/workspace/index.htm) live, hosted on my Cloud9 site
 
+![TwitchTV Expose](https://github.com/xjackk/twitchtvexpose/blob/master/doc/image/TwitchTVExpose.png)
+
 ---
 
 ###Why Did You Do It, Jack?
@@ -55,13 +57,17 @@ $ bower update
 
 ###Asyncronous Module Definition (AMD) and [RequireJS](http://requirejs.org)
 
-This project uses a "Rails-esque" approach favoring convention over configuration. Apps are organized and kept in a conventional way with: Apps => Controller(s) => Views => Templates.  All templates use [underscore](http://underscorejs.org) [configured for Mustache](https://github.com/xjackk/TwitchTVExpose/blob/master/js/config/underscore/templatesettings.coffee) **AMD** keeps everything in modules and I follow an approach similar to Brian Mann's [BackboneRails](http://backbonerails.com) except he used Rails and Marionette.module, however we're using RequireJS with Javascript patterns and a Rails convention.  Sort of a Rails/AMD hybrid...
+This project uses a "Rails-esque" approach-- *convention over configuration.* Apps are organized and kept in a conventional way [insert image here](1) 
+with: Apps => Controller(s) => Views => Templates.  All templates use [underscore](http://underscorejs.org) 
+[configured for Mustache](https://github.com/xjackk/TwitchTVExpose/blob/master/js/config/underscore/templatesettings.coffee) 
+**AMD** keeps everything in modules and I follow an approach similar to Brian Mann's [BackboneRails](http://backbonerails.com) except he used Rails and 
+Marionette.module, however we're using RequireJS with Javascript patterns and a Rails convention.  Sort of a Rails/AMD hybrid...
 
 ---
 
 ###Boot-up the AMD Asset Pipeline
 
-Before the [js/app.coffee](https://github.com/xjackk/TwitchTVExpose/tree/master/js/app.coffee) can be started, number of modules must be loaded first. **RequireJS** helps in this regard however the explicit dependencies must be established and the loading process managed.  Unfortunately this is something that is not automagically done and must be handled with a little common sense. For this highly modular app a number of Configuraion, Enity and App modules are required before the Marionette.application can start.
+Before the [js/app.coffee](https://github.com/xjackk/TwitchTVExpose/tree/master/js/app.coffee) can be started, number of modules must be loaded first. **RequireJS** helps in this regard however the explicit dependencies must be established and the loading process managed.  Unfortunately this is something that is not automagically done and must be handled with a little common sense. Before this modular app can load a number of Configuraion, Enity and App modules will need to be pre-loaded before the Marionette.application can start.
 
 > **Asset Pipeline**
 

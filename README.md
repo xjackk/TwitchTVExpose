@@ -1,4 +1,4 @@
-##TwitchTVExpose
+###TwitchTVExpose
 
 TwitchTVExpose is a Single Page Client App implementing TwitchTV's API functionality. Using Backbone.Marionette, RequireJS, Coffeescript, and a little D3 view to mix things up.
 
@@ -19,7 +19,7 @@ For a list of resources I used to create this app, visit the About page on my ap
 Cheers !
 
 
-##Coffeescript
+###Coffeescript
 
 Using Coffeescript has saved me writing much code as it compiles right into JS. The Coffeescript syntax is a bit Python/Ruby-esque, therefore attracting more and more attention recently.
 I have switched over to using Coffeescript fulltime, and I really do love it. It saves me syntax headaches, and is just a breeze to write in. I reccomend trying it.
@@ -36,7 +36,7 @@ $ coffee -o js/ -cw js/
 
 ---
 
-##Project Dependencies##
+###Project Dependencies
 
 Check out [bower.json](https://github.com/xjackk/twitchtvexpose/blob/master/bower.json) to see the project's complete open-source dependencies.
 
@@ -111,9 +111,9 @@ define ["backbone","msgbus"], (Backbone, msgBus ) ->
 
 ---
 
-##Starting the App
+###Starting the App
 
-###[Main.coffee](https://github.com/xjackk/TwitchTVExpose/blob/master/js/main.coffee)
+####[Main.coffee](https://github.com/xjackk/TwitchTVExpose/blob/master/js/main.coffee)
 
 Here is the main file where we preload all of our dependencies. It very "modular" approach to building this app, so this is where we load everything, then start the app.
 
@@ -294,9 +294,9 @@ Lastly, we need a login button, to authorize ourselves with Twitch TV's API.
 
 After we layout all of our html, we can move onto working with our controllers, templates, and views.
 
-<hr>
+---
 
-<h5>Header Controller</h5>
+###Header Controller
 
 
 Here we have our [Header Controller](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps/header/list/controller.coffee), where we start doing some work for our API's.
@@ -304,23 +304,23 @@ Here we have our [Header Controller](https://github.com/xjackk/TwitchTVExpose/bl
 
 ```
 
-links = msgBus.reqres.request "header:entities"
-@appstate = msgBus.reqres.request "get:current:appstate"
-#console.log @appstate
-@layout = @getLayoutView()
+    links = msgBus.reqres.request "header:entities"
+    @appstate = msgBus.reqres.request "get:current:appstate"
+    #console.log @appstate
+    @layout = @getLayoutView()
 
-# new appstate is now a property of the controller have the controller listen to the specific attribute
-# so from anywhere you can set the appstate's loginStatus to T/F and this button will toggle
-@listenTo @appstate, "change:loginStatus", (model, status) =>
-    @loginView.close() if status is true
-    @loginView.render() if status is false
+    # new appstate is now a property of the controller have the controller listen to the specific attribute
+    # so from anywhere you can set the appstate's loginStatus to T/F and this button will toggle
+    @listenTo @appstate, "change:loginStatus", (model, status) =>
+        @loginView.close() if status is true
+        @loginView.render() if status is false
 
-    @listenTo @layout, "show", =>
-    @listRegion links
-    @loginView = @getLoginView @appstate
-    @loginView.render() #stick-it into the DOM
+        @listenTo @layout, "show", =>
+        @listRegion links
+        @loginView = @getLoginView @appstate
+        @loginView.render() #stick-it into the DOM
 
-    @show @layout
+        @show @layout
 
 ```
 
@@ -354,23 +354,23 @@ You can see in our Layout view that the only thing we need to do is specific the
 ```
 define ['apps/header/list/templates', 'views/_base'], (Templates, AppView) ->
 
-class _itemview extends AppView.ItemView
-    template: _.template(Templates.item)
-    tagName: "li"
+    class _itemview extends AppView.ItemView
+        template: _.template(Templates.item)
+        tagName: "li"
 
-LoginView: class Loginview extends AppView.ItemView
-    template: _.template(Templates.login)
-    el: "#login"
+    LoginView: class Loginview extends AppView.ItemView
+        template: _.template(Templates.login)
+        el: "#login"
 
-HeaderView: class ListHeaders extends AppView.CompositeView
-    template: _.template(Templates.header)
-    itemView: _itemview
-    itemViewContainer: "ul"
+    HeaderView: class ListHeaders extends AppView.CompositeView
+        template: _.template(Templates.header)
+        itemView: _itemview
+        itemViewContainer: "ul"
 
-Layout: class Header extends AppView.Layout
-    template: _.template(Templates.layout)
-    regions:
-        listRegion: "#list-region"
+    Layout: class Header extends AppView.Layout
+        template: _.template(Templates.layout)
+        regions:
+            listRegion: "#list-region"
 
 ```
 
@@ -391,16 +391,16 @@ In the [controller](https://github.com/xjackk/TwitchTVExpose/blob/master/js/apps
 
 
 ```
-class Controller extends AppController
-    initialize:->
-        author = msgBus.reqres.request "get:authorModel:info"
-        #console.log author
-        footerView = @getFooterView author
-        @show footerView
+    class Controller extends AppController
+        initialize:->
+            author = msgBus.reqres.request "get:authorModel:info"
+            #console.log author
+            footerView = @getFooterView author
+            @show footerView
 
-    getFooterView: (model) ->
-        new View.ItemView
-        model: model
+        getFooterView: (model) ->
+            new View.ItemView
+            model: model
 
 ```
 
@@ -422,11 +422,11 @@ Our footer view is just a simple Itemview, like so
 # show footer views.
 define ['views/_base', 'apps/footer/show/templates'], (AppViews, Templates) ->
 
-ItemView: class ShowFooterView extends AppViews.ItemView
-    template: _.template(Templates.footer)
+    ItemView: class ShowFooterView extends AppViews.ItemView
+        template: _.template(Templates.footer)
 
-    modelEvents:
-        "change" : "render"
+        modelEvents:
+            "change" : "render"
 ```
 
 ---
@@ -445,29 +445,29 @@ Here is the start of our app, where we create <strong>two</strong> controllers. 
 
 define ["msgbus", "marionette", "backbone", "apps/games/list/controller","apps/games/detail/controller"], (msgBus, Marionette, Backbone, ListController, DetailController) ->
 
-class Router extends Marionette.AppRouter
-    appRoutes:
-    "games": "list"
-    "games/:id/detail": "detail"
+    class Router extends Marionette.AppRouter
+        appRoutes:
+        "games": "list"
+        "games/:id/detail": "detail"
 
-API =
-    list: ->
-        new ListController
+    API =
+        list: ->
+            new ListController
 
-    detail: (id, model) ->
-        new DetailController
-        gameName: id
-        gameModel: model
+        detail: (id, model) ->
+            new DetailController
+            gameName: id
+            gameModel: model
 
 
-msgBus.events.on "app:game:detail", (model) ->
-    Backbone.history.navigate "games/#{model.get("game").name}/detail", trigger:false
-    console.log "APP:GAMES:LIST=> (from list controller) MODEL", model
-    API.detail model.get("game").name, model
+    msgBus.events.on "app:game:detail", (model) ->
+        Backbone.history.navigate "games/#{model.get("game").name}/detail", trigger:false
+        console.log "APP:GAMES:LIST=> (from list controller) MODEL", model
+        API.detail model.get("game").name, model
 
-msgBus.commands.setHandler "start:games:app", ->
-    new Router
-        controller: API
+    msgBus.commands.setHandler "start:games:app", ->
+        new Router
+            controller: API
 
 ```
 
@@ -479,49 +479,49 @@ One view is going to be where the games are all shown, and the other where one s
 
 ---
 
-<h5>Games Controllers</h5>
+###Games Controllers
 
 Let's get right down to it, starting with the `list` controller.
 
 ```
 define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (msgBus, Views, AppController, Backbone) ->
-class Controller extends AppController
-    initialize: (options={})->
-        entities=msgBus.reqres.request "games:top:entities"
-        @layout = @getLayoutView()
+    class Controller extends AppController
+        initialize: (options={})->
+            entities=msgBus.reqres.request "games:top:entities"
+            @layout = @getLayoutView()
 
-        @listenTo @layout, "show", =>
-        @gameRegion entities
-        #@showIntroView()
+            @listenTo @layout, "show", =>
+            @gameRegion entities
+            #@showIntroView()
 
-        @show @layout,
-            loading:
-                entities: entities
+            @show @layout,
+                loading:
+                    entities: entities
 
-    gameRegion: (collection) ->
-        view = @getGameView collection
-        @listenTo view, "childview:game:item:clicked", (child, args) -> # listen to events from itemview (we've overridden the eventnamePrefix to childview)
-        console.log "game:item:clicked => model", args.model
-        msgBus.events.trigger "app:game:detail", args.model
+        gameRegion: (collection) ->
+            view = @getGameView collection
+            @listenTo view, "childview:game:item:clicked", (child, args) -> # listen to events from itemview (we've overridden the eventnamePrefix to childview)
+            console.log "game:item:clicked => model", args.model
+            msgBus.events.trigger "app:game:detail", args.model
 
-        @listenTo view, "scroll:more", ->
-        msgBus.reqres.request "games:fetchmore"
+            @listenTo view, "scroll:more", ->
+            msgBus.reqres.request "games:fetchmore"
 
-        @layout.gameRegion.show view
+            @layout.gameRegion.show view
 
-    getGameView: (collection) ->
-        new Views.TopGameList
-        collection: collection
+        getGameView: (collection) ->
+            new Views.TopGameList
+            collection: collection
 
-    getLayoutView: ->
-        new Views.Layout
+        getLayoutView: ->
+            new Views.Layout
 
-    # getIntroView: ->
-        # new Views.Intro
+        # getIntroView: ->
+            # new Views.Intro
 
-    # showIntroView: ->
-    # @introView = @getIntroView()
-    # @show @introView, region: @layout.streamRegion
+        # showIntroView: ->
+        # @introView = @getIntroView()
+        # @show @introView, region: @layout.streamRegion
 
 ```
 
@@ -541,36 +541,36 @@ After our `list` controller, we have our `detail` controller. This controller wi
 ```
 
 define ["msgbus", "apps/games/detail/views", "controller/_base", "backbone" ], (msgBus, Views, AppController, Backbone) ->
-class Controller extends AppController
-    initialize: (options) ->
-        {gameName, gameModel} = options
-        console.log "OPTIONS passed to detail controller", options
+    class Controller extends AppController
+        initialize: (options) ->
+            {gameName, gameModel} = options
+            console.log "OPTIONS passed to detail controller", options
 
-        if gameModel is undefined
-            gameModel = msgBus.reqres.request "games:searchName", gameName
-            console.log "GameModel", gameModel
+            if gameModel is undefined
+                gameModel = msgBus.reqres.request "games:searchName", gameName
+                console.log "GameModel", gameModel
 
-        @layout = @getLayoutView()
-        @listenTo @layout, "show", =>
-        @gameRegion gameModel
+            @layout = @getLayoutView()
+            @listenTo @layout, "show", =>
+            @gameRegion gameModel
 
-        @show @layout,
-            loading:
-                entities: gameModel
-
-
-    gameRegion: (model) ->
-        view = @getGameView model
-        msgBus.commands.execute "app:stream:list", @layout.streamRegion, model.get("game").name
-        @layout.gameRegion.show view
+            @show @layout,
+                loading:
+                    entities: gameModel
 
 
-    getGameView: (model) ->
-        new Views.Detail
-        model: model
+        gameRegion: (model) ->
+            view = @getGameView model
+            msgBus.commands.execute "app:stream:list", @layout.streamRegion, model.get("game").name
+            @layout.gameRegion.show view
 
-    getLayoutView: ->
-        new Views.Layout
+
+        getGameView: (model) ->
+            new Views.Detail
+            model: model
+
+        getLayoutView: ->
+            new Views.Layout
 
 ```
 
@@ -611,38 +611,38 @@ More to say about our `list` View, we have quite a bit going on here.
 
 define ['apps/games/list/templates', 'views/_base', 'msgbus'], (Templates, AppView, msgBus) ->
 
-class GameItem extends AppView.ItemView
-    template: _.template(Templates.gameitem)
-    tagName: "li"
-    className: "col-md-2 col-sm-4 col-xs-12 game"
-    triggers:
-        "click" : "game:item:clicked"
+    class GameItem extends AppView.ItemView
+        template: _.template(Templates.gameitem)
+        tagName: "li"
+        className: "col-md-2 col-sm-4 col-xs-12 game"
+        triggers:
+            "click" : "game:item:clicked"
 
-TopGameList: class TopGameList extends AppView.CompositeView
-    template: _.template(Templates.gamelist)
-    itemView: GameItem
-    id: "gamelist"
-    itemViewContainer: "#gameitems"
+    TopGameList: class TopGameList extends AppView.CompositeView
+        template: _.template(Templates.gamelist)
+        itemView: GameItem
+        id: "gamelist"
+        itemViewContainer: "#gameitems"
 
-    events:
-        "scroll": "checkScroll"
+        events:
+            "scroll": "checkScroll"
 
-    checkScroll: (e) =>
-        virtualHeight = @$("> div").height() #important this div must have css height: 100% to enable calculattion of virtual height scroll
-        scrollTop = @$el.scrollTop() + @$el.height()
-        margin = 200
-        #console.log "virtualHeight:", virtualHeight, "scrollTop:", scrollTop, "elHeight", @$el.height()
-        if ((scrollTop + margin) >= virtualHeight)
-        @trigger "scroll:more"
+        checkScroll: (e) =>
+            virtualHeight = @$("> div").height() #important this div must have css height: 100% to enable calculattion of virtual height scroll
+            scrollTop = @$el.scrollTop() + @$el.height()
+            margin = 200
+            #console.log "virtualHeight:", virtualHeight, "scrollTop:", scrollTop, "elHeight", @$el.height()
+            if ((scrollTop + margin) >= virtualHeight)
+            @trigger "scroll:more"
 
-Intro: class Intro extends AppView.ItemView
-    template: _.template(Templates.intro)
+    Intro: class Intro extends AppView.ItemView
+        template: _.template(Templates.intro)
 
-Layout: class GamesLayout extends AppView.Layout
-    template: _.template(Templates.layout)
-    regions:
-        gameRegion: "#game-region"
-        #streamRegion: "#stream-region"
+    Layout: class GamesLayout extends AppView.Layout
+        template: _.template(Templates.layout)
+        regions:
+            gameRegion: "#game-region"
+            #streamRegion: "#stream-region"
 
 ```
 
@@ -686,18 +686,18 @@ Here we have just an `ItemView` and a `Layout`.
 
 define ['apps/games/detail/templates', 'views/_base', 'msgbus'], (Templates, AppView, msgBus) ->
 
-Detail: class GameDetail extends AppView.ItemView
-    template: _.template(Templates.gamedetail)
-    className: "col-xs-12"
-    #triggers:
-        # "click" : "game:item:clicked"
+    Detail: class GameDetail extends AppView.ItemView
+        template: _.template(Templates.gamedetail)
+        className: "col-xs-12"
+        #triggers:
+            # "click" : "game:item:clicked"
 
 
-Layout: class GamesLayout extends AppView.Layout
-    template: _.template(Templates.layout)
-    regions:
-        gameRegion: "#game-region"
-        streamRegion: "#stream-region"
+    Layout: class GamesLayout extends AppView.Layout
+        template: _.template(Templates.layout)
+        regions:
+            gameRegion: "#game-region"
+            streamRegion: "#stream-region"
 
 ```
 
@@ -1115,8 +1115,6 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
 
 
 ```
-
-
 
 ex nihilo omnia...
 

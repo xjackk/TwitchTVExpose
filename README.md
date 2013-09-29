@@ -4,7 +4,9 @@ TwitchTVExpose is a Single Page Client App implementing TwitchTV's API functiona
 
 Try [TwitchTVExpose](https://c9.io/xjackk/twitchtvexpose/workspace/index.htm) live, hosted on my Cloud9 site
 
-![TwitchTV Expose](https://github.com/xjackk/twitchtvexpose/blob/master/doc/image/TwitchTVExpose.png)
+![Screenshot][ss]
+
+[ss]: https://github.com/xjackk/twitchtvexpose/blob/master/doc/image/TwitchTVExpose.png "TwitchTV Expose"
 
 ---
 

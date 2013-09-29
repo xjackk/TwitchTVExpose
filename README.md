@@ -60,14 +60,15 @@ $ bower update
 
 ###Asyncronous Module Definition (AMD) and [RequireJS](http://requirejs.org)
 
-This project uses a "Rails-esque" approach-- *convention over configuration.* Apps are organized and kept in a conventional way ![About App][about_app]
-with: Apps => Controller(s) => Views => Templates.  All templates use [underscore](http://underscorejs.org) 
-[configured for Mustache](https://github.com/xjackk/TwitchTVExpose/blob/master/js/config/underscore/templatesettings.coffee) 
+This project uses a "Rails-esque" approach-- *convention over configuration.*  Apps are organized and kept in a conventional way :
+
+![About App][about_app]
+
+All templates use [underscore](http://underscorejs.org) [configured for Mustache](https://github.com/xjackk/TwitchTVExpose/blob/master/js/config/underscore/templatesettings.coffee) 
 **AMD** keeps everything in modules and I follow an approach similar to Brian Mann's [BackboneRails](http://backbonerails.com) except he used Rails and 
-Marionette.module, however we're using RequireJS with Javascript patterns and a Rails convention.  Sort of a Rails/AMD hybrid...
+Marionette.modules, however I am using RequireJS with AMD modules and a Rails convention.  Sort of a Rails/AMD hybrid that works very well for me.
 
 [about_app]: https://github.com/xjackk/twitchtvexpose/raw/master/doc/image/aboutapp.png "modular app convention"
-
 
 ---
 

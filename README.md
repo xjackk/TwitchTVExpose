@@ -118,8 +118,9 @@ define ["backbone.wreqr"], (Wreqr) ->
     events: new Wreqr.EventAggregator()
 ~~~
 
-The msgBus allows app modules to set handlers for events, request/response and commands handlers. These three patterns, *pub/sub, reqest/response and command* are bundled together in a ***msgbus*** module.  
-The msgbus is used throughout the application and it provides an effective architecture for building de-couple modules.  This enables the application to scale effectively.
+The msgBus allows app modules to set handlers for events, request/response and commands. These three patterns, **pub/sub**, **reqest/response** and **command** are bundled together in a ***msgbus*** module.  
+The msgbus is used throughout the application and it provides an effective architecture for building de-coupled AMD style modules.  This enables the application to scale easily and efficiently.  
+*The way to build large javascript applications is not to build large javascript applications...*
 
 A perfect example of this is how we pull in the info for our `header:entities`
 

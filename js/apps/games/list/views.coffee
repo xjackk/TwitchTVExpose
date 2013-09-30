@@ -1,4 +1,4 @@
-define ['apps/games/list/templates', 'views/_base', 'msgbus', 'views/bubble'], (Templates, AppView, msgBus, shit) ->
+define ['apps/games/list/templates', 'views/_base', 'msgbus', 'views/bubble'], (Templates, AppView, msgBus, BubbleChart) ->
 
     class GameItem extends AppView.ItemView
         template: _.template(Templates.gameitem)
@@ -27,10 +27,13 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus', 'views/bubble'], (
     GamesBubbleView: class GamesBubbleView extends AppView.ItemView
         template: _.template(Templates.gamesbubble)
         id: "gamesbubble"
-        onRender: ->
-            bubble = new shit @collection, @el
-            bubble.start()
-            bubble.display_group_all()
+
+        onShow: ->
+            $width 	= @$el.outerWidth(false)
+            $height = Math.floor $width * 9 / 16            
+            chart = new BubbleChart @collection, @el, $width, $height
+            chart.start()
+            chart.display()
 
 
 

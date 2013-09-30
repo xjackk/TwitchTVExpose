@@ -1,0 +1,140 @@
+define ['underscore','d3'], (_) ->
+    class BubbleChart
+        constructor: (data, el, width, height) ->
+            @data = data
+            @el = el
+            @width = width
+            @height = height
+
+            #@tooltip = CustomTooltip("gates_tooltip", 240)
+
+            # locations the nodes will move towards
+            # depending on which view is currently being used
+            @center = {x: @width / 2, y: @height / 2}
+
+            # used when setting up force and
+            # moving around nodes
+            @layout_gravity = -0.01
+            @damper = 0.1
+
+            # these will be set in create_nodes and create_vis
+            @vis = null
+            @nodes = []
+            @force = null
+            @circles = null
+
+            # nice looking colors - no reason to buck the trend
+            @fill_color = d3.scale.ordinal().domain(["low", "medium", "high"]).range(["#d84b2a", "#beccae", "#7aa25c"])
+
+
+            max_model = @data.max (model) ->
+                model.get("viewers")
+
+            max_amount = max_model.get "viewers"
+
+
+            @radius_scale = d3.scale.pow().exponent(0.5).domain([0, max_amount]).range([2, 85])
+
+            @create_nodes()
+            @create_vis()
+
+        # create node objects from original data
+        # that will serve as the data behind each
+        # bubble in the vis, then add each node
+        # to @nodes to be used later
+        create_nodes: ->
+            @data.each (model,i) =>
+                node=
+                    id: i
+                    radius: @radius_scale(parseInt(model.get "viewers"))
+                    value: model.get "viewers"
+                    name: model.get("game").name
+                    x: Math.random() * @width
+                    y: Math.random() * @height
+                    group: _.sample ["low","medium","high"]
+
+                @nodes.push node
+
+            @nodes.sort (a,b) -> b.value - a.value
+
+
+        # create svg at #vis and then
+        # create circle representation for each node
+        create_vis: =>
+            @vis = d3.select(@el).append("svg:svg")
+                .attr("width", @width)
+                .attr("height", @height)
+                .attr("id", "svg_vis")
+
+            @circles = @vis.selectAll("circle")
+                .data(@nodes, (d) -> d.id)
+
+            # used because we need 'this' in the
+            # mouse callbacks
+            that = this
+
+            # radius will be set to 0 initially.
+            # see transition below
+            @circles.enter().append("circle")
+                .attr("r", 0)
+                .style("fill", (d) => @fill_color(d.group))
+                .attr("stroke-width", 1)
+                .attr("stroke", (d) => d3.rgb(@fill_color(d.group)).darker())
+                .attr("id", (d) -> "bubble_#{d.id}")
+                .on("mouseover", (d,i) -> that.show_details(d,i,@))
+                .on("mouseout", (d,i) -> that.hide_details(d,i,@))
+
+            # Fancy transition to make bubbles appear, ending with the
+            # correct radius
+            @circles.transition().duration(2000).attr("r", (d) -> d.radius)
+
+
+        # Charge function that is called for each node.
+        # Charge is proportional to the diameter of the
+        # circle (which is stored in the radius attribute
+        # of the circle's associated data.
+        # This is done to allow for accurate collision
+        # detection with nodes of different sizes.
+        # Charge is negative because we want nodes to
+        # repel.
+        # Dividing by 8 scales down the charge to be
+        # appropriate for the visualization dimensions.
+        charge: (d) ->
+            -Math.pow(d.radius, 2.0) / 8
+
+        # Starts up the force layout with
+        # the default values
+        start: =>
+            @force = d3.layout.force().nodes(@nodes).size([@width, @height])
+
+        # Sets up force layout to display
+        # all nodes in one circle.
+        display: =>
+            @force.gravity(@layout_gravity)
+                .charge(@charge)
+                .friction(0.9)
+                .on "tick", (e) =>
+                    @circles.each(@move_towards_center(e.alpha))
+                        .attr("cx", (d) -> d.x)
+                        .attr("cy", (d) -> d.y)
+            @force.start()
+
+        # Moves all circles towards the @center
+        # of the visualization
+        move_towards_center: (alpha) =>
+            (d) =>
+                d.x = d.x + (@center.x - d.x) * (@damper + 0.02) * alpha
+                d.y = d.y + (@center.y - d.y) * (@damper + 0.02) * alpha
+
+        show_details: (data, i, element) =>
+            console.log "show_details", data,i,element
+            d3.select(element).attr("stroke", "black")
+            content = "<span class=\"name\">Title:</span><span class=\"value\"> #{data.name}</span><br/>"
+            content +="<span class=\"name\">Amount:</span><span class=\"value\"> $#{data.value}</span><br/>"
+            #    content +="<span class=\"name\">Year:</span><span class=\"value\"> #{data.year}</span>"
+            #@tooltip.showTooltip(content,d3.event)
+
+
+        hide_details: (data, i, element) =>
+            d3.select(element).attr("stroke", (d) => d3.rgb(@fill_color(d.group)).darker())
+            #@tooltip.hideTooltip()

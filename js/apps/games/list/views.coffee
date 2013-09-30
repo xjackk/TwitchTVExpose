@@ -1,4 +1,4 @@
-define ['apps/games/list/templates', 'views/_base', 'msgbus'], (Templates, AppView, msgBus) ->
+define ['apps/games/list/templates', 'views/_base', 'msgbus', 'views/bubble'], (Templates, AppView, msgBus, shit) ->
 
     class GameItem extends AppView.ItemView
         template: _.template(Templates.gameitem)
@@ -27,6 +27,11 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus'], (Templates, AppVi
     GamesBubbleView: class GamesBubbleView extends AppView.ItemView
         template: _.template(Templates.gamesbubble)
         id: "gamesbubble"
+        onRender: ->
+            bubble = new shit @collection, @el
+            bubble.start()
+            bubble.display_group_all()
+
 
 
     Layout: class GamesLayout extends AppView.Layout
@@ -39,6 +44,6 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus'], (Templates, AppVi
 
         bubble:->
             @trigger "show:bubble"
-            
+
         grid:->
             @trigger "show"

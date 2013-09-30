@@ -20,6 +20,7 @@ define ["backbone","msgbus"], (Backbone, msgBus ) ->
                     (type: "video", title: "Getting Up and Running - Part 2", author:"Brian Mann", url:"backbonerails.fetchapp.com/sell/ferechie/ppc")
                     (type: "video", title: "Building a Real Application: Planet Express", author:"Brian Mann", url:"backbonerails.fetchapp.com/sell/ichangei/ppc")
                     (type: "video", title: "Screencast: Loading Views", author:"Brian Mann", url:"www.backbonerails.com/screencasts/loading-views")
+                    (type: "book", title: "Creating Animated Bubble Charts in D3", author:"Jim Vallandingham", url:"http://vallandingham.me/bubble_charts_in_d3.html")
                     ]
 
     msgBus.reqres.setHandler "reference:entities", ->

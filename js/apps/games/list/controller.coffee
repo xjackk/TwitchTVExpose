@@ -29,8 +29,7 @@ define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (ms
 
         gameBubbleRegion:   ->
             view = @getBubbleView @entities
-            @layout.gameRegion.show view            
-
+            @layout.gameRegion.show view
 
         getBubbleView: (collection) ->
             new Views.GamesBubbleView

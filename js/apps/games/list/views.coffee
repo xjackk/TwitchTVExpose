@@ -26,16 +26,10 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus', 'views/bubble'], (
 
     GamesBubbleView: class GamesBubbleView extends AppView.ItemView
         template: _.template(Templates.gamesbubble)
-        #id: "gamesbubble"
-        initialize: ->
-            @setElement(document.createElementNS('http://www.w3.org/2000/svg','svg'))
-
-        #events:
-        #    "mouseover circle": -> console.log("mouse over")
-        #    "mouseout circle": -> console.log("mouse out")
+        id: "gamesbubble"
 
         onShow: ->
-            $width 	= @$el.parent().outerWidth(false)
+            $width 	= @$el.outerWidth(false)
             $height = Math.floor $width * 9 / 16
             @chart = new BubbleChart @collection, @el, $width, $height
             @chart.start()
@@ -45,6 +39,7 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus', 'views/bubble'], (
         template: _.template(Templates.layout)
         regions:
             gameRegion:  "#game-region"
+
         events:
                 "click .bubble":    "bubble"
                 "click .grid":      "grid"

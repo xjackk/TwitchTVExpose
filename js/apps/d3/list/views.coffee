@@ -25,7 +25,7 @@ define ['apps/d3/list/templates', 'views/_base', 'd3'], (Templates, AppView) ->
 
             svg = d3.select(@el).append("svg").attr("width", width).attr("height", height)
 
-            svg.selectAll("circle").data(nodes.slice(1)).enter().append("circle").attr("r", (d) -> d.radius-2).style("fill", (d, i) -> color i % 5)
+            svg.selectAll("circle").data(nodes.slice(1)).enter().append("circle").attr("r", (d) -> d.radius-2).style("fill", (d, i) -> color i % 10)
 
 
             force.on "tick", (e) ->

@@ -7,8 +7,6 @@ define ['underscore', 'msgbus', 'd3' ], (_, msgBus) ->
             @height = height
             @hittest=0
 
-            #@tooltip = CustomTooltip("gates_tooltip", 240)
-
             # locations the nodes will move towards
             # depending on which view is currently being used
             @center = {x: @width / 2, y: @height / 2}
@@ -24,17 +22,16 @@ define ['underscore', 'msgbus', 'd3' ], (_, msgBus) ->
             @force = null
             @circles = null
 
+
             # nice looking colors - no reason to buck the trend
             @fill_color = d3.scale.ordinal().domain(["low", "medium", "high"]).range(["#d84b2a", "#beccae", "#7aa25c"])
-
 
             max_model = @data.max (model) ->
                 model.get("viewers")
 
             max_amount = max_model.get "viewers"
 
-
-            @radius_scale = d3.scale.pow().exponent(0.5).domain([0, max_amount]).range([3, 110])
+            @radius_scale = d3.scale.pow().exponent(0.5).domain([0, max_amount]).range([2, 100])
 
             @create_nodes()
             @create_vis()
@@ -61,7 +58,7 @@ define ['underscore', 'msgbus', 'd3' ], (_, msgBus) ->
 
         # create svg at #vis and then create circle representation for each node
         create_vis: =>
-            @vis = d3.select(@el)
+            @vis = d3.select(@el).append("svg")
                 .attr("width", @width)
                 .attr("height", @height)
                 .attr("id", "svg_vis")
@@ -84,8 +81,6 @@ define ['underscore', 'msgbus', 'd3' ], (_, msgBus) ->
             # Fancy transition to make bubbles appear, ending with the correct radius
             @circles.transition().duration(1500).attr("r", (d) -> d.radius)
 
-
-
         # Charge function that is called for each node.
         # Charge is proportional to the diameter of the
         # circle (which is stored in the radius attribute
@@ -93,10 +88,10 @@ define ['underscore', 'msgbus', 'd3' ], (_, msgBus) ->
         # This is done to allow for accurate collision
         # detection with nodes of different sizes.
         # Charge is negative because we want nodes to repel.
-        # Dividing by 8 scales down the charge to be
+        # Dividing by 7 scales down the charge to be
         # appropriate for the visualization dimensions.
         charge: (d) ->
-            -Math.pow(d.radius, 2.0) / 8
+            -Math.pow(d.radius, 2.0) / 7
 
         # Starts up the force layout with the default values
         start: =>
@@ -138,4 +133,5 @@ define ['underscore', 'msgbus', 'd3' ], (_, msgBus) ->
 
         select_details: (data, i, element) =>
             @hide_details data,i,element
+            # bingo pass the model to our game detail view
             msgBus.events.trigger "app:game:detail", data.model

@@ -17,7 +17,7 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus', 'views/bubble'], (
             "scroll": "checkScroll"
 
         checkScroll: (e) =>
-            virtualHeight = @$("> div").height()          #important this div must have css height: 100% to enable calculattion of virtual height scroll
+            virtualHeight = @$("> div").height()    #important this div must have css height: 100% to enable calculattion of virtual height scroll
             scrollTop = @$el.scrollTop() + @$el.height()
             margin = 200
             #console.log "virtualHeight:", virtualHeight, "scrollTop:", scrollTop, "elHeight", @$el.height()
@@ -26,16 +26,20 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus', 'views/bubble'], (
 
     GamesBubbleView: class GamesBubbleView extends AppView.ItemView
         template: _.template(Templates.gamesbubble)
-        id: "gamesbubble"
+        #id: "gamesbubble"
+        initialize: ->
+            @setElement(document.createElementNS('http://www.w3.org/2000/svg','svg'))
+
+        #events:
+        #    "mouseover circle": -> console.log("mouse over")
+        #    "mouseout circle": -> console.log("mouse out")
 
         onShow: ->
-            $width 	= @$el.outerWidth(false)
-            $height = Math.floor $width * 9 / 16            
-            chart = new BubbleChart @collection, @el, $width, $height
-            chart.start()
-            chart.display()
-
-
+            $width 	= @$el.parent().outerWidth(false)
+            $height = Math.floor $width * 9 / 16
+            @chart = new BubbleChart @collection, @el, $width, $height
+            @chart.start()
+            @chart.display()
 
     Layout: class GamesLayout extends AppView.Layout
         template: _.template(Templates.layout)

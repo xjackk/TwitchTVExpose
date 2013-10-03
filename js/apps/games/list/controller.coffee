@@ -5,11 +5,9 @@ define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (ms
             @layout = @getLayoutView()
 
             @listenTo @layout, "show", =>
-                console.log "show"
                 @gameRegion() # @entities
 
             @listenTo @layout, "show:bubble", =>
-                console.log "show:bubble"
                 @gameBubbleRegion() # @entities
 
             @show @layout,

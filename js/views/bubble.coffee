@@ -5,7 +5,6 @@ define ['underscore', 'msgbus', 'd3' ], (_, msgBus) ->
             @el = el
             @width = width
             @height = height
-            @hittest=0
 
             # locations the nodes will move towards
             # depending on which view is currently being used
@@ -21,7 +20,6 @@ define ['underscore', 'msgbus', 'd3' ], (_, msgBus) ->
             @nodes = []
             @force = null
             @circles = null
-
 
             # nice looking colors - no reason to buck the trend
             @fill_color = d3.scale.ordinal().domain(["low", "medium", "high"]).range(["#d84b2a", "#beccae", "#7aa25c"])
@@ -43,7 +41,7 @@ define ['underscore', 'msgbus', 'd3' ], (_, msgBus) ->
         create_nodes: ->
             @data.each (model,i) =>
                 node=
-                    id: i #model.get("game")._id # unique id from twitchAPI
+                    id: i
                     model: model
                     radius: @radius_scale(parseInt(model.get "viewers"))
                     value: model.get "viewers"

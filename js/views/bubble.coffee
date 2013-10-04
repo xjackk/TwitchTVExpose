@@ -48,7 +48,7 @@ define ['underscore', 'msgbus', 'd3' ], (_, msgBus) ->
                     radius: @radius_scale(parseInt(model.get "viewers"))
                     value: model.get "viewers"
                     name: model.get("game").name
-                    imageUrl: model.get("game").logo.large
+                    imageUrl: model.get("game").logo.medium
                     x: Math.random() * @width
                     y: Math.random() * @height
                     group: _.sample ["low","medium","high"]

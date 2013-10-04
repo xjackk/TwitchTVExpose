@@ -31,7 +31,7 @@ define ['underscore', 'msgbus', 'd3' ], (_, msgBus) ->
 
             max_amount = max_model.get "viewers"
 
-            @radius_scale = d3.scale.pow().exponent(0.5).domain([0, max_amount]).range([2, 100])
+            @radius_scale = d3.scale.pow().exponent(0.5).domain([0, max_amount]).range([3, 100])
 
             @create_nodes()
             @create_vis()

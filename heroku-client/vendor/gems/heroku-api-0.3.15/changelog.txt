@@ -1,0 +1,247 @@
+0.3.15 11/03/2013
+=================
+
+add get__dyno_types for retrieving process types
+
+0.3.14 07/03/2013
+=================
+
+bump excon dep
+
+0.3.13 06/20/2013
+=================
+
+clarify legacy vs platform API usage
+define rate limit specific exception
+bump excon dep
+
+0.3.12 06/11/2013
+=================
+
+add put_formation
+bump excon dep
+
+0.3.11 05/21/2013
+=================
+
+bump excon dep
+
+0.3.10 05/13/2013
+=================
+
+add exception for rate limiting
+better user/pass handling at login
+avoid dumping user/pass on error
+bump excon dep
+
+0.3.9 04/01/2013
+================
+
+bump excon dep
+update travis-ci address in readme
+add details around mock usage and simulated accounts
+
+0.3.8 02/27/2013
+================
+
+document custom headers
+remove SHARED_DATABASE from mocks
+clarify cedar scaling
+clarify README examples
+return more helpful error for blank app
+add legacy tier to mocks
+
+
+0.3.7 11/19/2012
+================
+
+bump excon to get https proxy fixes
+
+0.3.6 10/31/2012
+================
+
+bump excon to latest
+allow username/password params to automagically lookup api_key
+readme cleanup/fixes
+
+0.3.5 09/11/2012
+================
+
+add get_attachments and mocks
+update enable features usage and mocks to use 200/201 based on update/create
+
+0.3.4 08/15/2012
+================
+
+update excon to get SSLv3 fix
+
+0.3.3 08/15/2012
+================
+
+update to more realistic self signed cert in tests
+update body format for delete_ssl_endpoint
+vendor latest okjson
+patch okjson to work around encoding bug
+bump excon and use blocking requests
+
+0.3.2 08/01/2012
+================
+
+don't request v3 apis
+first pass at ssl_endpoints support (no mocks yet)
+bump excon dep
+
+0.3.1 07/20/2012
+================
+
+fix bug in maintenance mocks not being reset after app delet
+
+0.3.0 07/20/2012
+================
+
+fixes for url segment escaping of config_vars, domains and keys
+add get_app_maintenance
+
+0.2.13 07/18/2012
+=================
+
+bump excon to rescue nonblock errors from readline
+
+0.2.12 07/17/2012
+=================
+
+more last minute excon fixes (proxies are hard)
+
+0.2.11 07/17/2012
+=================
+
+excon bump for further fixes
+
+0.2.10 07/16/2012
+=================
+
+excon bump for fixes
+
+0.2.9 07/16/2012
+================
+
+bump excon dep to get proxy fixes
+
+0.2.8 07/08/2012
+================
+
+return to OkJson usage, as json breaks with some legacy toolbelt installs
+
+0.2.7 07/05/2012
+================
+
+doc fixes (fixes delete_addon and improves consistency)
+post_collaborator returns 201 when users does not yet exist
+use json (instead of okjson) when available
+update excon dependency
+
+0.2.6 06/21/2012
+================
+
+processes scale mocks now more accurately update process list
+
+0.2.5 06/13/2012
+================
+
+make post_release release param optional (defaults to latest)
+fix for contructing addon_params
+fail gracefully on non-http-status errors
+
+0.2.4 05/31/2012
+================
+
+fix overly lax GET /user stub reveealed by changes in excon 0.14.0
+
+0.2.3 05/31/2012
+================
+
+fix overly lax DELETE /user/keys stub revealed by changes in excon 0.14.0
+
+0.2.2 05/31/2012
+================
+
+bump excon dep for improved stubs/instrumentation
+
+0.2.1 05/24/2012
+================
+
+update post_ps to properly munge ps_env params
+
+0.2.0 05/23/2012
+================
+
+fix mocks for stack requests
+add features (labs) functionality
+
+0.1.8 05/21/2012
+================
+
+fix tests to be individually runnable
+update cache function to get user data
+update domain tests to match new default plugins
+update collaborators mocks to be more accurate
+update domain tests to use random_domain
+use better transfer targets in app tests
+fix timestamp generation in mocks
+fix release creation in mocks
+fix release rollback mocks to rollback to last when no version is given
+more accurate addons mocks
+more accurate process mocks for attached processes
+
+
+0.1.7 05/15/2012
+================
+
+consolidate NotFound error handling to work more like other errors
+fixes for ps:scale mock accuracy
+fix default command for cedar web process mocks
+
+0.1.6 05/09/2012
+================
+
+fixes for GET /apps/:app/releases/:release mocks
+
+0.1.5 05/09/2012
+================
+
+add support for GET /apps/:app/releases/current
+
+0.1.4 05/09/2012
+================
+
+add DELETE /domains
+add POST /login
+
+0.1.3 05/03/2012
+================
+
+update README examples to include put_app
+correct mocks to change git/web urls during app rename
+split out known heroku errors into their own error classes
+
+0.1.2 04/10/2012
+================
+
+less aggressive gzip usage (checks content-encoding)
+update cache
+
+0.1.1 04/06/2012
+================
+
+readme/docs updates and fixes
+add get_user method
+request/use gzip responses
+update vendored okjson
+allow passing config data to addon install
+fix STACK usage in mocks
+bump excon dep
+
+0.1.0 02/02/2012
+================
+
+Initial release

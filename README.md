@@ -2,7 +2,7 @@
 
 TwitchTVExpose is a Single Page Client App implementing TwitchTV's API functionality. Using Backbone.Marionette, RequireJS, Coffeescript, and a little D3 view to mix things up.
 
-Check out the live site: [TwitchTVExpose](https://c9.io/xjackk/twitchtvexpose/workspace/index.htm)
+Check out the live site: [TwitchTVExpose](http://twitchtvexpose.herokuapp.com/)
 
 
 ![Screenshot][ss]
@@ -64,8 +64,8 @@ This project uses a "Rails-esque" approach-- *convention over configuration.*  A
 
 ![About App][about_app]
 
-All templates use [underscore](http://underscorejs.org) [configured for Mustache](https://github.com/xjackk/TwitchTVExpose/blob/master/js/config/underscore/templatesettings.coffee). 
-I follow an approach *similar* to Brian Mann's [BackboneRails](http://backbonerails.com) tutorials except he is using Rails and 
+All templates use [underscore](http://underscorejs.org) [configured for Mustache](https://github.com/xjackk/TwitchTVExpose/blob/master/js/config/underscore/templatesettings.coffee).
+I follow an approach *similar* to Brian Mann's [BackboneRails](http://backbonerails.com) tutorials except he is using Rails and
 Marionette.modules and I am using RequireJS/AMD modules with a Rails convention.  Sort of a Rails/AMD hybrid that works very well for me.
 
 Take a look at the About app above, see how the files are organized:
@@ -108,17 +108,17 @@ The primary entity used throughout is [js/entities/twitchtv.coffee](https://gith
 
 ####How this all works. (Featuring msgBus)
 
-You may be wondering how our msgBus works. 
+You may be wondering how our msgBus works.
 
 ~~~
 # msgbus decoupled from app
-define ["backbone.wreqr"], (Wreqr) ->    
+define ["backbone.wreqr"], (Wreqr) ->
     reqres: new Wreqr.RequestResponse()
     commands: new Wreqr.Commands()
     events: new Wreqr.EventAggregator()
 ~~~
 
-The msgBus allows app modules to set handlers for events, request/response and commands. These three patterns: **pub/sub**, **reqest/response** and **command** are bundled together in a ***msgbus*** module. 
+The msgBus allows app modules to set handlers for events, request/response and commands. These three patterns: **pub/sub**, **reqest/response** and **command** are bundled together in a ***msgbus*** module.
 The msgbus is used throughout the application and it provides an effective architecture for building de-coupled AMD style modules.  This enables the application to scale easily and efficiently. *The way to build large javascript applications is not to build large javascript applications...*
 
 A perfect example of this is how we pull in the info for our `header:entities`
@@ -178,7 +178,7 @@ Before describing code, lets take a look at the index.htm markup, it's very brie
 </html>
 ~~~
 
-The body contains a `<div id="header-region"></div>`,  `<div id="main-region" class="container"></div>` and a `<div id="footer-region"></div>`.  The #wrap is the [bootstrap](http://getbootstrap.com/examples/sticky-footer/) suggested way of creating a sticky footer. 
+The body contains a `<div id="header-region"></div>`,  `<div id="main-region" class="container"></div>` and a `<div id="footer-region"></div>`.  The #wrap is the [bootstrap](http://getbootstrap.com/examples/sticky-footer/) suggested way of creating a sticky footer.
 So this being a client side app, the UI interactions will be taking place inside the #main-region:
 
 
@@ -198,20 +198,20 @@ Here are all of our handlers for our regions.
 ```
     msgBus.reqres.setHandler "default:region",->
         app.mainRegion
-    
+
     msgBus.reqres.setHandler "header:region", ->
         app.headerRegion
-    
+
     msgBus.reqres.setHandler "footer:region", ->
         app.footerRegion
-    
+
     msgBus.reqres.setHandler "main:region", ->
         app.mainRegion
-    
+
     #debugging support
     msgBus.commands.setHandler "register:instance", (instance, id) ->
         app.register instance, id
-    
+
     msgBus.commands.setHandler "unregister:instance", (instance, id) ->
         app.unregister instance, id
 ```
@@ -230,7 +230,7 @@ Lastly, we add some execute commands, to start all of our apps, all right in one
         msgBus.commands.execute "start:about:app"
         msgBus.commands.execute "start:games:app"
         msgBus.commands.execute "start:playa:app"
-    
+
     app
 
 ```

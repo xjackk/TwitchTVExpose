@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["apps/playa/show/views", "controller/_base"], function(Views, AppController) {
+  define(["apps/playa/show/views", "controller/_base", "msgbus"], function(Views, AppController, msgBus) {
     var Controller, _ref;
     return Controller = (function(_super) {
       __extends(Controller, _super);
@@ -14,19 +14,37 @@
       }
 
       Controller.prototype.initialize = function(options) {
-        var model,
+        var channel, entities, game, games, model,
           _this = this;
         if (options == null) {
           options = {};
         }
-        model = options.model;
+        game = options.game, channel = options.channel, model = options.model;
+        console.log("Player Controller options", options);
+        console.log("game", game, "channel", channel, "model", model);
+        if (model === void 0) {
+          console.log("searching for ", game);
+          games = msgBus.reqres.request("search:games", game);
+          entities = games;
+        } else {
+          entities = model;
+        }
         this.layout = this.getLayoutView();
         this.listenTo(this.layout, "show", function() {
+          if (model === void 0) {
+            console.log("GAMES", games);
+            model = games.first();
+            console.log("MODEL", model);
+          }
           _this.playerRegion(model);
           _this.userRegion(model);
           return _this.chatRegion(model);
         });
-        return this.show(this.layout);
+        return this.show(this.layout, {
+          loading: {
+            entities: entities
+          }
+        });
       };
 
       Controller.prototype.playerRegion = function(model) {

@@ -2,7 +2,7 @@ define ["msgbus", "apps/streams/list/views", "controller/_base"  ], (msgBus, Vie
     class Controller extends AppController
         initialize:(options={})->
             {name} = options
-            console.log "streams:list:controller OPTIONS", options
+            #console.log "streams:list:controller OPTIONS", options
             streamEntities = msgBus.reqres.request "search:stream:entities", name
             view = @getListView streamEntities
 
@@ -11,7 +11,6 @@ define ["msgbus", "apps/streams/list/views", "controller/_base"  ], (msgBus, Vie
 
             @listenTo view, "scroll:more", ->
                 msgBus.reqres.request "streams:fetchmore"
-
 
             @show view,
                 loading: true

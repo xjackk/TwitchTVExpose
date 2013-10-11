@@ -4,7 +4,7 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(["entities/_backbone", "msgbus"], function(_Backbone, msgBus) {
-    var API, Game, GamesCollection, SearchCollection, Stream, StreamCollection, games, _ref, _ref1, _ref2, _ref3, _ref4;
+    var API, Game, GamesCollection, SearchCollection, SearchStreams, Stream, StreamCollection, games, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
     Game = (function(_super) {
       __extends(Game, _super);
 
@@ -27,12 +27,29 @@
       return Stream;
 
     })(_Backbone.Model);
+    SearchStreams = (function(_super) {
+      __extends(SearchStreams, _super);
+
+      function SearchStreams() {
+        _ref2 = SearchStreams.__super__.constructor.apply(this, arguments);
+        return _ref2;
+      }
+
+      SearchStreams.prototype.model = Stream;
+
+      SearchStreams.prototype.parse = function(response) {
+        return response.streams;
+      };
+
+      return SearchStreams;
+
+    })(_Backbone.Collection);
     SearchCollection = (function(_super) {
       __extends(SearchCollection, _super);
 
       function SearchCollection() {
-        _ref2 = SearchCollection.__super__.constructor.apply(this, arguments);
-        return _ref2;
+        _ref3 = SearchCollection.__super__.constructor.apply(this, arguments);
+        return _ref3;
       }
 
       SearchCollection.prototype.model = Game;
@@ -48,8 +65,8 @@
       __extends(GamesCollection, _super);
 
       function GamesCollection() {
-        _ref3 = GamesCollection.__super__.constructor.apply(this, arguments);
-        return _ref3;
+        _ref4 = GamesCollection.__super__.constructor.apply(this, arguments);
+        return _ref4;
       }
 
       GamesCollection.prototype.model = Game;
@@ -83,8 +100,7 @@
           }
         });
         return $.when(loaded).then(function() {
-          _this.loading = false;
-          return console.log("Loaded page", _this.offset + 1, "Games fetched so far", _this.length, "Total games available to fetch ", _this._total);
+          return _this.loading = false;
         });
       };
 
@@ -106,8 +122,8 @@
       __extends(StreamCollection, _super);
 
       function StreamCollection() {
-        _ref4 = StreamCollection.__super__.constructor.apply(this, arguments);
-        return _ref4;
+        _ref5 = StreamCollection.__super__.constructor.apply(this, arguments);
+        return _ref5;
       }
 
       StreamCollection.prototype.model = Stream;
@@ -217,10 +233,11 @@
         offset: 0
       });
     });
-    msgBus.reqres.setHandler("game:search", function(query) {
-      return API.searchGames("games/search", {
-        q: encodeURIComponent(query),
-        type: "suggest"
+    msgBus.reqres.setHandler("search:games", function(query) {
+      return API.searchGames("search/games", {
+        q: query,
+        type: "suggest",
+        live: false
       });
     });
     msgBus.reqres.setHandler("games:searchName", function(query) {

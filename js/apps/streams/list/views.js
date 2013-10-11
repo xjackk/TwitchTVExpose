@@ -56,7 +56,6 @@
           margin = 200;
           console.log("virtualHeight:", virtualHeight, "scrollTop:", scrollTop, "elHeight", this.$el.height());
           if ((scrollTop + margin) >= virtualHeight) {
-            console.log("scroll:more");
             return this.trigger("scroll:more");
           }
         };

@@ -4,6 +4,11 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
     class Game extends _Backbone.Model
     class Stream extends _Backbone.Model
 
+    class SearchStreams extends _Backbone.Collection
+        model: Stream
+        parse: (response) ->
+            response.streams
+
     class SearchCollection extends _Backbone.Collection
         model: Game
         parse: (response) ->
@@ -35,7 +40,7 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
                     offset: @offset * @limit
             $.when(loaded).then =>
                 @loading=false
-                console.log "Loaded page", @offset+1, "Games fetched so far", @length, "Total games available to fetch ", @_total
+                #console.log "Loaded page", @offset+1, "Games fetched so far", @length, "Total games available to fetch ", @_total
 
         searchName: (_name)->
             @find (model)->
@@ -112,22 +117,25 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             _.defaults params,
                 oauth_token: msgBus.reqres.request "get:current:token"
             streams = new StreamCollection
-            streams.game=params.q
+            streams.game=params.q #tack this on/custom class property
             streams.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
             streams.fetch
                 reset: true
                 data: params
             streams
 
+
     msgBus.reqres.setHandler "games:top:entities", ->
         API.getGames "games/top",
             limit: 50
             offset: 0
 
-    msgBus.reqres.setHandler "game:search", (query)->
-        API.searchGames "games/search",
-            q: encodeURIComponent query
+    msgBus.reqres.setHandler "search:games", (query)->
+        API.searchGames "search/games",
+            q: query #encodeURIComponent query
             type: "suggest"
+            live: false
+
 
     msgBus.reqres.setHandler "games:searchName", (query)->
         games.searchName query

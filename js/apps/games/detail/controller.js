@@ -17,10 +17,8 @@
         var gameModel, gameName,
           _this = this;
         gameName = options.gameName, gameModel = options.gameModel;
-        console.log("OPTIONS passed to detail controller", options);
         if (gameModel === void 0) {
           gameModel = msgBus.reqres.request("games:searchName", gameName);
-          console.log("GameModel", gameModel);
         }
         this.layout = this.getLayoutView();
         this.listenTo(this.layout, "show", function() {

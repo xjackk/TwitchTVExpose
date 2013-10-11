@@ -17,11 +17,8 @@ define ["msgbus", "marionette", "backbone", "apps/games/list/controller","apps/g
 
     msgBus.events.on "app:game:detail", (model) ->
         Backbone.history.navigate "games/#{model.get("game").name}/detail", trigger:false
-        console.log "APP:GAMES:LIST=> (from list controller) MODEL", model
         API.detail model.get("game").name, model
 
     msgBus.commands.setHandler "start:games:app", ->
         new Router
             controller: API
-
-

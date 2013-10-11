@@ -1,15 +1,33 @@
-define ["apps/playa/show/views", "controller/_base"], (Views, AppController) ->
+define ["apps/playa/show/views", "controller/_base","msgbus"], (Views, AppController, msgBus) ->
 
     class Controller extends AppController
         initialize:(options={})->
-            {model} = options
+            {game, channel, model} = options
+            console.log "Player Controller options", options
+            console.log "game", game, "channel", channel, "model", model
+
+            if model is undefined
+                console.log "searching for ", game
+                games = msgBus.reqres.request "search:games", game
+                entities=games
+            else
+                entities=model
+
+
+
             @layout = @getLayoutView()
             @listenTo @layout, "show", =>
+                if model is undefined
+                    console.log "GAMES",games
+                    model=games.first()
+                    console.log "MODEL",model
                 @playerRegion model
                 @userRegion model
                 @chatRegion model
 
-            @show @layout
+            @show @layout,
+                loading:
+                    entities: entities
 
         playerRegion: (model)  ->
             player = @getPlayerView model

@@ -36,7 +36,6 @@
       Backbone.history.navigate("games/" + (model.get("game").name) + "/detail", {
         trigger: false
       });
-      console.log("APP:GAMES:LIST=> (from list controller) MODEL", model);
       return API.detail(model.get("game").name, model);
     });
     return msgBus.commands.setHandler("start:games:app", function() {

@@ -19,7 +19,6 @@
           options = {};
         }
         name = options.name;
-        console.log("streams:list:controller OPTIONS", options);
         streamEntities = msgBus.reqres.request("search:stream:entities", name);
         view = this.getListView(streamEntities);
         this.listenTo(view, "childview:stream:item:clicked", function(child, args) {

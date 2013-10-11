@@ -14,15 +14,17 @@
       }
 
       Router.prototype.appRoutes = {
-        "player": "show"
+        "player/:game/:channel": "show"
       };
 
       return Router;
 
     })(Marionette.AppRouter);
     API = {
-      show: function(model) {
+      show: function(game, channel, model) {
         return new Controller({
+          game: game,
+          channel: channel,
           model: model
         });
       }
@@ -32,11 +34,11 @@
         controller: API
       });
     });
-    return msgBus.events.on("app:playa:show", function(model) {
-      Backbone.history.navigate("games/player/" + (model.get("game")) + "/" + (model.get("channel").display_name), {
+    return msgBus.events.on("app:playa:show", function(game, channel, streamModel) {
+      Backbone.history.navigate("player/" + (streamModel.get("game")) + "/" + (streamModel.get("channel").display_name), {
         trigger: false
       });
-      return API.show(model);
+      return API.show(streamModel.get("game"), streamModel.get("channel").display_name, streamModel);
     });
   });
 

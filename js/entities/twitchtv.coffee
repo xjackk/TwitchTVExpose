@@ -142,7 +142,7 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
 
     msgBus.reqres.setHandler "games:top:entities", ->
         API.getGames "games/top",
-            limit: 12
+            limit: 24
             offset: 0
 
     msgBus.reqres.setHandler "search:games", (query)->

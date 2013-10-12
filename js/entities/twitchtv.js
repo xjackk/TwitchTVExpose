@@ -260,7 +260,7 @@
     };
     msgBus.reqres.setHandler("games:top:entities", function() {
       return API.getGames("games/top", {
-        limit: 12,
+        limit: 24,
         offset: 0
       });
     });

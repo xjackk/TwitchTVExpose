@@ -4,7 +4,7 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(["entities/_backbone", "msgbus"], function(_Backbone, msgBus) {
-    var API, Game, GamesCollection, SearchCollection, SearchStreams, Stream, StreamCollection, games, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
+    var API, Game, GamesCollection, SearchCollection, SearchStreams, Stream, StreamCollection, StreamGet, games, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
     Game = (function(_super) {
       __extends(Game, _super);
 
@@ -27,12 +27,27 @@
       return Stream;
 
     })(_Backbone.Model);
+    StreamGet = (function(_super) {
+      __extends(StreamGet, _super);
+
+      function StreamGet() {
+        _ref2 = StreamGet.__super__.constructor.apply(this, arguments);
+        return _ref2;
+      }
+
+      StreamGet.prototype.parse = function(response) {
+        return response.stream;
+      };
+
+      return StreamGet;
+
+    })(_Backbone.Model);
     SearchStreams = (function(_super) {
       __extends(SearchStreams, _super);
 
       function SearchStreams() {
-        _ref2 = SearchStreams.__super__.constructor.apply(this, arguments);
-        return _ref2;
+        _ref3 = SearchStreams.__super__.constructor.apply(this, arguments);
+        return _ref3;
       }
 
       SearchStreams.prototype.model = Stream;
@@ -48,8 +63,8 @@
       __extends(SearchCollection, _super);
 
       function SearchCollection() {
-        _ref3 = SearchCollection.__super__.constructor.apply(this, arguments);
-        return _ref3;
+        _ref4 = SearchCollection.__super__.constructor.apply(this, arguments);
+        return _ref4;
       }
 
       SearchCollection.prototype.model = Game;
@@ -65,8 +80,8 @@
       __extends(GamesCollection, _super);
 
       function GamesCollection() {
-        _ref4 = GamesCollection.__super__.constructor.apply(this, arguments);
-        return _ref4;
+        _ref5 = GamesCollection.__super__.constructor.apply(this, arguments);
+        return _ref5;
       }
 
       GamesCollection.prototype.model = Game;
@@ -122,8 +137,8 @@
       __extends(StreamCollection, _super);
 
       function StreamCollection() {
-        _ref5 = StreamCollection.__super__.constructor.apply(this, arguments);
-        return _ref5;
+        _ref6 = StreamCollection.__super__.constructor.apply(this, arguments);
+        return _ref6;
       }
 
       StreamCollection.prototype.model = Stream;
@@ -225,11 +240,27 @@
           data: params
         });
         return streams;
+      },
+      getStream: function(url, params) {
+        var stream;
+        if (params == null) {
+          params = {};
+        }
+        console.log("getStream", url, params);
+        _.defaults(params, {
+          oauth_token: msgBus.reqres.request("get:current:token")
+        });
+        stream = new StreamGet;
+        stream.url = "https://api.twitch.tv/kraken/" + url + "?callback=?";
+        stream.fetch({
+          data: params
+        });
+        return stream;
       }
     };
     msgBus.reqres.setHandler("games:top:entities", function() {
       return API.getGames("games/top", {
-        limit: 50,
+        limit: 12,
         offset: 0
       });
     });
@@ -243,12 +274,15 @@
     msgBus.reqres.setHandler("games:searchName", function(query) {
       return games.searchName(query);
     });
-    return msgBus.reqres.setHandler("search:stream:entities", function(game) {
+    msgBus.reqres.setHandler("search:stream:entities", function(game) {
       return API.getStreams("search/streams", {
         q: game,
         limit: 12,
         offset: 0
       });
+    });
+    return msgBus.reqres.setHandler("search:stream:model", function(channel) {
+      return API.getStream("streams/" + channel);
     });
   });
 

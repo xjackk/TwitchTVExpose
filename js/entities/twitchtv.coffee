@@ -4,6 +4,10 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
     class Game extends _Backbone.Model
     class Stream extends _Backbone.Model
 
+    class StreamGet extends _Backbone.Model
+        parse: (response) ->
+            response.stream
+
     class SearchStreams extends _Backbone.Collection
         model: Stream
         parse: (response) ->
@@ -124,10 +128,21 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
                 data: params
             streams
 
+        # get stream by channel
+        getStream: (url, params = {}) ->
+            console.log "getStream", url, params
+            _.defaults params,
+                oauth_token: msgBus.reqres.request "get:current:token"
+            stream = new StreamGet # model
+            stream.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
+            stream.fetch
+                data: params
+            stream
+
 
     msgBus.reqres.setHandler "games:top:entities", ->
         API.getGames "games/top",
-            limit: 50
+            limit: 12
             offset: 0
 
     msgBus.reqres.setHandler "search:games", (query)->
@@ -146,4 +161,5 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             limit: 12
             offset: 0
 
-
+    msgBus.reqres.setHandler "search:stream:model", (channel)->
+        API.getStream "streams/#{channel}"

@@ -7,7 +7,7 @@ define ["msgbus", "backbone", "marionette", "apps/playa/show/controller"], (msgB
     API =
         show: (game,channel,model) ->
             new Controller
-                game: game
+                #game: game
                 channel: channel
                 model: model
 
@@ -15,7 +15,7 @@ define ["msgbus", "backbone", "marionette", "apps/playa/show/controller"], (msgB
         new Router
             controller: API
 
-    msgBus.events.on "app:playa:show", (game,channel,streamModel) ->
+    msgBus.events.on "app:playa:show", (streamModel) ->
         #console.log model.get("channel").display_name
         Backbone.history.navigate "player/#{streamModel.get("game")}/#{streamModel.get("channel").display_name}", trigger:false
         API.show streamModel.get("game"),streamModel.get("channel").display_name, streamModel

@@ -23,7 +23,6 @@
     API = {
       show: function(game, channel, model) {
         return new Controller({
-          game: game,
           channel: channel,
           model: model
         });
@@ -34,7 +33,7 @@
         controller: API
       });
     });
-    return msgBus.events.on("app:playa:show", function(game, channel, streamModel) {
+    return msgBus.events.on("app:playa:show", function(streamModel) {
       Backbone.history.navigate("player/" + (streamModel.get("game")) + "/" + (streamModel.get("channel").display_name), {
         trigger: false
       });

@@ -14,35 +14,25 @@
       }
 
       Controller.prototype.initialize = function(options) {
-        var channel, entities, game, games, model,
+        var channel, model,
           _this = this;
         if (options == null) {
           options = {};
         }
-        game = options.game, channel = options.channel, model = options.model;
-        console.log("Player Controller options", options);
-        console.log("game", game, "channel", channel, "model", model);
+        channel = options.channel, model = options.model;
+        console.log("Player Controller  options", options);
         if (model === void 0) {
-          console.log("searching for ", game);
-          games = msgBus.reqres.request("search:games", game);
-          entities = games;
-        } else {
-          entities = model;
+          model = msgBus.reqres.request("search:stream:model", channel);
         }
         this.layout = this.getLayoutView();
         this.listenTo(this.layout, "show", function() {
-          if (model === void 0) {
-            console.log("GAMES", games);
-            model = games.first();
-            console.log("MODEL", model);
-          }
           _this.playerRegion(model);
           _this.userRegion(model);
           return _this.chatRegion(model);
         });
         return this.show(this.layout, {
           loading: {
-            entities: entities
+            entities: model
           }
         });
       };

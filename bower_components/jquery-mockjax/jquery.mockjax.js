@@ -1,7 +1,7 @@
 /*!
  * MockJax - jQuery Plugin to Mock Ajax requests
  *
- * Version:  1.5.2
+ * Version:  1.5.3
  * Released:
  * Home:   http://github.com/appendto/jquery-mockjax
  * Author:   Jonathan Sharp (http://jdsharp.com)
@@ -69,10 +69,11 @@
 				identical = false;
 				return identical;
 			} else {
-				if ( typeof live[k] == 'object' ) {
+				// This will allow to compare Arrays
+				if ( typeof live[k] === 'object' && live[k] !== null ) {
 					identical = identical && isMockDataEqual(mock[k], live[k]);
 				} else {
-					if ( $.isFunction( mock[k].test ) ) {
+					if ( mock[k] && $.isFunction( mock[k].test ) ) {
 						identical = identical && mock[k].test(live[k]);
 					} else {
 						identical = identical && ( mock[k] == live[k] );
@@ -83,6 +84,11 @@
 
 		return identical;
 	}
+
+    // See if a mock handler property matches the default settings
+    function isDefaultSetting(handler, property) {
+        return handler[property] === $.mockjaxSettings[property];
+    }
 
 	// Check the given handler should mock the given request
 	function getMockForRequest( handler, requestSettings ) {
@@ -193,8 +199,14 @@
 				complete: function(xhr) {
 					mockHandler.responseXML = xhr.responseXML;
 					mockHandler.responseText = xhr.responseText;
-					mockHandler.status = xhr.status;
-					mockHandler.statusText = xhr.statusText;
+                    // Don't override the handler status/statusText if it's specified by the config
+                    if (isDefaultSetting(mockHandler, 'status')) {
+					    mockHandler.status = xhr.status;
+                    }
+                    if (isDefaultSetting(mockHandler, 'statusText')) {
+					    mockHandler.statusText = xhr.statusText;
+                    }
+
 					this.responseTimer = setTimeout(process, mockHandler.responseTime || 0);
 				}
 			});
@@ -468,8 +480,13 @@
 			return mockRequest;
 		}
 
-		// We don't have a mock request, trigger a normal request
-		return _ajax.apply($, [origSettings]);
+		// We don't have a mock request
+		if($.mockjaxSettings.throwUnmocked === true) {
+			throw('AJAX not mocked: ' + origSettings.url);
+		}
+		else { // trigger a normal request
+			return _ajax.apply($, [origSettings]);
+		}
 	}
 
 	/**
@@ -536,20 +553,21 @@
 				}
 			}
 		},
-		logging:      true,
-		status:       200,
-		statusText:   "OK",
-		responseTime: 500,
-		isTimeout:    false,
-		contentType:  'text/plain',
-		response:     '',
-		responseText: '',
-		responseXML:  '',
-		proxy:        '',
-		proxyType:    'GET',
+		logging:       true,
+		status:        200,
+		statusText:    "OK",
+		responseTime:  500,
+		isTimeout:     false,
+		throwUnmocked: false,
+		contentType:   'text/plain',
+		response:      '',
+		responseText:  '',
+		responseXML:   '',
+		proxy:         '',
+		proxyType:     'GET',
 
-		lastModified: null,
-		etag:         '',
+		lastModified:  null,
+		etag:          '',
 		headers: {
 			etag: 'IJF@H#@923uf8023hFO@I#H#',
 			'content-type' : 'text/plain'

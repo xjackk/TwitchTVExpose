@@ -3,7 +3,7 @@ Holder
 
 Holder uses the `canvas` element and the data URI scheme to render image placeholders entirely in browser.
 
-[Bootstrap](http://twitter.github.com/bootstrap/) uses Holder for thumbnails.
+[Bootstrap](http://getbootstrap.com) uses Holder for thumbnails.
 
 How to use it
 -------------
@@ -118,7 +118,7 @@ Specifying a dimension in percentages creates a fluid placeholder that responds 
 <img data-src="holder.js/100%x75/social">
 ```
 
-By default, the fluid placeholder will show its current size in pixels.
+By default, the fluid placeholder will show its current size in pixels. To display the original dimensions, i.e. 100%x75, add the "literal" flag like so: `holder.js/100%x75/literal`.
 
 Automatically sized placeholders
 --------------------------------
@@ -188,7 +188,7 @@ Browser support
 License
 -------
 
-Holder is provided under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0). Commercial use requires attribution.
+Holder is provided under the [MIT License](http://opensource.org/licenses/MIT).
 
 Credits
 -------

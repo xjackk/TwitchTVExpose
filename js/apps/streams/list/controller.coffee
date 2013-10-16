@@ -10,7 +10,7 @@ define ["msgbus", "apps/streams/list/views", "controller/_base"  ], (msgBus, Vie
                 msgBus.events.trigger "app:playa:show", args.model
 
             @listenTo view, "scroll:more", ->
-                msgBus.reqres.request "streams:fetchmore"
+                msgBus.reqres.request "streams:fetchmore"  # event handled by the streams entitiy
 
             @show view,
                 loading: true

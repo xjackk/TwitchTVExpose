@@ -68,14 +68,14 @@ All templates use [underscore](http://underscorejs.org) [configured for Mustache
 I follow an approach *similar* to Brian Mann's [BackboneRails](http://backbonerails.com) tutorials except he is using Rails and
 Marionette.modules and I am using RequireJS/AMD modules with a Rails convention.  Sort of a Rails/AMD hybrid that works very well for me.
 
-Take a look at the About app above, see how the files are organized:
+Take a look at the About app above and notice how the files are organized:
 + apps/about/app.coffee  (the application)
 + apps/about/show/controller.coffee (the show controller)
 + apps/about/show/templates/*.htm  (various templates)
 + apps/about/show/views.coffee  (modular views)
 + apps/about/show/templates.coffee (modular templates)
 
-*I follow this convention for all the apps in this project...*
+*This convention is followed for all apps in this project...*
 
 [about_app]: https://github.com/xjackk/twitchtvexpose/raw/master/doc/image/aboutapp.png "modular app convention"
 
@@ -108,7 +108,7 @@ The primary entity used throughout is [js/entities/twitchtv.coffee](https://gith
 
 ####How this all works. (Featuring msgBus)
 
-You may be wondering how our msgBus works.
+The msgbus module exposes the reqest/response, command and events objects from  *backbone.wreqr* works.
 
 ~~~
 # msgbus decoupled from app
@@ -118,12 +118,12 @@ define ["backbone.wreqr"], (Wreqr) ->
     events: new Wreqr.EventAggregator()
 ~~~
 
-The msgBus allows app modules to set handlers for events, request/response and commands. These three patterns: **pub/sub**, **reqest/response** and **command** are bundled together in a ***msgbus*** module.
-The msgbus is used throughout the application and it provides an effective architecture for building de-coupled AMD style modules.  This enables the application to scale easily and efficiently. *The way to build large javascript applications is not to build large javascript applications...*
+The msgBus allows app modules to set handlers for: events, request/response and commands. These three patterns: **pub/sub**, **reqest/response** and **command** are bundled together in the ***msgbus*** module.
+Msgbus is used throughout the application providing an effective architecture for building de-coupled AMD style modules.  This enables the application to scale easily and efficiently. *The way to build large javascript applications is not to build large javascript applications...*
 
-A perfect example of this is how we pull in the info for our `header:entities`
+A quick example of this is can be seen in the `header:entities`
 
-This decoupled code right here provides us with a way to dynamically pull in these entities into our header, without repeating ourselves. This keeps a very "modular" approach to building this app.
+This decoupled code right here provides us with a way to dynamically pull in these entities the header app, without repeating ourselves. This keeps a very "modular" approach to building this app.
 
 [`js/entities/header.coffee`](https://github.com/xjackk/TwitchTVExpose/blob/master/js/entities/header.coffee)
 
@@ -142,7 +142,8 @@ define ["backbone","msgbus"], (Backbone, msgBus ) ->
         API.getHeaders()
 ~~~
 
-Notice how the header entity module listens for a `header:entities` request and responds with a static `Backbone.Collection`
+Notice how the header entity module uses the msgBus module to listen for a `header:entities` request and responds with a static `Backbone.Collection`
+
 
 ---
 
@@ -510,13 +511,12 @@ This is where we will be showing our `top/games` call from. From there, we can p
 Here is the start of our app, where we create <strong>two</strong> controllers. Check it out.
 
 ```
-
 define ["msgbus", "marionette", "backbone", "apps/games/list/controller","apps/games/detail/controller"], (msgBus, Marionette, Backbone, ListController, DetailController) ->
 
     class Router extends Marionette.AppRouter
         appRoutes:
-        "games": "list"
-        "games/:id/detail": "detail"
+            "games": "list"
+            "games/:id/detail": "detail"
 
     API =
         list: ->
@@ -524,19 +524,17 @@ define ["msgbus", "marionette", "backbone", "apps/games/list/controller","apps/g
 
         detail: (id, model) ->
             new DetailController
-            gameName: id
-            gameModel: model
+                gameName: id
+                gameModel: model
 
 
     msgBus.events.on "app:game:detail", (model) ->
         Backbone.history.navigate "games/#{model.get("game").name}/detail", trigger:false
-        console.log "APP:GAMES:LIST=> (from list controller) MODEL", model
         API.detail model.get("game").name, model
 
     msgBus.commands.setHandler "start:games:app", ->
         new Router
             controller: API
-
 ```
 
 Here we create our `list` controller, as well as our `detail` controller. This is because we essentially want to create two views of this.
@@ -555,42 +553,45 @@ Let's get right down to it, starting with the `list` controller.
 define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (msgBus, Views, AppController, Backbone) ->
     class Controller extends AppController
         initialize: (options={})->
-            entities=msgBus.reqres.request "games:top:entities"
+            @entities=msgBus.reqres.request "games:top:entities"
             @layout = @getLayoutView()
 
             @listenTo @layout, "show", =>
-            @gameRegion entities
-            #@showIntroView()
+                @gameRegion() # @entities
+
+            @listenTo @layout, "show:bubble", =>
+                @gameBubbleRegion() # @entities
 
             @show @layout,
                 loading:
-                    entities: entities
+                    entities: @entities
 
-        gameRegion: (collection) ->
-            view = @getGameView collection
-            @listenTo view, "childview:game:item:clicked", (child, args) -> # listen to events from itemview (we've overridden the eventnamePrefix to childview)
-            console.log "game:item:clicked => model", args.model
-            msgBus.events.trigger "app:game:detail", args.model
+        gameRegion:   ->
+            view = @getGameView @entities
+            @listenTo view, "childview:game:item:clicked", (child, args) ->  # listen to events from itemview (we've overridden the eventnamePrefix to childview)
+                #console.log "game:item:clicked => model", args.model
+                msgBus.events.trigger "app:game:detail", args.model
 
             @listenTo view, "scroll:more", ->
-            msgBus.reqres.request "games:fetchmore"
+                msgBus.reqres.request "games:fetchmore"
 
             @layout.gameRegion.show view
 
+        gameBubbleRegion:   ->
+            view = @getBubbleView @entities
+            @layout.gameRegion.show view
+
+        getBubbleView: (collection) ->
+            new Views.GamesBubbleView
+                collection: collection
+
+
         getGameView: (collection) ->
             new Views.TopGameList
-            collection: collection
+                collection: collection
 
         getLayoutView: ->
             new Views.Layout
-
-        # getIntroView: ->
-            # new Views.Intro
-
-        # showIntroView: ->
-        # @introView = @getIntroView()
-        # @show @introView, region: @layout.streamRegion
-
 ```
 
 This controller is all about working directly with our Twitch API. We set entities as our msgBus request to get the `"games:top:entities"`
@@ -607,20 +608,19 @@ Lastly in this controller, we have our `getGameView` function which passes a col
 After our `list` controller, we have our `detail` controller. This controller will be dealing with our games detail view. Let's check it out.
 
 ```
-
 define ["msgbus", "apps/games/detail/views", "controller/_base", "backbone" ], (msgBus, Views, AppController, Backbone) ->
     class Controller extends AppController
         initialize: (options) ->
             {gameName, gameModel} = options
-            console.log "OPTIONS passed to detail controller", options
+            #console.log "OPTIONS passed to detail controller", options
 
             if gameModel is undefined
                 gameModel = msgBus.reqres.request "games:searchName", gameName
-                console.log "GameModel", gameModel
+                #console.log "GameModel", gameModel
 
             @layout = @getLayoutView()
             @listenTo @layout, "show", =>
-            @gameRegion gameModel
+                @gameRegion gameModel
 
             @show @layout,
                 loading:
@@ -635,11 +635,10 @@ define ["msgbus", "apps/games/detail/views", "controller/_base", "backbone" ], (
 
         getGameView: (model) ->
             new Views.Detail
-            model: model
+                model: model
 
         getLayoutView: ->
             new Views.Layout
-
 ```
 
 You can see right from the define statement, this controller is going to be working directly with our `games/detail/view`.
@@ -1035,12 +1034,21 @@ This app was built solely around a popular streaming site's API. Almost all the 
 We can take a direct look at the huge block of code that we know as our [Twitch Entities](https://github.com/xjackk/TwitchTVExpose/blob/master/js/entities/twitchtv.coffee).
 
 ```
-
 define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
-# this _fetch is our private property added to overridden config backbone sync
+    # this _fetch is our private property added to overridden config backbone sync
 
     class Game extends _Backbone.Model
     class Stream extends _Backbone.Model
+
+    # differennt class to handle parse of .stream object from the twitch API: looking for a single model
+    class StreamGet extends _Backbone.Model
+        parse: (response) ->
+            response.stream
+
+    class SearchStreams extends _Backbone.Collection
+        model: Stream
+        parse: (response) ->
+            response.streams
 
     class SearchCollection extends _Backbone.Collection
         model: Game
@@ -1052,7 +1060,7 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
 
         initialize: ->
             msgBus.reqres.setHandler "games:fetchmore", =>
-            @moreGames()
+                @moreGames()
 
             @limit = 50
             @offset = 0
@@ -1061,19 +1069,19 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             @_total = null
 
         moreGames: ->
-            return true if @loading or @length >= @_total
+            return true  if @loading or @length >= @_total
             @loading=true
             @offset++
             #console.log "fetching page #{@offset+1} of games"
             loaded = @fetch
-            remove: false # remove false appends new games to the existing collection
-            data:
-            oauth_token: msgBus.reqres.request "get:current:token"
-            limit: @limit
-            offset: @offset * @limit
+                remove: false
+                data:
+                    oauth_token: msgBus.reqres.request "get:current:token"
+                    limit: @limit
+                    offset: @offset * @limit
             $.when(loaded).then =>
                 @loading=false
-                console.log "Loaded page", @offset+1, "Games fetched so far", @length, "Total games available to fetch ", @_total
+                #console.log "Loaded page", @offset+1, "Games fetched so far", @length, "Total games available to fetch ", @_total
 
         searchName: (_name)->
             @find (model)->
@@ -1081,8 +1089,8 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
 
 
         parse: (response) ->
-            {@_total}=response # pull of the _total items in the list here
-            response.top # the .top array get loaded into our backbone collection
+            {@_total}=response
+            response.top
 
 
     class StreamCollection extends _Backbone.Collection
@@ -1090,7 +1098,7 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
 
         initialize: ->
             msgBus.reqres.setHandler "streams:fetchmore", =>
-            @moreStreams()
+                @moreStreams()
 
             @limit = 12
             @offset = 0
@@ -1098,45 +1106,44 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             @previousSearch = null
             @_total = null
 
-            moreStreams: ->
-                return true if @loading or @length >= @_total
-                @loading=true
-                @offset++
-                #console.log "fetching page #{@offset+1} of games"
-                loaded = @fetch
-                remove: false # remove false appends new games to the existing collection
+        moreStreams: ->
+            return true  if @loading or @length >= @_total
+            @loading=true
+            @offset++
+            loaded = @fetch
+                remove: false
                 data:
                     oauth_token: msgBus.reqres.request "get:current:token"
                     q: @game
                     limit: @limit
                     offset: @offset * @limit
-                $.when(loaded).then =>
-                    @loading=false
+            $.when(loaded).then =>
+                @loading=false
 
 
         parse: (resp) ->
             {@_total}=resp
             resp.streams
 
-    # keep a permanent copy of the games collection only refresh every 45 seconds for speedier page action
+    # caching timers initialize
     games = new GamesCollection
-    games.timeStamp = new Date() #archive
+    games.timeStamp = new Date()
 
+
+    #PUBLIC API
     API =
         getGames: (url, params = {}) ->
-            #now = new Date()
-            #diff = ((new Date() - games.timeStamp ) / 1000)
+            #45 seconds elapsed time between TOP game fetches
             elapsedSeconds = Math.round(((new Date() - games.timeStamp ) / 1000) % 60)
-            #console.log "elapsed seconds", elapsedSeconds, now, games.timeStamp
             if elapsedSeconds > 45 or games.length is 0
                 _.defaults params,
                     oauth_token: msgBus.reqres.request "get:current:token"
-            games = new GamesCollection
-            games.timeStamp = new Date() #new time stamp
-            games.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
-            games.fetch
-                reset: true
-                data: params
+                games = new GamesCollection
+                games.timeStamp = new Date()
+                games.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
+                games.fetch
+                    reset: true
+                    data: params
             games
 
         searchGames: (url, params = {}) ->
@@ -1154,33 +1161,51 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             _.defaults params,
                 oauth_token: msgBus.reqres.request "get:current:token"
             streams = new StreamCollection
-            streams.game=params.q
+            streams.game=params.q #tack this on/custom class property
             streams.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
             streams.fetch
                 reset: true
                 data: params
             streams
 
+        # get stream by channel
+        getStream: (url, params = {}) ->
+            console.log "getStream", url, params
+            _.defaults params,
+                oauth_token: msgBus.reqres.request "get:current:token"
+            stream = new StreamGet # model
+            stream.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
+            stream.fetch
+                data: params
+            stream
+
+    # initial collection search 'top games' twitchAPI
     msgBus.reqres.setHandler "games:top:entities", ->
         API.getGames "games/top",
-            limit: 50
+            limit: 24
             offset: 0
 
-        # shiny and new this doesn't seem to work...
-    msgBus.reqres.setHandler "game:search", (query)->
-        API.searchGames "games/search",
-            q: encodeURIComponent query
+    #implement TWITCHAPI call
+    msgBus.reqres.setHandler "search:games", (query)->
+        API.searchGames "search/games",
+            q: query #encodeURIComponent query
             type: "suggest"
+            live: false
 
-        msgBus.reqres.setHandler "games:searchName", (query)->
-            games.searchName query
+    # search internal cached collection for a game models, speed up the UI
+    msgBus.reqres.setHandler "games:searchName", (query)->
+        games.searchName query
 
-        msgBus.reqres.setHandler "search:stream:entities", (game)->
-            API.getStreams "search/streams",
-                q: game
-                limit: 12
-                offset: 0
+    #search for streams by game
+    msgBus.reqres.setHandler "search:stream:entities", (game)->
+        API.getStreams "search/streams",
+            q: game
+            limit: 12
+            offset: 0
 
+    # twitchAPI, grab a channels live stream
+    msgBus.reqres.setHandler "search:stream:model", (channel)->
+        API.getStream "streams/#{channel}"
 
 ```
 

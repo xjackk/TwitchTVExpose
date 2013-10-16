@@ -4,6 +4,7 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
     class Game extends _Backbone.Model
     class Stream extends _Backbone.Model
 
+    # differennt class to handle parse of .stream object from the twitch API: looking for a single model
     class StreamGet extends _Backbone.Model
         parse: (response) ->
             response.stream
@@ -88,12 +89,15 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             {@_total}=resp
             resp.streams
 
+    # caching timers initialize
     games = new GamesCollection
     games.timeStamp = new Date()
 
 
+    #PUBLIC API
     API =
         getGames: (url, params = {}) ->
+            #45 seconds elapsed time between TOP game fetches
             elapsedSeconds = Math.round(((new Date() - games.timeStamp ) / 1000) % 60)
             if elapsedSeconds > 45 or games.length is 0
                 _.defaults params,
@@ -139,27 +143,30 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
                 data: params
             stream
 
-
+    # initial collection search 'top games' twitchAPI
     msgBus.reqres.setHandler "games:top:entities", ->
         API.getGames "games/top",
             limit: 24
             offset: 0
 
+    #implement TWITCHAPI call
     msgBus.reqres.setHandler "search:games", (query)->
         API.searchGames "search/games",
             q: query #encodeURIComponent query
             type: "suggest"
             live: false
 
-
+    # search internal cached collection for a game models, speed up the UI
     msgBus.reqres.setHandler "games:searchName", (query)->
         games.searchName query
 
+    #search for streams by game
     msgBus.reqres.setHandler "search:stream:entities", (game)->
         API.getStreams "search/streams",
             q: game
             limit: 12
             offset: 0
 
+    # twitchAPI, grab a channels live stream
     msgBus.reqres.setHandler "search:stream:model", (channel)->
         API.getStream "streams/#{channel}"

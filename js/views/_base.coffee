@@ -6,49 +6,49 @@ define ["marionette", "text"], (Marionette) ->
 
     _.extend Marionette.View::,
 
-    	addOpacityWrapper: (init = true) ->
-    		@$el.toggleWrapper
-    			className: "opacity"
-    		, init
+        addOpacityWrapper: (init = true) ->
+            @$el.toggleWrapper
+                className: "opacity"
+            , init
 
-    	setInstancePropertiesFor: (args...) ->
-    		for key, val of _.pick(@options, args...)
-    			@[key] = val
+        #setInstancePropertiesFor: (args...) ->
+        #	for key, val of _.pick(@options, args...)
+        #		@[key] = val
 
-    	remove: (args...) ->
-    		#console.log "removing", @
-    		if @model?.isDestroyed?()
+        remove: (args...) ->
+            #console.log "removing", @
+            if @model?.isDestroyed?()
 
-    			wrapper = @$el.toggleWrapper
-    				className: "opacity"
-    				backgroundColor: "red"
+                wrapper = @$el.toggleWrapper
+                    className: "opacity"
+                    backgroundColor: "red"
 
-    			wrapper.fadeOut 400, ->
-    				$(@).remove()
+                wrapper.fadeOut 400, ->
+                    $(@).remove()
 
-    			@$el.fadeOut 400, =>
-    				_remove.apply @, args
-    		else
-    			_remove.apply @, args
+                @$el.fadeOut 400, =>
+                    _remove.apply @, args
+            else
+                _remove.apply @, args
 
-    	templateHelpers: ->
+        templateHelpers: ->
 
-    		linkTo: (name, url, options = {}) ->
-    			_.defaults options,
-    				external: false
+            linkTo: (name, url, options = {}) ->
+                _.defaults options,
+                    external: false
 
-    			url = "#" + url unless options.external
+                url = "#" + url unless options.external
 
-    			"<a href='#{url}'>#{@escape(name)}</a>"
+                "<a href='#{url}'>#{@escape(name)}</a>"
 
 
     ItemView: class AppItemView extends Marionette.ItemView
 
     CollectionView: class AppCollectionView extends Marionette.CollectionView
-    	itemViewEventPrefix: "childview"
+        itemViewEventPrefix: "childview"
 
 
     CompositeView: class AppCompositeView extends Marionette.CompositeView
-    	itemViewEventPrefix: "childview"
+        itemViewEventPrefix: "childview"
 
     Layout: class AppLayout extends Marionette.Layout

@@ -394,6 +394,21 @@ define(['build', 'env!env/file', 'env'], function (build, file, env) {
     );
     doh.run();
 
+    doh.register("buildNamespaceMinified",
+        [
+            function buildNamespaceMinified(t) {
+                build(["lib/namespaceMinified/build.js"]);
+
+                t.is(nol(c("lib/namespaceMinified/expected.js")),
+                     nol(c("lib/namespaceMinified/foo.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
     doh.register("useDotPackage",
         [
             function useDotPackage(t) {
@@ -1956,6 +1971,26 @@ define(['build', 'env!env/file', 'env'], function (build, file, env) {
     );
     doh.run();
 
+    //Make sure "onejs" builds generate source map files relative to baseUrl,
+    //and not the output file:
+    //https://github.com/jrburke/r.js/issues/477
+    doh.register("sourcemapOneJs",
+        [
+            function sourcemapOneJs(t) {
+                file.deleteFile("lib/sourcemap/onejs/built.js");
+                file.deleteFile("lib/sourcemap/onejs/built.js.map");
+
+                build(["lib/sourcemap/onejs/build.js"]);
+
+                t.is(nol(c("lib/sourcemap/onejs/expected.map")),
+                     nol(c("lib/sourcemap/onejs/built.js.map")));
+
+                require._buildReset();
+            }
+        ]
+    );
+    doh.run();
+
     //Allow the target of an optimization to be a module that is only
     //provided in the rawText config.
     //Test single file JS optimization with source map generation
@@ -1976,4 +2011,88 @@ define(['build', 'env!env/file', 'env'], function (build, file, env) {
     );
     doh.run();
 
+    //Allow skipping semicolon insertion
+    //https://github.com/jrburke/r.js/issues/506
+    doh.register("semicolonInsert",
+        [
+            function semicolonInsert(t) {
+                file.deleteFile("lib/semicolonInsert/a-built.js");
+
+                build(["lib/semicolonInsert/build.js"]);
+
+                t.is(nol(c("lib/semicolonInsert/expected.js")),
+                     nol(c("lib/semicolonInsert/a-built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+
+    //Make sure overrides for each build layer are pristine
+    //https://github.com/jrburke/r.js/issues/500
+    doh.register("dualLayerOverride",
+        [
+            function dualLayerOverride(t) {
+                file.deleteFile("lib/dualLayerOverride/built");
+
+                build(["lib/dualLayerOverride/build.js"]);
+
+                t.is(nol(c("lib/dualLayerOverride/expectedMessage.js")),
+                     nol(c("lib/dualLayerOverride/built/message.js")));
+                t.is(nol(c("lib/dualLayerOverride/expectedWho.js")),
+                     nol(c("lib/dualLayerOverride/built/who.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    //Allow wrap config in overrides
+    //https://github.com/jrburke/r.js/issues/503
+    doh.register("overrideWrap",
+        [
+            function overrideWrap(t) {
+                file.deleteFile("lib/override/wrap/built");
+
+                build(["lib/override/wrap/build.js"]);
+
+                t.is(nol(c("lib/override/wrap/expected/a.js")),
+                     nol(c("lib/override/wrap/built/a.js")));
+                t.is(nol(c("lib/override/wrap/expected/b.js")),
+                     nol(c("lib/override/wrap/built/b.js")));
+                t.is(nol(c("lib/override/wrap/expected/c.js")),
+                     nol(c("lib/override/wrap/built/c.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+
+    //Do not removeCombined files that are outside the build dir.
+    //https://github.com/jrburke/requirejs/issues/755
+    doh.register("removeCombinedPaths",
+        [
+            function removeCombinedPaths(t) {
+                file.deleteFile("lib/removeCombinedPaths/testcase/project/build/build_output");
+
+                build(["lib/removeCombinedPaths/testcase/project/build/build.js"]);
+
+
+                t.is(true, file.exists("lib/removeCombinedPaths/testcase/lib/main.js"));
+                t.is(true, file.exists("lib/removeCombinedPaths/testcase/project/build/build_output/main.js"));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
 });

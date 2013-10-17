@@ -196,7 +196,7 @@
     //returns. (r.js 1.0.8+)
     optimizeCss: "standard.keepLines",
 
-    //If optimizeCss is in use, a list of of files to ignore for the @import
+    //If optimizeCss is in use, a list of files to ignore for the @import
     //inlining. The value of this option should be a string of comma separated
     //CSS file names to ignore (like 'a.css,b.css'. The file names should match
     //whatever strings are used in the @import calls.
@@ -338,6 +338,12 @@
         //built file unless the locale: section is set above.
         {
             name: "foo/bar/bop",
+
+            //create: true can be used to create the modul layer at the given
+            //name, if it does not already exist in the source location. If
+            //there is a module at the source location with this name, then
+            //create: true is superfluous.
+            create: true,
 
             //For build profiles that contain more than one modules entry,
             //allow overrides for the properties that set for the whole build,
@@ -575,6 +581,16 @@
     //dependencies and the size of the involved libraries, increasing the wait
     //interval may be required. Default is 7 seconds. Setting the value to 0
     //disables the waiting interval.
-    waitSeconds: 7
+    waitSeconds: 7,
 
+    //Introduced in 2.1.9: normally r.js inserts a semicolon at the end of a
+    //file if there is not already one present, to avoid issues with
+    //concatenated files and automatic semicolon insertion  (ASI) rules for
+    //JavaScript. It is a very blunt fix that is safe to do, but if you want to
+    //lint the build output, depending on the linter rules, it may not like it.
+    //Setting this option to true skips this insertion. However, by doing this,
+    //you take responsibility for making sure your concatenated code works with
+    //JavaScript's ASI rules, and that you use a minifier that understands when
+    //to insert semicolons to avoid ASI pitfalls.
+    skipSemiColonInsertion: false
 })

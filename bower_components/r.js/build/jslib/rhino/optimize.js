@@ -77,14 +77,15 @@ define(['logger', 'env!env/file'], function (logger, file) {
             config = config || {};
             var result, mappings, optimized, compressed, baseName, writer,
                 outBaseName, outFileNameMap, outFileNameMapContent,
+                srcOutFileName, concatNameMap,
                 jscomp = Packages.com.google.javascript.jscomp,
                 flags = Packages.com.google.common.flags,
-                //Fake extern
-                externSourceFile = closurefromCode("fakeextern.js", " "),
                 //Set up source input
                 jsSourceFile = closurefromCode(String(fileName), String(fileContents)),
+                sourceListArray = new java.util.ArrayList(),
                 options, option, FLAG_compilation_level, compiler,
-                Compiler = Packages.com.google.javascript.jscomp.Compiler;
+                Compiler = Packages.com.google.javascript.jscomp.Compiler,
+                CommandLineRunner = Packages.com.google.javascript.jscomp.CommandLineRunner;
 
             logger.trace("Minifying file: " + fileName);
 
@@ -107,7 +108,7 @@ define(['logger', 'env!env/file'], function (logger, file) {
             if (config.generateSourceMaps) {
                 mappings = new java.util.ArrayList();
 
-                mappings.add(new com.google.javascript.jscomp.SourceMap.LocationMapping(fileName, baseName + ".src"));
+                mappings.add(new com.google.javascript.jscomp.SourceMap.LocationMapping(fileName, baseName + ".src.js"));
                 options.setSourceMapLocationMappings(mappings);
                 options.setSourceMapOutputPath(fileName + ".map");
             }
@@ -116,16 +117,33 @@ define(['logger', 'env!env/file'], function (logger, file) {
             Compiler.setLoggingLevel(Packages.java.util.logging.Level[config.loggingLevel || 'WARNING']);
             compiler = new Compiler();
 
-            result = compiler.compile(externSourceFile, jsSourceFile, options);
+            //fill the sourceArrrayList; we need the ArrayList because the only overload of compile
+            //accepting the getDefaultExterns return value (a List) also wants the sources as a List
+            sourceListArray.add(jsSourceFile);
+
+            result = compiler.compile(CommandLineRunner.getDefaultExterns(), sourceListArray, options);
             if (result.success) {
                 optimized = String(compiler.toSource());
 
                 if (config.generateSourceMaps && result.sourceMap && outFileName) {
                     outBaseName = (new java.io.File(outFileName)).getName();
 
-                    file.saveUtf8File(outFileName + ".src", fileContents);
-
+                    srcOutFileName = outFileName + ".src.js";
                     outFileNameMap = outFileName + ".map";
+
+                    //If previous .map file exists, move it to the ".src.js"
+                    //location. Need to update the sourceMappingURL part in the
+                    //src.js file too.
+                    if (file.exists(outFileNameMap)) {
+                        concatNameMap = outFileNameMap.replace(/\.map$/, '.src.js.map');
+                        file.saveFile(concatNameMap, file.readFile(outFileNameMap));
+                        file.saveFile(srcOutFileName,
+                                      fileContents.replace(/\/\# sourceMappingURL=(.+).map/,
+                                                           '/# sourceMappingURL=$1.src.js.map'));
+                    } else {
+                        file.saveUtf8File(srcOutFileName, fileContents);
+                    }
+
                     writer = getFileWriter(outFileNameMap, "utf-8");
                     result.sourceMap.appendTo(writer, outFileName);
                     writer.close();

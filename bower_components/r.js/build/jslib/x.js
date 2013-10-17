@@ -1,5 +1,5 @@
 /**
- * @license r.js 2.1.8 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
+ * @license r.js 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/requirejs for details
  */
@@ -20,7 +20,7 @@ var requirejs, require, define, xpcUtil;
 (function (console, args, readFileFunc) {
     var fileName, env, fs, vm, path, exec, rhinoContext, dir, nodeRequire,
         nodeDefine, exists, reqMain, loadedOptimizedLib, existsForNode, Cc, Ci,
-        version = '2.1.8',
+        version = '2.1.9',
         jsSuffixRegExp = /\.js$/,
         commandOption = '',
         useLibLoaded = {},
@@ -136,6 +136,7 @@ var requirejs, require, define, xpcUtil;
         }
 
         xpcUtil = {
+            isWindows: ('@mozilla.org/windows-registry-key;1' in Cc),
             cwd: function () {
                 return FileUtils.getFile("CurWorkD", []).path;
             },
@@ -169,10 +170,15 @@ var requirejs, require, define, xpcUtil;
             },
 
             xpfile: function (path) {
+                var fullPath;
                 try {
-                    return new FileUtils.File(xpcUtil.normalize(path));
+                    fullPath = xpcUtil.normalize(path);
+                    if (xpcUtil.isWindows) {
+                        fullPath = fullPath.replace(/\//g, '\\');
+                    }
+                    return new FileUtils.File(fullPath);
                 } catch (e) {
-                    throw new Error(path + ' failed: ' + e);
+                    throw new Error((fullPath || path) + ' failed: ' + e);
                 }
             },
 
@@ -281,7 +287,8 @@ var requirejs, require, define, xpcUtil;
             dir = dir.split('/');
             dir.pop();
             dir = dir.join('/');
-            exec("require({baseUrl: '" + dir + "'});");
+            //Make sure dir is JS-escaped, since it will be part of a JS string.
+            exec("require({baseUrl: '" + dir.replace(/[\\"']/g, '\\$&') + "'});");
         }
     }
 
@@ -402,7 +409,7 @@ var requirejs, require, define, xpcUtil;
     } else if (commandOption === 'v') {
         console.log('r.js: ' + version +
                     ', RequireJS: ' + this.requirejsVars.require.version +
-                    ', UglifyJS2: 2.3.6, UglifyJS: 1.3.4');
+                    ', UglifyJS2: 2.4.0, UglifyJS: 1.3.4');
     } else if (commandOption === 'convert') {
         loadLib();
 

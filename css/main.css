@@ -75,6 +75,7 @@ path:first-child {
     -o-transition: all 0.1s ease-in-out;
     -ms-transition: all 0.1s ease-in-out;
     transition: all 0.1s ease-in-out;
+    cursor: pointer;
     /*box-shadow: 0px 4px 5px rgba(0,0,0,0.4);
     -moz-box-shadow: 0px 4px 5px rgba(0,0,0,0.4);
     -webkit-box-shadow: 0px 4px 5px rgba(0,0,0,0.4);
@@ -87,4 +88,8 @@ path:first-child {
     -webkit-box-shadow: 0px 5px 15px rgba(0,0,0,0.5);*/
     -webkit-transform: scale(1.1);
     -moz-transform: scale(1.1);
+}
+
+.streamitem {
+    cursor: pointer;  
 }

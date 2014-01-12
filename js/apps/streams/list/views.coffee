@@ -4,7 +4,7 @@ define ['views/_base', 'apps/streams/list/templates'], (AppViews, Templates) ->
     class StreamItem extends AppViews.ItemView
         template: _.template(Templates.streamitem)
         tagName: "li"
-        className: "col-md-6 col-xs-12"
+        className: "col-md-6 col-xs-12 streamitem"
         triggers:
             "click" : "stream:item:clicked"
 

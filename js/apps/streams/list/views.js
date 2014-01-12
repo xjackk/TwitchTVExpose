@@ -18,7 +18,7 @@
 
       StreamItem.prototype.tagName = "li";
 
-      StreamItem.prototype.className = "col-md-6 col-xs-12";
+      StreamItem.prototype.className = "col-md-6 col-xs-12 streamitem";
 
       StreamItem.prototype.triggers = {
         "click": "stream:item:clicked"

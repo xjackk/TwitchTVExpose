@@ -1,9 +1,10 @@
 #Twitch Tv Expose
 
-<b> I wrote a book regarding this repo. </b>
+**I wrote a book regarding this repo.**
 
-<b>Check it out here.</b>
-
+**Check it out here.**
 [Twitch Tv Expose](https://leanpub.com/marionetteexpose/)
 
-![](C:\Users\Jackthecutest\Pictures\jake portrait.jpg)
+## Live Site
+
+[http://twitchtvexpose.herokuapp.com - Live Site](http://twitchtvexpose.herokuapp.com)

@@ -10,7 +10,7 @@ define ["backbone","msgbus"], (Backbone, msgBus ) ->
                     (type: "book", title: "jQuery Cookbook", author: "jQuery Community Experts", url:"books.google.com/books?isbn=1449383017")
                     (type: "book", title: "HTML and CSS: Design and Build Websites", author:"Jon Duckett", url:"books.google.com/books?isbn=1118206916")
                     (type: "book", title: "Interactive Data Visualation for the Web", author:"Scott Murray", url:"books.google.com/books?isbn=1449340253")
-                    (type: "book", title: "Developing Backbones.js Applications", author:"Addy Osmani", url:"books.google.com/books?isbn=1449328555")
+                    (type: "book", title: "Developing Backbone.js Applications", author:"Addy Osmani", url:"books.google.com/books?isbn=1449328555")
                     (type: "book", title: "Bootstrap", author:"Jake Spurlock", url:"books.google.com/books?isbn=1449344593")
                     (type: "video", title: "Client Side Development", author:"Brian Mann", url:"vimeo.com/58787395")
                     (type: "video", title: "Tenets of Backbone JS", author:"Brian Mann", url:"vimeo.com/58787396")

@@ -40,15 +40,15 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
         if Backbone.history
             Backbone.history.start()
             frag = Backbone.history.fragment
-            match = /access_token/i.test frag
+            match = /access_token/i.test frag # calling back into our app from twitch sign-in
             if match
-                appstate.set "accessToken",  frag.split("=")[1]
+                # NEW, find the token as the string between '=','&' IE: http://twitchtvexpose.herokuapp.com/#access_token=a;ajf;aljf;adljkf;flajf&scope=..... 
+                appstate.set "accessToken",  frag.split(/[=&]/)[1]  #was frag.split("=")[1]  but the return now includes &scopes... after access_token
                 appstate.set "loginStatus", true
-                #console.log "top route", @authRoute
+                #console.log "TwitchTV accessToken: #{appstate.get("accessToken")}"
                 @navigate(@authRoute, trigger: true)
             else
                 appstate.set "loginStatus", false
-                #console.log appstate.get("loginStatus"), "value of login status"
                 @navigate(@rootRoute, trigger: true) if @getCurrentRoute() is null
 
     app.addInitializer (options) ->

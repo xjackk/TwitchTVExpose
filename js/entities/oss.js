@@ -6,11 +6,6 @@
       getOSS: function() {
         return new Backbone.Collection([
           {
-            name: "Cloud9 IDE",
-            site: "https://c9.io",
-            image: "https://c9.io/site/wp-content/themes/cloud9/img/slides/slides.png",
-            ghurl: "https://github.com/ajaxorg/cloud9/"
-          }, {
             name: "Github",
             site: "https://github.com",
             image: "https://github.global.ssl.fastly.net/images/modules/dashboard/bootcamp/octocat_fork.png?74c9d5ac",

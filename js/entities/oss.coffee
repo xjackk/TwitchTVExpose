@@ -3,7 +3,6 @@ define ["backbone","msgbus"], (Backbone, msgBus ) ->
     API =
         getOSS:->
             new Backbone.Collection [
-                        (name: "Cloud9 IDE", site: "https://c9.io", image:"https://c9.io/site/wp-content/themes/cloud9/img/slides/slides.png", ghurl:"https://github.com/ajaxorg/cloud9/")
                         (name: "Github", site: "https://github.com", image:"https://github.global.ssl.fastly.net/images/modules/dashboard/bootcamp/octocat_fork.png?74c9d5ac", ghurl:"https://github.com")
                         (name: "Backbone", site: "http://backbonejs.org", image:"http://backbonejs.org/docs/images/backbone.png", ghurl:"https://github.com/jashkenas/backbone/")
                         (name: "Marionette", site: "http://marionettejs.com/", image:"http://marionettejs.com/images/logo-a4052db8.png", ghurl:"https://github.com/marionettejs/backbone.marionette")

@@ -14,12 +14,8 @@ require.config
         globalize: "../bower_components/globalize/lib/globalize"
         text: "../bower_components/requirejs-text/text"
         d3: "../bower_components/d3/d3",
-        swf: "../bower_components/swfobject-amd/swfobject",
         spin: "../bower_components/spin.js/spin"
         jqueryspin: "../bower_components/spin.js/jquery.spin"
-        #mockjax: "../bower_components/jquery-mockjax/jquery.mockjax"
-        #mockjson: "../bower_components/mockJSON/js/jquery.mockjson"
-        #holderjs:"../bower_components/holderjs/holder"
         bootstrap:"../bower_components/bootstrap/dist/js/bootstrap"
 
     shim:

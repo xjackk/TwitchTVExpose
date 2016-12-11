@@ -1,23 +1,23 @@
-define ['apps/playa/show/templates', 'views/_base', 'swf'], (Templates, AppView, swf) ->
+define ['apps/playa/show/templates', 'views/_base'], (Templates, AppView) ->
 
     Player: class Player extends AppView.ItemView
         template: _.template(Templates.player)
         ui:
-            panelbody: ".panel-body"
-
+            panelbody:      ".panel-body"
+        
+        modelEvents:
+            "change:video_height": "render"
 
         onShow: ->
-            $width 	= @ui.panelbody.outerWidth(false)
-            $height = Math.floor $width * 9 / 16
-            flashvars=false
-            params =
-                allowFullScreen: "true"
-                wmode:  "transparent"
-                allowScriptAccess: "always"
-                allowNetworking: "all"
-                flashvars: "hostname=www.twitch.tv&channel=#{@model.get("channel").display_name}&start_volume=15&auto_play=true&client_id=hqxyqc9bf41e6grm6txrsdcwncoxavz&res=720p"
+            pw 	= @ui.panelbody.outerWidth(false)
+            ph = Math.floor ((pw-30) * 9 / 16)
 
-            swf.embedSWF("https://www-cdn.jtvnw.net/widgets/live_embed_player.swf?channel=#{@model.get("channel").display_name}&auto_play=true", "twitchplayer", $width, $height, "9", null, flashvars, params, {});
+            console.log "Video Height: #{@model.get 'video_height'}"
+
+            @model.set "video_height", ph
+            console.log "Video Height: AFTER RESIZE: #{@model.get 'video_height'}"
+            console.log "Panel Width (var): #{pw}"
+
 
 
     User: class User extends AppView.ItemView

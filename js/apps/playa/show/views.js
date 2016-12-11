@@ -3,7 +3,7 @@
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(['apps/playa/show/templates', 'views/_base', 'swf'], function(Templates, AppView, swf) {
+  define(['apps/playa/show/templates', 'views/_base'], function(Templates, AppView) {
     var Chat, Layout, Player, User;
     return {
       Player: Player = (function(superClass) {
@@ -19,19 +19,18 @@
           panelbody: ".panel-body"
         };
 
+        Player.prototype.modelEvents = {
+          "change:video_height": "render"
+        };
+
         Player.prototype.onShow = function() {
-          var $height, $width, flashvars, params;
-          $width = this.ui.panelbody.outerWidth(false);
-          $height = Math.floor($width * 9 / 16);
-          flashvars = false;
-          params = {
-            allowFullScreen: "true",
-            wmode: "transparent",
-            allowScriptAccess: "always",
-            allowNetworking: "all",
-            flashvars: "hostname=www.twitch.tv&channel=" + (this.model.get("channel").display_name) + "&start_volume=15&auto_play=true&client_id=hqxyqc9bf41e6grm6txrsdcwncoxavz&res=720p"
-          };
-          return swf.embedSWF("https://www-cdn.jtvnw.net/widgets/live_embed_player.swf?channel=" + (this.model.get("channel").display_name) + "&auto_play=true", "twitchplayer", $width, $height, "9", null, flashvars, params, {});
+          var ph, pw;
+          pw = this.ui.panelbody.outerWidth(false);
+          ph = Math.floor((pw - 30) * 9 / 16);
+          console.log("Video Height: " + (this.model.get('video_height')));
+          this.model.set("video_height", ph);
+          console.log("Video Height: AFTER RESIZE: " + (this.model.get('video_height')));
+          return console.log("Panel Width (var): " + pw);
         };
 
         return Player;

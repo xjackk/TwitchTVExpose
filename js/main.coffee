@@ -16,7 +16,7 @@ require.config
         bootstrap:"../bower_components/bootstrap/dist/js/bootstrap"
 
     shim:
-        bootstrap: ["jquery"]
+        bootstrap:  ["jquery"]
 
 	require ["config/load", "app" ], (_config, app) -> # ensure that base application settings are loaded before we can call the app.  Templates, settings and jquery plugins
         app.start()

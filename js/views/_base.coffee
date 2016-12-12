@@ -1,20 +1,14 @@
 # override marionette views for any of our application specific needs
-define ["marionette"], (Marionette) ->
+define ["marionette", "config/jquery/jquery"], (Marionette) ->
     _remove = Marionette.View::remove
 
     _.extend Marionette.View::,
-
         addOpacityWrapper: (init = true) ->
             @$el.toggleWrapper
                 className: "opacity"
             , init
 
-        #setInstancePropertiesFor: (args...) ->
-        #	for key, val of _.pick(@options, args...)
-        #		@[key] = val
-
         remove: (args...) ->
-            #console.log "removing", @
             if @model?.isDestroyed?()
 
                 wrapper = @$el.toggleWrapper
@@ -39,14 +33,10 @@ define ["marionette"], (Marionette) ->
 
                 "<a href='#{url}'>#{@escape(name)}</a>"
 
-
     ItemView: class AppItemView extends Marionette.ItemView
 
     CollectionView: class AppCollectionView extends Marionette.CollectionView
-        #itemViewEventPrefix: "childview"
-
 
     CompositeView: class AppCompositeView extends Marionette.CompositeView
-        #itemViewEventPrefix: "childview"
 
     Layout: class AppLayout extends Marionette.Layout

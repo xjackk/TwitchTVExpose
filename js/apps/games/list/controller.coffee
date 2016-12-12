@@ -1,7 +1,9 @@
 define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (msgBus, Views, AppController, Backbone) ->
+    channel = msgBus.appChannel    
+
     class Controller extends AppController
         initialize: (options={})->
-            @entities=msgBus.reqres.request "games:top:entities"
+            @entities = channel.request "games:top:entities"
             @layout = @getLayoutView()
 
             @listenTo @layout, "show", =>
@@ -18,10 +20,10 @@ define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (ms
             view = @getGameView @entities
             @listenTo view, "childview:game:item:clicked", (child, args) ->  # listen to events from itemview (we've overridden the eventnamePrefix to childview)
                 #console.log "game:item:clicked => model", args.model
-                msgBus.events.trigger "app:game:detail", args.model
+                channel.trigger "app:game:detail", args.model
 
             @listenTo view, "scroll:more", ->
-                msgBus.reqres.request "games:fetchmore"
+                channel.request "games:fetchmore"
 
             @layout.gameRegion.show view
 
@@ -32,7 +34,6 @@ define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (ms
         getBubbleView: (collection) ->
             new Views.GamesBubbleView
                 collection: collection
-
 
         getGameView: (collection) ->
             new Views.TopGameList

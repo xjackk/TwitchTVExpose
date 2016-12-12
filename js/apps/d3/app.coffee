@@ -1,5 +1,7 @@
 # example app: using D3 in marionette view
 define ["msgbus", "marionette", "apps/d3/list/controller"], (msgBus, Marionette, Controller) ->
+    channel = msgBus.appChannel
+
 
 	class Router extends Marionette.AppRouter
 		appRoutes:
@@ -9,6 +11,7 @@ define ["msgbus", "marionette", "apps/d3/list/controller"], (msgBus, Marionette,
 		tedifyouseethisyousmell: ->
 			new Controller
 
-	msgBus.commands.setHandler "start:d3:app", ->
+
+	channel.on "start:d3:app", ->
 		new Router
 			controller: API

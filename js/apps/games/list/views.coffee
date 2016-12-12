@@ -1,4 +1,4 @@
-define ['apps/games/list/templates', 'views/_base', 'msgbus', 'views/bubble'], (Templates, AppView, msgBus, BubbleChart) ->
+define ['apps/games/list/templates', 'views/_base', 'views/bubble'], (Templates, AppView, BubbleChart) ->
 
     class GameItem extends AppView.ItemView
         template: _.template(Templates.gameitem)

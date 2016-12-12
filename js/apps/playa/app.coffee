@@ -1,4 +1,5 @@
 define ["msgbus", "backbone", "marionette", "apps/playa/show/controller"], (msgBus, Backbone, Marionette, Controller) ->
+    channel = msgBus.appChannel
 
     class Router extends Marionette.AppRouter
         appRoutes:
@@ -11,11 +12,10 @@ define ["msgbus", "backbone", "marionette", "apps/playa/show/controller"], (msgB
                 channel: channel
                 model: model
 
-    msgBus.commands.setHandler "start:playa:app", ->
+    channel.on "start:playa:app", ->
         new Router
             controller: API
 
-    msgBus.events.on "app:playa:show", (streamModel) ->
-        #console.log model.get("channel").display_name
+    channel.on "app:playa:show", (streamModel) ->
         Backbone.history.navigate "player/#{streamModel.get("game")}/#{streamModel.get("channel").display_name}", trigger:false
         API.show streamModel.get("game"),streamModel.get("channel").display_name, streamModel

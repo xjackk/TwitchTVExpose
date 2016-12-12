@@ -1,7 +1,7 @@
 # list header views
-define ['apps/header/list/templates', 'views/_base'], (Templates, AppView) ->
+define ['views/_base','apps/header/list/templates'], (AppView, Templates) ->
 
-    class _itemview extends AppView.ItemView
+    class   _itemview extends AppView.ItemView
         template: _.template(Templates.item)
         tagName: "li"
 
@@ -9,12 +9,12 @@ define ['apps/header/list/templates', 'views/_base'], (Templates, AppView) ->
         template: _.template(Templates.login)
         el: "#login"
 
-    HeaderView: class ListHeaders extends AppView.CompositeView
+    HeaderView: class HeaderList extends AppView.CompositeView
         template: _.template(Templates.header)
         itemView: _itemview
         itemViewContainer: "ul"
 
-    Layout: class Header extends AppView.Layout
+    Layout:     class HeaderLayout extends AppView.Layout
         template: _.template(Templates.layout)
         regions:
             listRegion: "#list-region"

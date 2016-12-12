@@ -1,9 +1,9 @@
-define ["entities/_backbone", "msgbus",], (_Backbone, msgBus ) ->
+define ["backbone", "msgbus",], (Backbone, msgBus ) ->
     # this _fetch is our private property added to overridden config backbone sync
 
-	class User extends _Backbone.Model
+	class User extends Backbone.Model
 
-	class UsersCollection extends _Backbone.Collection
+	class UsersCollection extends Backbone.Collection
 		model: User
 
 	API =

@@ -1,11 +1,31 @@
 {
-  "name": "twitchexpose",
-  "version": "0.0.1",
+  "name": "twitchtvexpose",
+  "version": "1.0.0",
+  "description": "client SPA",
+  "main": "build.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
       "express" : "3.x"
+  },  
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xjackk/twitchtvexpose.git"
   },
-  "engines": {
-    "node": "0.10.x",
-    "npm": "1.2.x"
-  }
+  "keywords": [
+    "coffee-script",
+    "amd",
+    "marionette",
+    "SAP"
+  ],
+  "author": "Jack Killilea",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xjackk/twitchtvexpose/issues"
+  },
+  "homepage": "https://github.com/xjackk/twitchtvexpose#readme"
 }

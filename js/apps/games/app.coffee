@@ -1,5 +1,6 @@
 define ["msgbus", "marionette", "backbone", "apps/games/list/controller","apps/games/detail/controller","entities/appstate"], (msgBus, Marionette, Backbone, ListController, DetailController, AppState) ->
-
+    channel = msgBus.appChannel    
+    
     class Router extends Marionette.AppRouter
         appRoutes:
             "games": "list"
@@ -18,10 +19,10 @@ define ["msgbus", "marionette", "backbone", "apps/games/list/controller","apps/g
                 gameModel: model
 
 
-    msgBus.events.on "app:game:detail", (model) ->
+    channel.on "app:game:detail", (model) ->
         Backbone.history.navigate "games/#{model.get("game").name}/detail", trigger:false
         API.detail model.get("game").name, model
 
-    msgBus.commands.setHandler "start:games:app", ->
+    channel.on "start:games:app", ->
         new Router
             controller: API

@@ -1,5 +1,5 @@
 #  tkillilea my utility functions being added to $ namespace (jQuery)
-define ["jquery"], ($) ->
+define ["jquery","spin", "jqueryspin"], ($) ->
     #IIFE  instantly invoked Function Expression
 	# display elapsed time in relative terms  // pass in a timestamp ie dispay:  5 min(s) ago
 

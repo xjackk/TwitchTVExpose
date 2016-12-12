@@ -2,6 +2,8 @@
 define ["backbone", "marionette", "msgbus","entities/appstate", "apps/load" ], (Backbone, Marionette, msgBus, AppState ) ->
     app = new Backbone.Marionette.Application()
 
+    channel = msgBus.appChannel    
+
     app.rootRoute = "about"
     app.authRoute = "games"
 
@@ -54,11 +56,11 @@ define ["backbone", "marionette", "msgbus","entities/appstate", "apps/load" ], (
 
     app.addInitializer (options) ->
         #console.log "addinitializers"
-        msgBus.commands.execute "start:header:app"
-        msgBus.commands.execute "start:footer:app"
-        msgBus.commands.execute "start:d3:app"
-        msgBus.commands.execute "start:about:app"
-        msgBus.commands.execute "start:games:app"
-        msgBus.commands.execute "start:playa:app"
+        channel.trigger "start:header:app"
+        channel.trigger "start:footer:app"
+        channel.trigger "start:d3:app"
+        channel.trigger "start:about:app"
+        channel.trigger "start:games:app"
+        channel.trigger "start:playa:app"
 
     app

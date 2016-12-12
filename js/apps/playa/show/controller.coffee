@@ -1,14 +1,11 @@
 define ["apps/playa/show/views", "controller/_base","msgbus"], (Views, AppController, msgBus) ->
 
+    channel = msgBus.appChannel
+
     class Controller extends AppController
         initialize:(options={})->
             {channel, model} = options
-            console.log "Player Controller  options", options
-            #console.log "game", game, "channel", channel, "model", model
-
-            #if model is undefined
-            #    console.log "searching for ", channel
-            model = msgBus.reqres.request "search:stream:model", channel if model is undefined
+            model = channel.request "search:stream:model", channel if model is undefined
 
             @layout = @getLayoutView()
             @listenTo @layout, "show", =>

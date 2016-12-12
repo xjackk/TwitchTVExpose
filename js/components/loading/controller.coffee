@@ -1,6 +1,8 @@
 # form component controller
 # the module API will pass in the glogal collection of ccys
 define ["msgbus", "controller/_base", "components/loading/views" ], (msgBus, AppController, Views) ->
+	channel = msgBus.appChannel
+
     class LoadingController extends AppController
     	initialize: (options) ->
     		{ view, config } = options
@@ -24,7 +26,7 @@ define ["msgbus", "controller/_base", "components/loading/views" ], (msgBus, App
     		@showRealView view, loadingView, config
     
     	showRealView: (realView, loadingView, config) ->
-    		msgBus.commands.execute "when:fetched", config.entities, =>
+    		channel.trigger "when:fetched", config.entities, =>
     			switch config.loadingType
     				when "opacity"
     					@region.currentView.$el.removeAttr "style"

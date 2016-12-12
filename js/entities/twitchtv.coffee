@@ -1,25 +1,25 @@
-define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
+define ["backbone", "msgbus"], (Backbone, msgBus ) ->
     # this _fetch is our private property added to overridden config backbone sync
 
-    class Game extends _Backbone.Model
-    class Stream extends _Backbone.Model
+    class Game extends Backbone.Model
+    class Stream extends Backbone.Model
 
     # differennt class to handle parse of .stream object from the twitch API: looking for a single model
-    class StreamGet extends _Backbone.Model
+    class StreamGet extends Backbone.Model
         parse: (response) ->
             response.stream
 
-    class SearchStreams extends _Backbone.Collection
+    class SearchStreams extends Backbone.Collection
         model: Stream
         parse: (response) ->
             response.streams
 
-    class SearchCollection extends _Backbone.Collection
+    class SearchCollection extends Backbone.Collection
         model: Game
         parse: (response) ->
             response.games
 
-    class GamesCollection extends _Backbone.Collection
+    class GamesCollection extends Backbone.Collection
         model: Game
 
         initialize: ->
@@ -59,7 +59,7 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             response.top
 
 
-    class StreamCollection extends _Backbone.Collection
+    class StreamCollection extends Backbone.Collection
         model: Stream
 
         initialize: ->

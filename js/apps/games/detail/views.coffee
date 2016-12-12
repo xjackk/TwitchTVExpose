@@ -1,4 +1,4 @@
-define ['apps/games/detail/templates', 'views/_base', 'msgbus'], (Templates, AppView, msgBus) ->
+define ['apps/games/detail/templates', 'views/_base'], (Templates, AppView) ->
 
     Detail: class GameDetail extends AppView.ItemView
         template: _.template(Templates.gamedetail)

@@ -1,8 +1,10 @@
 define ["msgbus", "apps/about/show/views", "controller/_base"], (msgBus, Views, AppController) ->
+    channel = msgBus.appChannel
+
     class Controller extends AppController
         initialize:(options)->
-            entities=msgBus.reqres.request "reference:entities"
-            ossentities=msgBus.reqres.request "oss:entities"
+            entities    = channel.request "reference:entities"      # msgBus.reqres.request "reference:entities"
+            ossentities = channel.request "oss:entities"            # msgBus.reqres.request "oss:entities"
             #console.log ossentities
             @layout = @getLayoutView()
 

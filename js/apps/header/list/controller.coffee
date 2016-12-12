@@ -1,9 +1,11 @@
 # header list controller
 define ["msgbus","apps/header/list/views", "controller/_base", "entities/header"], (msgBus, Views, AppController) ->
+    channel = msgBus.appChannel
+
     class Controller extends AppController
         initialize: ->
-            links = msgBus.reqres.request "header:entities"
-            @appstate = msgBus.reqres.request "get:current:appstate"
+            links = channel.request "header:entities"
+            @appstate = channel.request "get:current:appstate"
             #console.log @appstate
             @layout = @getLayoutView()
 
@@ -35,13 +37,3 @@ define ["msgbus","apps/header/list/views", "controller/_base", "entities/header"
             view = @getHeaderView links
             @layout.listRegion.show view
 
-        #loginRegion: ()  ->
-        #    view = @getLoginView @appstate
-        #    @layout.loginRegion.show view
-
-# this method would require a public API
-#    msgBus.events.on "login:status:change", status =>
-#        if status is true
-#            @layout.loginRegion.close()
-#        else
-#            @layout.loginRegion.show()

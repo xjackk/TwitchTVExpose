@@ -1,5 +1,6 @@
 # msgbus decoupled from app
-define ["backbone","marionette"], (Backbone) ->
-  reqres: new Backbone.Wreqr.RequestResponse()
-  commands: new Backbone.Wreqr.Commands()
-  events: new Backbone.Wreqr.EventAggregator()
+define ["backbone","backbone.radio"], (Backbone) ->
+  # mult-channel msgBus
+  appChannel:               Backbone.Radio.channel 'app'    #namespaced channels for better seperation of concerns
+  dataChannel:              Backbone.Radio.channel 'data'
+  componentChannel:         Backbone.Radio.channel 'component'

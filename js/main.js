@@ -2,9 +2,9 @@
 (function() {
   require.config({
     paths: {
-      backbone: "../bower_components/backbone/backbone",
-      underscore: "../bower_components/underscore/underscore",
       jquery: "../bower_components/jquery/dist/jquery",
+      underscore: "../bower_components/underscore/underscore",
+      backbone: "../bower_components/backbone/backbone",
       marionette: "../bower_components/marionette/lib/backbone.marionette",
       "backbone.syphon": "../bower_components/backbone.syphon/lib/backbone.syphon",
       moment: "../bower_components/moment/moment",

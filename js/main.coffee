@@ -2,11 +2,11 @@
 require.config
 
     paths:
-        backbone: "../bower_components/backbone/backbone" # amd version
-        underscore: "../bower_components/underscore/underscore" # amd version
-        jquery: "../bower_components/jquery/dist/jquery" # amd version
-        marionette: "../bower_components/marionette/lib/backbone.marionette" # amd version
-        "backbone.syphon": "../bower_components/backbone.syphon/lib/backbone.syphon" # amd version
+        jquery: "../bower_components/jquery/dist/jquery" 
+        underscore: "../bower_components/underscore/underscore" 
+        backbone: "../bower_components/backbone/backbone" 
+        marionette: "../bower_components/marionette/lib/backbone.marionette" 
+        "backbone.syphon": "../bower_components/backbone.syphon/lib/backbone.syphon" 
         moment: "../bower_components/moment/moment"
         globalize: "../bower_components/globalize/lib/globalize"
         text: "../bower_components/text/text"

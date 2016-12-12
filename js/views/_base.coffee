@@ -1,7 +1,5 @@
 # override marionette views for any of our application specific needs
-# new add moment for date formatting
-define ["backbone", "marionette" ], (Marionette) ->
-
+define ["marionette"], (Marionette) ->
     _remove = Marionette.View::remove
 
     _.extend Marionette.View::,

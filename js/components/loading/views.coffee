@@ -1,5 +1,5 @@
 # list currency views
-define ['views/_base', 'components/loading/templates', 'spin', 'jqueryspin'], (AppViews, Templates) ->
+define ['views/_base', 'components/loading/templates'], (AppViews, Templates) ->
     Loading: class _LoadingView extends AppViews.ItemView
     	template: _.template(Templates.main)
     	className: "loading-container"

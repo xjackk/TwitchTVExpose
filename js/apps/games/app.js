@@ -3,7 +3,7 @@
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(["msgbus", "marionette", "backbone", "apps/games/list/controller", "apps/games/detail/controller"], function(msgBus, Marionette, Backbone, ListController, DetailController) {
+  define(["msgbus", "marionette", "backbone", "apps/games/list/controller", "apps/games/detail/controller", "entities/appstate"], function(msgBus, Marionette, Backbone, ListController, DetailController, AppState) {
     var API, Router;
     Router = (function(superClass) {
       extend(Router, superClass);
@@ -22,6 +22,11 @@
     })(Marionette.AppRouter);
     API = {
       list: function() {
+        if (AppState.get("loginStatus") !== true) {
+          return Backbone.history.navigate("#d3", {
+            trigger: true
+          });
+        }
         return new ListController;
       },
       detail: function(id, model) {

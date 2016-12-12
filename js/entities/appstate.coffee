@@ -8,7 +8,6 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
             loginStatus: false
             uri: "http://localhost:3000" #"http://twitchtvexpose.herokuapp.com"
 
-    appState = new AppState
 
     API =
         getAppState: ->
@@ -19,3 +18,5 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
 
     msgBus.reqres.setHandler "get:current:token", ->
         appState.get "accessToken"
+
+    appState = new AppState

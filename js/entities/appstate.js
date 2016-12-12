@@ -22,7 +22,6 @@
       return AppState;
 
     })(_Backbone.Model);
-    appState = new AppState;
     API = {
       getAppState: function() {
         return appState;
@@ -31,9 +30,10 @@
     msgBus.reqres.setHandler("get:current:appstate", function() {
       return API.getAppState();
     });
-    return msgBus.reqres.setHandler("get:current:token", function() {
+    msgBus.reqres.setHandler("get:current:token", function() {
       return appState.get("accessToken");
     });
+    return appState = new AppState;
   });
 
 }).call(this);

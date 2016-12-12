@@ -46,10 +46,10 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
                 appstate.set "accessToken",  frag.split(/[=&]/)[1]  #was frag.split("=")[1]  but the return now includes &scopes... after access_token
                 appstate.set "loginStatus", true
                 #console.log "TwitchTV accessToken: #{appstate.get("accessToken")}"
-                @navigate(@authRoute, trigger: true)
+                @navigate @authRoute, trigger: true
             else
                 appstate.set "loginStatus", false
-                @navigate(@rootRoute, trigger: true) if @getCurrentRoute() is null
+                @navigate @rootRoute, trigger: true if @getCurrentRoute() is null
 
     app.addInitializer (options) ->
         #console.log "addinitializers"

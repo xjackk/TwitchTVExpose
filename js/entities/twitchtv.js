@@ -110,7 +110,8 @@
         });
         return $.when(loaded).then((function(_this) {
           return function() {
-            return _this.loading = false;
+            _this.loading = false;
+            return console.log("Loaded page", _this.offset + 1, "Games fetched so far", _this.length, "Total games available to fetch ", _this._total);
           };
         })(this));
       };

@@ -43,9 +43,11 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
                     oauth_token: msgBus.reqres.request "get:current:token"
                     limit: @limit
                     offset: @offset * @limit
+
             $.when(loaded).then =>
                 @loading=false
-                #console.log "Loaded page", @offset+1, "Games fetched so far", @length, "Total games available to fetch ", @_total
+                console.log "Loaded page", @offset+1, "Games fetched so far", @length, "Total games available to fetch ", @_total,
+
 
         searchName: (_name)->
             @find (model)->

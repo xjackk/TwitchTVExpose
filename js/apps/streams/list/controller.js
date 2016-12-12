@@ -3,7 +3,7 @@
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(["msgbus", "apps/streams/list/views", "controller/_base"], function(msgBus, Views, AppController) {
+  define(["msgbus", "apps/streams/list/views", "controller/_base", "entities/appstate"], function(msgBus, Views, AppController, AppState) {
     var Controller;
     return Controller = (function(superClass) {
       extend(Controller, superClass);
@@ -18,6 +18,7 @@
           options = {};
         }
         name = options.name;
+        console.log("streams:list:controller OPTIONS", options);
         streamEntities = msgBus.reqres.request("search:stream:entities", name);
         view = this.getListView(streamEntities);
         this.listenTo(view, "childview:stream:item:clicked", function(child, args) {

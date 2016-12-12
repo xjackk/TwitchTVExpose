@@ -1,6 +1,6 @@
 # override marionette views for any of our application specific needs
 # new add moment for date formatting
-define ["marionette", "text"], (Marionette) ->
+define ["backbone", "marionette" ], (Marionette) ->
 
     _remove = Marionette.View::remove
 
@@ -45,10 +45,10 @@ define ["marionette", "text"], (Marionette) ->
     ItemView: class AppItemView extends Marionette.ItemView
 
     CollectionView: class AppCollectionView extends Marionette.CollectionView
-        itemViewEventPrefix: "childview"
+        #itemViewEventPrefix: "childview"
 
 
     CompositeView: class AppCompositeView extends Marionette.CompositeView
-        itemViewEventPrefix: "childview"
+        #itemViewEventPrefix: "childview"
 
     Layout: class AppLayout extends Marionette.Layout

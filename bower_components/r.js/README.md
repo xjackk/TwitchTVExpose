@@ -1,7 +1,7 @@
 # r.js
 
 A command line tool for running JavaScript scripts that use the
-[Asychronous Module Defintion API (AMD)](http://wiki.commonjs.org/wiki/Modules/AsynchronousDefinition)
+[Asychronous Module Defintion API (AMD)](https://github.com/amdjs/amdjs-api/blob/master/AMD.md)
 for declaring and using JavaScript modules and regular JavaScript script files.
 
 It is part of the [RequireJS project](http://requirejs.org), and works with
@@ -9,7 +9,7 @@ the RequireJS implementation of AMD.
 
 r.js is a single script that has two major functions:
 
-* Run AMD-based projects [in Node](http://requirejs.org/docs/node.html) and Rhino.
+* Run AMD-based projects [in Node](http://requirejs.org/docs/node.html) and Nashorn, Rhino and xpcshell.
 * Includes the [RequireJS Optimizer](http://requirejs.org/docs/optimization.html)
 that combines scripts for optimal browser delivery.
 
@@ -21,7 +21,7 @@ that combines scripts for optimal browser delivery.
 
 From then on, you can use `r.js` on the command line to run the optimizer.
 
-## Rhino/Browser
+## Nashorn/Rhino/Browser
 
 Download the latest release from the
 [RequireJS download page](http://requirejs.org/docs/download.html#rjs).
@@ -66,7 +66,32 @@ r.js allows using Node modules installed via npm. For more info see the
 
 ## Java
 
-Java requires some JAR files in the CLASSPATH for it to work:
+### Nashorn
+
+As of r.js 2.1.16, r.js can run in [Nashorn](http://www.oracle.com/technetwork/articles/java/jf14-nashorn-2126515.html), Java 8+'s JavaScript engine, via the `jjs` command line tool that is installed with Java.
+
+Then general format of the command:
+
+```
+jjs -scripting path/to/r.js -- [r.js command line arguments here]
+```
+
+Examples:
+
+```
+# Calling r.js to optimize a project using the build config in build.js
+jjs -scripting path/to/r.js -- -o build.js
+
+# Calling r.js to run AMD modules, where the main app program is main.js
+jjs -scripting path/to/r.js -- main.js
+
+```
+
+All further examples will use the Node notation, but substitute the **r.js** references below with the command line structure mentioned above (`jjs -scripting path/to/r.js -- `).
+
+### Rhino
+
+Using Rhino requires some JAR files in the CLASSPATH for it to work:
 
 * [rhino.jar](https://github.com/jrburke/r.js/blob/master/lib/rhino/js.jar?raw=true) from the [Rhino project](http://www.mozilla.org/rhino/).
 * [compiler.jar](https://github.com/jrburke/r.js/blob/master/lib/closure/compiler.jar?raw=true) if you are using the optimizer and want to use
@@ -87,7 +112,7 @@ If you want to run it in the debugger, replace
 org.mozilla.javascript.tools.shell.Main with
 **org.mozilla.javascript.tools.debugger.Main**.
 
-All further examples will use the Node notation, but substitute **r.js** in the commands with the appropriate java command.
+All further examples will use the Node notation, but substitute the **r.js** references below with the appropriate java command.
 
 ## xpcshell
 
@@ -206,7 +231,9 @@ and Java/Rhino:
     * java -classpath ../../lib/rhino/js.jar:../../lib/closure/compiler.jar org.mozilla.javascript.tools.shell.Main ../../r.js all.js
 
 For running tests, put xpcshell in env/xpcshell/ as a directory, that contains
-all the files needed for it to run, including the xpcshell binary.
+all the files needed for it to run, including the xpcshell binary. Downloading
+[a xulrunner nightly](http://ftp.mozilla.org/pub/mozilla.org/xulrunner/nightly/latest-mozilla-central/)
+might work.
 
 # Contributing code changes
 
@@ -228,19 +255,19 @@ r.js includes modules from these projects:
 
 To do a release of version 0.0.0:
 
-* git checkout -b 0.0.0
 * Make sure the right version of require.js is in the project.
 * Modify build/jslib/x.js to update the r.js version number in two places.
 * node dist.js
 * Run the tests (see above). They should pass. :)
-* mv r.js dist/r-0.0.0.js
-* git add dist/r-0.0.0.js
-* git commit -a -m "Release 0.0.0"
+* mv r.js dist/r.js
+* git commit -am "Release 0.0.0"
 * git tag -am "Release 0.0.0" 0.0.0
-* git checkout master
-* git merge 0.0.0
 * git push origin master
 * git push --tags
-* git branch -d 0.0.0
 
-Update the RequireJS download site to point to the latest release.
+Update the RequireJS download site to point to the latest release, then update
+the [requirejs/requirejs-npm](https://github.com/requirejs/requirejs-npm) repo to have the latest
+changes and publish the result to npm.
+
+Make sure to keep `#!/usr/bin/env node` as the first line in bin/r.js in
+the requirejs-npm repo.

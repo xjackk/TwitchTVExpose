@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2010-2011, The Dojo Foundation All Rights Reserved.
+ * @license Copyright (c) 2010-2014, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/requirejs for details
  */
@@ -24,7 +24,11 @@ define(['./esprimaAdapter', 'lang'], function (esprima, lang) {
 
     //This string is saved off because JSLint complains
     //about obj.arguments use, as 'reserved word'
-    var argPropName = 'arguments';
+    var argPropName = 'arguments',
+        //Default object to use for "scope" checking for UMD identifiers.
+        emptyScope = {},
+        mixin = lang.mixin,
+        hasProp = lang.hasProp;
 
     //From an esprima example for traversing its ast.
     function traverse(object, visitor) {
@@ -66,7 +70,7 @@ define(['./esprimaAdapter', 'lang'], function (esprima, lang) {
             if (object.hasOwnProperty(key)) {
                 child = object[key];
                 if (typeof child === 'object' && child !== null) {
-                    traverse(child, visitor);
+                    traverseBroad(child, visitor);
                 }
             }
         }
@@ -99,6 +103,13 @@ define(['./esprimaAdapter', 'lang'], function (esprima, lang) {
         return deps.length ? deps : undefined;
     }
 
+    // Detects regular or arrow function expressions as the desired expression
+    // type.
+    function isFnExpression(node) {
+        return (node && (node.type === 'FunctionExpression' ||
+                             node.type === 'ArrowFunctionExpression'));
+    }
+
     /**
      * Main parse function. Returns a string of any valid require or
      * define/require.def calls as part of one JavaScript source string.
@@ -126,7 +137,7 @@ define(['./esprimaAdapter', 'lang'], function (esprima, lang) {
             needsDefine = true,
             astRoot = esprima.parse(fileContents);
 
-        parse.recurse(astRoot, function (callName, config, name, deps) {
+        parse.recurse(astRoot, function (callName, config, name, deps, node, factoryIdentifier, fnExpScope) {
             if (!deps) {
                 deps = [];
             }
@@ -144,6 +155,10 @@ define(['./esprimaAdapter', 'lang'], function (esprima, lang) {
                     name: name,
                     deps: deps
                 });
+            }
+
+            if (callName === 'define' && factoryIdentifier && hasProp(fnExpScope, factoryIdentifier)) {
+                return factoryIdentifier;
             }
 
             //If define was found, no need to dive deeper, unless
@@ -188,6 +203,7 @@ define(['./esprimaAdapter', 'lang'], function (esprima, lang) {
 
     parse.traverse = traverse;
     parse.traverseBroad = traverseBroad;
+    parse.isFnExpression = isFnExpression;
 
     /**
      * Handles parsing a file recursively for require calls.
@@ -195,13 +211,17 @@ define(['./esprimaAdapter', 'lang'], function (esprima, lang) {
      * @param {Function} onMatch function to call on a parse match.
      * @param {Object} [options] This is normally the build config options if
      * it is passed.
+     * @param {Object} [fnExpScope] holds list of function expresssion
+     * argument identifiers, set up internally, not passed in
      */
-    parse.recurse = function (object, onMatch, options) {
+    parse.recurse = function (object, onMatch, options, fnExpScope) {
         //Like traverse, but skips if branches that would not be processed
         //after has application that results in tests of true or false boolean
         //literal values.
-        var key, child,
+        var key, child, result, i, params, param, tempObject,
             hasHas = options && options.has;
+
+        fnExpScope = fnExpScope || emptyScope;
 
         if (!object) {
             return;
@@ -213,22 +233,68 @@ define(['./esprimaAdapter', 'lang'], function (esprima, lang) {
                 object.test.type === 'Literal') {
             if (object.test.value) {
                 //Take the if branch
-                this.recurse(object.consequent, onMatch, options);
+                this.recurse(object.consequent, onMatch, options, fnExpScope);
             } else {
                 //Take the else branch
-                this.recurse(object.alternate, onMatch, options);
+                this.recurse(object.alternate, onMatch, options, fnExpScope);
             }
         } else {
-            if (this.parseNode(object, onMatch) === false) {
+            result = this.parseNode(object, onMatch, fnExpScope);
+            if (result === false) {
                 return;
+            } else if (typeof result === 'string') {
+                return result;
             }
+
+            //Build up a "scope" object that informs nested recurse calls if
+            //the define call references an identifier that is likely a UMD
+            //wrapped function expression argument.
+            //Catch (function(a) {... wrappers
+            if (object.type === 'ExpressionStatement' && object.expression &&
+                    object.expression.type === 'CallExpression' && object.expression.callee &&
+                    isFnExpression(object.expression.callee)) {
+                tempObject = object.expression.callee;
+            }
+            // Catch !function(a) {... wrappers
+            if (object.type === 'UnaryExpression' && object.argument &&
+                object.argument.type === 'CallExpression' && object.argument.callee &&
+                isFnExpression(object.argument.callee)) {
+                tempObject = object.argument.callee;
+            }
+            if (tempObject && tempObject.params && tempObject.params.length) {
+                params = tempObject.params;
+                fnExpScope = mixin({}, fnExpScope, true);
+                for (i = 0; i < params.length; i++) {
+                    param = params[i];
+                    if (param.type === 'Identifier') {
+                        fnExpScope[param.name] = true;
+                    }
+                }
+            }
+
             for (key in object) {
                 if (object.hasOwnProperty(key)) {
                     child = object[key];
                     if (typeof child === 'object' && child !== null) {
-                        this.recurse(child, onMatch, options);
+                        result = this.recurse(child, onMatch, options, fnExpScope);
+                        if (typeof result === 'string') {
+                            break;
+                        }
                     }
                 }
+            }
+
+            //Check for an identifier for a factory function identifier being
+            //passed in as a function expression, indicating a UMD-type of
+            //wrapping.
+            if (typeof result === 'string') {
+                if (hasProp(fnExpScope, result)) {
+                    //result still in scope, keep jumping out indicating the
+                    //identifier still in use.
+                    return result;
+                }
+
+                return;
             }
         }
     };
@@ -241,18 +307,56 @@ define(['./esprimaAdapter', 'lang'], function (esprima, lang) {
      * @returns {Boolean}
      */
     parse.definesRequire = function (fileName, fileContents) {
-        var found = false;
+        var foundDefine = false,
+            foundDefineAmd = false;
 
         traverse(esprima.parse(fileContents), function (node) {
-            if (parse.hasDefineAmd(node)) {
-                found = true;
+            // Look for a top level declaration of a define, like
+            // var requirejs, require, define, off Program body.
+            if (node.type === 'Program' && node.body && node.body.length) {
+                foundDefine = node.body.some(function(bodyNode) {
+                    // var define
+                    if (bodyNode.type === 'VariableDeclaration') {
+                        var decls = bodyNode.declarations;
+                        if (decls) {
+                            var hasVarDefine = decls.some(function(declNode) {
+                                return (declNode.type === 'VariableDeclarator' &&
+                                        declNode.id &&
+                                        declNode.id.type === 'Identifier' &&
+                                        declNode.id.name === 'define');
+                            });
+                            if (hasVarDefine) {
+                                return true;
+                            }
+                        }
+                    }
+
+                    // function define() {}
+                    if (bodyNode.type === 'FunctionDeclaration' &&
+                        bodyNode.id &&
+                        bodyNode.id.type === 'Identifier' &&
+                        bodyNode.id.name === 'define') {
+                        return true;
+                    }
+
+
+
+
+
+
+                });
+            }
+
+            // Need define variable found first, before detecting define.amd.
+            if (foundDefine && parse.hasDefineAmd(node)) {
+                foundDefineAmd = true;
 
                 //Stop traversal
                 return false;
             }
         });
 
-        return found;
+        return foundDefine && foundDefineAmd;
     };
 
     /**
@@ -321,15 +425,14 @@ define(['./esprimaAdapter', 'lang'], function (esprima, lang) {
 
                 //Just the factory function passed to define
                 arg0 = node[argPropName][0];
-                if (arg0 && arg0.type === 'FunctionExpression') {
+                if (isFnExpression(arg0)) {
                     match = arg0;
                     return false;
                 }
 
                 //A string literal module ID followed by the factory function.
                 arg1 = node[argPropName][1];
-                if (arg0.type === 'Literal' &&
-                        arg1 && arg1.type === 'FunctionExpression') {
+                if (arg0.type === 'Literal' && isFnExpression(arg1)) {
                     match = arg1;
                     return false;
                 }
@@ -703,19 +806,23 @@ define(['./esprimaAdapter', 'lang'], function (esprima, lang) {
      * @param {Function} onMatch a function to call when a match is found.
      * It is passed the match name, and the config, name, deps possible args.
      * The config, name and deps args are not normalized.
+     * @param {Object} fnExpScope an object whose keys are all function
+     * expression identifiers that should be in scope. Useful for UMD wrapper
+     * detection to avoid parsing more into the wrapped UMD code.
      *
      * @returns {String} a JS source string with the valid require/define call.
      * Otherwise null.
      */
-    parse.parseNode = function (node, onMatch) {
+    parse.parseNode = function (node, onMatch, fnExpScope) {
         var name, deps, cjsDeps, arg, factory, exp, refsDefine, bodyNode,
             args = node && node[argPropName],
-            callName = parse.hasRequire(node);
+            callName = parse.hasRequire(node),
+            isUmd = false;
 
         if (callName === 'require' || callName === 'requirejs') {
             //A plain require/requirejs call
             arg = node[argPropName] && node[argPropName][0];
-            if (arg.type !== 'ArrayExpression') {
+            if (arg && arg.type !== 'ArrayExpression') {
                 if (arg.type === 'ObjectExpression') {
                     //A config call, try the second arg.
                     arg = node[argPropName][1];
@@ -738,39 +845,54 @@ define(['./esprimaAdapter', 'lang'], function (esprima, lang) {
                 factory = deps;
                 deps = name;
                 name = null;
-            } else if (name.type === 'FunctionExpression') {
+            } else if (isFnExpression(name)) {
                 //Just the factory, no name or deps
                 factory = name;
                 name = deps = null;
+            } else if (name.type === 'Identifier' && args.length === 1 &&
+                       hasProp(fnExpScope, name.name)) {
+                //define(e) where e is a UMD identifier for the factory
+                //function.
+                isUmd = true;
+                factory = name;
+                name = null;
             } else if (name.type !== 'Literal') {
                  //An object literal, just null out
                 name = deps = factory = null;
             }
 
             if (name && name.type === 'Literal' && deps) {
-                if (deps.type === 'FunctionExpression') {
+                if (isFnExpression(deps)) {
                     //deps is the factory
                     factory = deps;
                     deps = null;
                 } else if (deps.type === 'ObjectExpression') {
                     //deps is object literal, null out
                     deps = factory = null;
-                } else if (deps.type === 'Identifier' && args.length === 2) {
-                    // define('id', factory)
-                    deps = factory = null;
+                } else if (deps.type === 'Identifier') {
+                    if (args.length === 2) {
+                        //define('id', factory)
+                        deps = factory = null;
+                    } else if (args.length === 3 && isFnExpression(factory)) {
+                        //define('id', depsIdentifier, factory)
+                        //Since identifier, cannot know the deps, but do not
+                        //error out, assume they are taken care of outside of
+                        //static parsing.
+                        deps = null;
+                    }
                 }
             }
 
             if (deps && deps.type === 'ArrayExpression') {
                 deps = getValidDeps(deps);
-            } else if (factory && factory.type === 'FunctionExpression') {
+            } else if (isFnExpression(factory)) {
                 //If no deps and a factory function, could be a commonjs sugar
                 //wrapper, scan the function for dependencies.
                 cjsDeps = parse.getAnonDepsFromNode(factory);
                 if (cjsDeps.length) {
                     deps = cjsDeps;
                 }
-            } else if (deps || factory) {
+            } else if (deps || (factory && !isUmd)) {
                 //Does not match the shape of an AMD call.
                 return;
             }
@@ -780,9 +902,11 @@ define(['./esprimaAdapter', 'lang'], function (esprima, lang) {
                 name = name.value;
             }
 
-            return onMatch("define", null, name, deps, node);
+            return onMatch("define", null, name, deps, node,
+                           (factory && factory.type === 'Identifier' ? factory.name : undefined),
+                           fnExpScope);
         } else if (node.type === 'CallExpression' && node.callee &&
-                   node.callee.type === 'FunctionExpression' &&
+                   isFnExpression(node.callee) &&
                    node.callee.body && node.callee.body.body &&
                    node.callee.body.body.length === 1 &&
                    node.callee.body.body[0].type === 'IfStatement') {
@@ -807,7 +931,8 @@ define(['./esprimaAdapter', 'lang'], function (esprima, lang) {
                     });
 
                     if (refsDefine) {
-                        return onMatch("define", null, null, null, exp.expression);
+                        return onMatch("define", null, null, null, exp.expression,
+                                       exp.expression.arguments[0].name, fnExpScope);
                     }
                 }
             }

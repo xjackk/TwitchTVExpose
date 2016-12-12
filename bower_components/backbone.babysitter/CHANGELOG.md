@@ -1,5 +1,59 @@
 # Change log
 
+### v0.1.12
+
+* Bump version range of backbone support.
+
+### v0.1.11
+
+* Bump version range of backbone support.
+
+### v0.1.10
+
+* Bump version range of backbone support.
+
+### v0.1.9
+
+* Bump version range of backbone support.
+
+### v0.1.8
+
+* Bump version range of backbone and underscore support.
+
+### v0.1.7
+
+* Bump version range of backbone support.
+
+### v0.1.6
+
+* Expose `reduce` to babysitter collections. Thanks @romanbsd
+
+### v0.1.5
+
+* Minor updates to bower.json
+
+### v0.1.4
+
+* Update UMD Wrapper and build process
+
+### v0.1.2
+
+* Add .VERSION and n.oConflict
+* General cleanups to tests and package.json
+* Add travis build info
+
+### v0.1.1
+* Remove AMD builds and replace with a single UMD style wrapper.
+
+### v0.1.0
+* allow chaining of add and remove methods
+* add component.json
+
+#### General
+* update grunt file
+* readme fixed
+* fix gruntfile url
+
 ### v0.0.6
 
 * Removed `.findByCollection` method

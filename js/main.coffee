@@ -2,25 +2,20 @@
 require.config
 
     paths:
-		# note these are all AMD compliant versions
-        jquery: "../bower_components/jquery/jquery" # amd version
-        underscore: "../bower_components/underscore-amd/underscore" # amd version
-        backbone: "../bower_components/backbone-amd/backbone" # amd version
-        "backbone.babysitter": "../bower_components/backbone.babysitter/lib/amd/backbone.babysitter" # amd version
-        "backbone.wreqr": "../bower_components/backbone.wreqr/lib/amd/backbone.wreqr" # amd version
-        "backbone.syphon": "../bower_components/backbone.syphon/lib/amd/backbone.syphon" # amd version
-        marionette: "../bower_components/marionette/lib/core/amd/backbone.marionette" # amd version
+        backbone: "../bower_components/backbone/backbone" # amd version
+        underscore: "../bower_components/underscore/underscore" # amd version
+        jquery: "../bower_components/jquery/dist/jquery" # amd version
+        marionette: "../bower_components/marionette/lib/backbone.marionette" # amd version
+        "backbone.syphon": "../bower_components/backbone.syphon/lib/backbone.syphon" # amd version
         moment: "../bower_components/moment/moment"
         globalize: "../bower_components/globalize/lib/globalize"
-        text: "../bower_components/requirejs-text/text"
+        text: "../bower_components/text/text"
         d3: "../bower_components/d3/d3",
         spin: "../bower_components/spin.js/spin"
         jqueryspin: "../bower_components/spin.js/jquery.spin"
         bootstrap:"../bower_components/bootstrap/dist/js/bootstrap"
 
     shim:
-        #mockjax: ["jquery"]
-        #mockjson: ["jquery"]
         bootstrap: ["jquery"]
 
 	require ["config/load", "app" ], (_config, app) -> # ensure that base application settings are loaded before we can call the app.  Templates, settings and jquery plugins

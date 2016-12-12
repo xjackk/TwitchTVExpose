@@ -1,5 +1,5 @@
 # msgbus decoupled from app
-define ["backbone.wreqr"], (Wreqr) ->    
-    reqres: new Wreqr.RequestResponse()
-    commands: new Wreqr.Commands()
-    events: new Wreqr.EventAggregator()
+define ["backbone","marionette"], (Backbone) ->
+  reqres: new Backbone.Wreqr.RequestResponse()
+  commands: new Backbone.Wreqr.Commands()
+  events: new Backbone.Wreqr.EventAggregator()

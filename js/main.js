@@ -2,16 +2,14 @@
 (function() {
   require.config({
     paths: {
-      jquery: "../bower_components/jquery/jquery",
-      underscore: "../bower_components/underscore-amd/underscore",
-      backbone: "../bower_components/backbone-amd/backbone",
-      "backbone.babysitter": "../bower_components/backbone.babysitter/lib/amd/backbone.babysitter",
-      "backbone.wreqr": "../bower_components/backbone.wreqr/lib/amd/backbone.wreqr",
-      "backbone.syphon": "../bower_components/backbone.syphon/lib/amd/backbone.syphon",
-      marionette: "../bower_components/marionette/lib/core/amd/backbone.marionette",
+      backbone: "../bower_components/backbone/backbone",
+      underscore: "../bower_components/underscore/underscore",
+      jquery: "../bower_components/jquery/dist/jquery",
+      marionette: "../bower_components/marionette/lib/backbone.marionette",
+      "backbone.syphon": "../bower_components/backbone.syphon/lib/backbone.syphon",
       moment: "../bower_components/moment/moment",
       globalize: "../bower_components/globalize/lib/globalize",
-      text: "../bower_components/requirejs-text/text",
+      text: "../bower_components/text/text",
       d3: "../bower_components/d3/d3",
       spin: "../bower_components/spin.js/spin",
       jqueryspin: "../bower_components/spin.js/jquery.spin",

@@ -1,8 +1,22 @@
-# Backbone.Wreqr
+<h1 align="center">Backbone.Wreqr</h1>
+<p align="center">
+  <a title='Build Status' href="https://travis-ci.org/marionettejs/backbone.wreqr">
+    <img src='https://travis-ci.org/marionettejs/backbone.wreqr.svg' />
+  </a>
+</p>
 
 A simple infrastructure based on [messaging patterns](http://www.eaipatterns.com/)
-and service bus implementations for decoupling [Backbone](http://backbonejs.org) 
+and service bus implementations for decoupling [Backbone](http://backbonejs.org)
 and [Backbone.Marionette](http://marionettejs.com) applications.
+
+**Notice:** In the next major release of Marionette, v3, Wreqr will be swapped for an updated library,
+[Radio](https://github.com/jmeas/backbone.radio). If you've already begun using Wreqr, don't worry. This change
+isn't for quite some time: a few months, at the earliest. Also, we will support easily swapping the two libraries, 
+so you won't run into any problems if you decide to continue using Wreqr.
+
+For an introduction to Radio, check out
+[our blog post](http://blog.marionettejs.com/2014/07/11/introducing-backbone-radio/index.html). As of Marionette v2.1, you can easily
+swap in Radio for Wreqr with [this shim](https://gist.github.com/jmeas/7992474cdb1c5672d88b). We think you'll really like the changes!
 
 ## Downloads And Source
 
@@ -14,12 +28,6 @@ from the links below.
 * Development: [backbone.wreqr.js](https://raw.github.com/marionettejs/backbone.wreqr/master/lib/backbone.wreqr.js)
 
 * Production: [backbone.wreqr.min.js](https://raw.github.com/marionettejs/backbone.wreqr/master/lib/backbone.wreqr.min.js)
-
-### RequireJS (AMD) Builds
-
-* Development: [backbone.wreqr.js](https://raw.github.com/marionettejs/backbone.wreqr/master/lib/amd/backbone.wreqr.js)
-
-* Production: [backbone.wreqr.min.js](https://raw.github.com/marionettejs/backbone.wreqr/master/lib/amd/backbone.wreqr.min.js)
 
 ## Basic Use
 
@@ -42,9 +50,9 @@ vent.trigger("foo");
 ### Commands And Request / Response
 
 Wreqr can be used by instantiating a `Backbone.Wreqr.Commands`
-or `Backbone.Wreqr.RequestResponse` object. These objects provide an
+or `Backbone.Wreqr.RequestResponse` object. These objects provide a
 `setHandler` method to add a handler for a named request or command.
-Commands can then be executed with the `execute` method, and 
+Commands can then be executed with the `execute` method, and
 request/response can be done through the `request` method.
 
 ### Commands
@@ -70,6 +78,42 @@ reqres.setHandler("foo", function(){
 
 var result = reqres.request("foo");
 console.log(result);
+```
+
+### Radio
+
+Radio is a convenient way for emitting events through channels. Radio can be used to either retrieve a channel, or talk through a channel with either command, reqres, or vent.
+
+```js
+// channels
+var globalChannel = Backbone.Wreqr.radio.channel('global');
+var userChannel = Backbone.Wreqr.radio.channel('user');
+
+// Wreqr events
+Backbone.Wreqr.radio.commands.execute( 'global', 'shutdown' );
+Backbone.Wreqr.radio.reqres.request(  'global', 'current-user' );
+Backbone.Wreqr.radio.vent.trigger(  'global', 'game-over');
+
+```
+
+### Channel
+Channel is an object that wraps EventAggregator, Commands, and Reqres. Channels provide a convenient way for the objects in your system to talk to one another without the global channel becoming too noisy.
+
+```js
+// global channel
+var globalChannel = Backbone.Wreqr.radio.channel('global');
+globalChannel.commands.execute('shutdown' );
+globalChannel.reqres.request('current-user' );
+globalChannel.vent.trigger('game-over');
+
+// user channel
+var userChannel = Backbone.Wreqr.radio.channel('user');
+userChannel.commands.execute('punnish');
+userChannel.reqres.request('user-avatar');
+userChannel.vent.trigger('win', {
+  level: 2,
+  stars: 3
+});
 ```
 
 ### Adding Multiple Handlers
@@ -134,3 +178,9 @@ var MyReqRes = Backbone.Wreqr.RequestResponse.extend({
 ## License
 
 MIT - see [LICENSE.md](https://raw.github.com/marionettejs/backbone.wreqr/master/LICENSE.md)
+
+## Dev
+* `npm install`
+* `npm install -g grunt-cli`
+* `grunt`
+

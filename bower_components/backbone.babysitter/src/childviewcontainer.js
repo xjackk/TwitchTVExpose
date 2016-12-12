@@ -1,11 +1,11 @@
-// Backbone.ChildViewContainer
-// ---------------------------
+// BabySitter.ChildViewContainer
+// -----------------------------
 //
 // Provide a container to store, retrieve and
 // shut down child views.
 
-Backbone.ChildViewContainer = (function(Backbone, _){
-  
+Backbone.ChildViewContainer = (function (Backbone, _) {
+
   // Container Constructor
   // ---------------------
 
@@ -44,6 +44,7 @@ Backbone.ChildViewContainer = (function(Backbone, _){
       }
 
       this._updateLength();
+      return this;
     },
 
     // Find a view by the model that was attached to
@@ -72,7 +73,7 @@ Backbone.ChildViewContainer = (function(Backbone, _){
       return _.values(this._views)[index];
     },
 
-    // retrieve a view by it's `cid` directly
+    // retrieve a view by its `cid` directly
     findByCid: function(cid){
       return this._views[cid];
     },
@@ -99,6 +100,7 @@ Backbone.ChildViewContainer = (function(Backbone, _){
 
       // update the length
       this._updateLength();
+      return this;
     },
 
     // Call a method on every view in the container,
@@ -130,10 +132,10 @@ Backbone.ChildViewContainer = (function(Backbone, _){
   //
   // Mix in methods from Underscore, for iteration, and other
   // collection related features.
-  var methods = ['forEach', 'each', 'map', 'find', 'detect', 'filter', 
-    'select', 'reject', 'every', 'all', 'some', 'any', 'include', 
-    'contains', 'invoke', 'toArray', 'first', 'initial', 'rest', 
-    'last', 'without', 'isEmpty', 'pluck'];
+  var methods = ['forEach', 'each', 'map', 'find', 'detect', 'filter',
+    'select', 'reject', 'every', 'all', 'some', 'any', 'include',
+    'contains', 'invoke', 'toArray', 'first', 'initial', 'rest',
+    'last', 'without', 'isEmpty', 'pluck', 'reduce'];
 
   _.each(methods, function(method) {
     Container.prototype[method] = function() {

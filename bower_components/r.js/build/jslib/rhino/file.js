@@ -1,5 +1,5 @@
 /**
- * @license RequireJS Copyright (c) 2010-2011, The Dojo Foundation All Rights Reserved.
+ * @license RequireJS Copyright (c) 2010-2014, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/requirejs for details
  */
@@ -236,7 +236,13 @@ define(['prim'], function (prim) {
 
             os = new java.io.BufferedWriter(outWriter);
             try {
-                os.write(fileContents);
+                //If in Nashorn, need to coerce the JS string to a Java string so that
+                //writer.write method dispatch correctly detects the type.
+                if (typeof importPackage !== 'undefined') {
+                    os.write(fileContents);
+                } else {
+                    os.write(new java.lang.String(fileContents));
+                }
             } finally {
                 os.close();
             }

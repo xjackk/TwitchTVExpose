@@ -1,7 +1,7 @@
 /*jslint plusplus: true, nomen: true */
 /*global define: false, require: false, doh: false */
 
-define(['build', 'env!env/file', 'env'], function (build, file, env) {
+define(['build', 'env!env/file', 'env', 'lang'], function (build, file, env, lang) {
     'use strict';
 
     //Remove any old builds
@@ -711,6 +711,24 @@ define(['build', 'env!env/file', 'env'], function (build, file, env) {
     );
     doh.run();
 
+    //https://github.com/jrburke/r.js/issues/574
+    doh.register("keepAmdefine",
+        [
+            function amdefineStrip(t) {
+                file.deleteFile("lib/keepAmdefine/built.js");
+
+                build(["lib/keepAmdefine/build.js"]);
+
+                t.is(nol(c("lib/keepAmdefine/expected.js")),
+                     nol(c("lib/keepAmdefine/built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
     doh.register("nameInsertion",
         [
             function nameInsertion(t) {
@@ -874,6 +892,26 @@ define(['build', 'env!env/file', 'env'], function (build, file, env) {
     );
     doh.run();
 
+    //Multiple mainConfigFile entries
+    //https://github.com/jrburke/r.js/pull/572
+    doh.register("mainConfigFileMulti",
+        [
+            function mainConfigFileMulti(t) {
+                file.deleteFile("lib/mainConfigFile/multi/main-built.js");
+
+                build(["lib/mainConfigFile/multi/tools/build.js"]);
+
+                t.is(nol(c("lib/mainConfigFile/multi/expected.js")),
+                     nol(c("lib/mainConfigFile/multi/main-built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+
     doh.register("onBuildAllDir",
         [
             function onBuildAllDir(t) {
@@ -970,6 +1008,24 @@ define(['build', 'env!env/file', 'env'], function (build, file, env) {
     );
     doh.run();
 
+    doh.register("cssRelativeUrl",
+        [
+            function cssRelativeUrl(t) {
+                file.deleteFile("lib/cssRelativeUrl/main-built.css");
+
+                build(["lib/cssRelativeUrl/build.js"]);
+
+                t.is(nol(c("lib/cssRelativeUrl/output/expected.css")),
+                     nol(c("lib/cssRelativeUrl/output/main-built.css")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+
     doh.register("cssDuplicates",
         [
             function cssDuplicates(t) {
@@ -996,6 +1052,23 @@ define(['build', 'env!env/file', 'env'], function (build, file, env) {
 
                 t.is(nol(c("lib/cssKeepComments/expected.css")),
                      nol(c("lib/cssKeepComments/main-built.css")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    doh.register("cssKeepWhitespace",
+        [
+            function cssKeepComments(t) {
+                file.deleteFile("lib/cssKeepWhitespace/main-built.css");
+
+                build(["lib/cssKeepWhitespace/build.js"]);
+
+                t.is(nol(c("lib/cssKeepWhitespace/expected.css")),
+                     nol(c("lib/cssKeepWhitespace/main-built.css")));
 
                 require._buildReset();
             }
@@ -1222,6 +1295,30 @@ define(['build', 'env!env/file', 'env'], function (build, file, env) {
     );
     doh.run();
 
+    // test wrapShim: true config
+    //
+    doh.register("shimBasicWrap",
+        [
+            function shimBasicWrap(t) {
+                var outFile = "lib/shimBasicWrap/basic-tests-built.js";
+
+                file.deleteFile(outFile);
+
+                build(["lib/shimBasicWrap/build.js"]);
+
+                //Also remove spaces, since rhino and node differ on their
+                //Function.prototype.toString() output by whitespace, and
+                //the semicolon on end of A.name, and string quotes.
+                t.is(nol(c("lib/shimBasicWrap/expected.js")).replace(/\s+/g, '').replace(/A\.name\;/g, 'A.name'),
+                     nol(c(outFile)).replace(/\s+/g, '').replace(/A\.name\;/g, 'A.name')
+                     .replace(/['"]Modified["']/, "'Modified'"));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
 
     doh.register("shimFakeDefine",
         [
@@ -1239,6 +1336,27 @@ define(['build', 'env!env/file', 'env'], function (build, file, env) {
         ]
     );
     doh.run();
+
+    doh.register("shimWrapShort",
+        [
+            function shimWrapShort(t) {
+                file.deleteFile("lib/shimWrapShort/main-built.js");
+
+                build(["lib/shimWrapShort/build.js"]);
+
+                t.is(nol(c("lib/shimWrapShort/expected.js")),
+                     nol(c("lib/shimWrapShort/main-built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+
+
+
 
     doh.register("mapConfig",
         [
@@ -1311,6 +1429,24 @@ define(['build', 'env!env/file', 'env'], function (build, file, env) {
 
                 t.is(nol(c("lib/mapConfig/expectedPlugin.js")),
                      nol(c(outFile)));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+
+    doh.register("mapConfigMix",
+        [
+            function mapConfigMix(t) {
+                file.deleteFile("lib/mapConfigMix/a-built.js");
+
+                build(["lib/mapConfigMix/build.js"]);
+
+                t.is(nol(c("lib/mapConfigMix/expected.js")),
+                     nol(c("lib/mapConfigMix/a-built.js")));
 
                 require._buildReset();
             }
@@ -1565,6 +1701,26 @@ define(['build', 'env!env/file', 'env'], function (build, file, env) {
     );
     doh.run();
 
+    //Confirm node-style package module IDs, which may end in '.js', work in
+    //optimizer.
+    //https://github.com/jrburke/r.js/pull/591
+    doh.register("packagesNode",
+        [
+            function packagesNode(t) {
+                file.deleteFile("lib/packagesNode/main-built.js");
+
+                build(["lib/packagesNode/build.js"]);
+
+                t.is(nol(c("lib/packagesNode/expected.js")),
+                     nol(c("lib/packagesNode/main-built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
     //Confirm package adapter module is skipped if the main package
     //module names itself.
     //https://github.com/jrburke/r.js/issues/328
@@ -1604,6 +1760,27 @@ define(['build', 'env!env/file', 'env'], function (build, file, env) {
     );
     doh.run();
 
+
+    doh.register("packagesMultiLevel",
+        [
+            function packagesMultiLevel(t) {
+                var startPath = "../../../requirejs/tests/packagesMultiLevel/",
+                    builtPath = startPath + "packagesMultiLevel-tests-built.js";
+                file.deleteFile(builtPath);
+
+                build([startPath + "build.js"]);
+
+                t.is(nol(c(startPath + "expected-built.js")), nol(c(builtPath)));
+
+                //Reset require internal state for the contexts so future
+                //builds in these tests will work correctly.
+                require._buildReset();
+            }
+        ]
+    );
+    doh.run();
+
+
     //Make sure pluginBuilder works.
     //https://github.com/jrburke/r.js/issues/175
     doh.register("pluginBuilder",
@@ -1622,6 +1799,26 @@ define(['build', 'env!env/file', 'env'], function (build, file, env) {
         ]
     );
     doh.run();
+
+    //Make sure plugin dependencies that need normalization run in a build.
+    //https://github.com/jrburke/r.js/issues/648
+    doh.register("pluginDepExec",
+        [
+            function pluginDepExec(t) {
+                file.deleteFile("lib/pluginDepExec/main-built.js");
+
+                build(["lib/pluginDepExec/build.js"]);
+
+                t.is(nol(c("lib/pluginDepExec/expected.js")),
+                     nol(c("lib/pluginDepExec/main-built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
 
     //Make sure a non-strict plugin does not blow up in the build
     //https://github.com/jrburke/r.js/issues/181
@@ -1893,6 +2090,44 @@ define(['build', 'env!env/file', 'env'], function (build, file, env) {
     );
     doh.run();
 
+    doh.register("rawTextLongId",
+        [
+            function rawTextLongId(t) {
+                file.deleteFile("lib/rawTextLongId/built.js");
+
+                build(["lib/rawTextLongId/build.js"]);
+
+                t.is(nol(c("lib/rawTextLongId/expected.js")),
+                     nol(c("lib/rawTextLongId/built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+
+    // deps should be integrated into the build and not trigger
+    // loads before traceDependencies, where rawText comes into play.
+    // https://github.com/jrburke/r.js/issues/658
+    doh.register("rawTextDeps",
+        [
+            function rawTextDeps(t) {
+                file.deleteFile("lib/rawTextDeps/built.js");
+
+                build(["lib/rawTextDeps/build.js"]);
+
+                t.is(nol(c("lib/rawTextDeps/expected.js")),
+                     nol(c("lib/rawTextDeps/built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
     //Make sure multiple named modules do not mess up toTransport
     //https://github.com/jrburke/r.js/issues/366
     doh.register("iife",
@@ -1971,25 +2206,50 @@ define(['build', 'env!env/file', 'env'], function (build, file, env) {
     );
     doh.run();
 
-    //Make sure "onejs" builds generate source map files relative to baseUrl,
-    //and not the output file:
-    //https://github.com/jrburke/r.js/issues/477
-    doh.register("sourcemapOneJs",
-        [
-            function sourcemapOneJs(t) {
-                file.deleteFile("lib/sourcemap/onejs/built.js");
-                file.deleteFile("lib/sourcemap/onejs/built.js.map");
+    // The output in rhino is slightly different, but enough to cause the
+    // text compare to fail. So just disabling it for now. Long term,
+    // a fancier sourcemap diff checking would be nice.
+    if (env.get() !== 'rhino') {
+        //Make sure "onejs" builds generate source map files relative to baseUrl,
+        //and not the output file:
+        //https://github.com/jrburke/r.js/issues/477
+        doh.register("sourcemapOneJs",
+            [
+                function sourcemapOneJs(t) {
+                    file.deleteFile("lib/sourcemap/onejs/www/js/built.js");
+                    file.deleteFile("lib/sourcemap/onejs/www/js/built.js.map");
 
-                build(["lib/sourcemap/onejs/build.js"]);
+                    build(["lib/sourcemap/onejs/build.js"]);
 
-                t.is(nol(c("lib/sourcemap/onejs/expected.map")),
-                     nol(c("lib/sourcemap/onejs/built.js.map")));
+                    t.is(nol(c("lib/sourcemap/onejs/expected.map")),
+                         nol(c("lib/sourcemap/onejs/www/js/built.js.map")));
 
-                require._buildReset();
-            }
-        ]
-    );
-    doh.run();
+                    require._buildReset();
+                }
+            ]
+        );
+        doh.run();
+
+
+        //Confirm target file is also in the source map.
+        //https://github.com/jrburke/r.js/issues/829
+        doh.register("sourcemapTwoJs",
+            [
+                function sourcemapTwoJs(t) {
+                    file.deleteFile("lib/sourcemap/twojs/www-built");
+
+                    build(["lib/sourcemap/twojs/build.js"]);
+
+                    t.is(nol(c("lib/sourcemap/twojs/expected.map")),
+                         nol(c("lib/sourcemap/twojs/www-built/core.js.map")));
+
+                    require._buildReset();
+                }
+            ]
+        );
+        doh.run();
+    }
+
 
     //Allow the target of an optimization to be a module that is only
     //provided in the rawText config.
@@ -2095,4 +2355,383 @@ define(['build', 'env!env/file', 'env'], function (build, file, env) {
         ]
     );
     doh.run();
+
+
+    //Test single file JS optimization with source map generation
+    doh.register("unicode",
+        [
+            function unicode(t) {
+                file.deleteFile("lib/unicode/main-built.js");
+
+                build(["lib/unicode/build.js"]);
+
+                t.is(nol(c("lib/unicode/expected.js")),
+                     nol(c("lib/unicode/main-built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    //Do not go into already concatenated files with an internal define
+    //https://github.com/jrburke/requirejs/issues/883
+    doh.register("umd",
+        [
+            function umd(t) {
+                file.deleteFile("lib/umd/main-built.js");
+
+                build(["lib/umd/build.js"]);
+
+                t.is(nol(c("lib/umd/expected.js")),
+                     nol(c("lib/umd/main-built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    //Detect !function(e) {... define([], e) UMD wrappers
+    //https://github.com/jrburke/requirejs/issues/733
+    doh.register("umd2",
+        [
+            function umd2(t) {
+                file.deleteFile("lib/umd2/built.js");
+
+                build(["lib/umd2/build.js"]);
+
+                t.is(nol(c("lib/umd2/expected.js")),
+                     nol(c("lib/umd2/built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    //Detect !function(e) {... define(e) UMD wrappers
+    //https://github.com/jrburke/requirejs/issues/833
+    doh.register("umd3",
+        [
+            function umd2(t) {
+                file.deleteFile("lib/umd3/app-built.js");
+
+                build(["lib/umd3/build.js"]);
+
+                t.is(nol(c("lib/umd3/expected.js")),
+                     nol(c("lib/umd3/app-built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    //Possible style of UMD wrapper used in TypeScript
+    //https://github.com/jrburke/requirejs/issues/857
+    doh.register("umd4",
+        [
+            function umd4(t) {
+                file.deleteFile("lib/umd4/app-built.js");
+
+                build(["lib/umd4/build.js"]);
+
+                t.is(nol(c("lib/umd4/expected.js")),
+                     nol(c("lib/umd4/app-built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    //Do not not find nested deps in a UMD wrapper
+    //https://github.com/jrburke/requirejs/issues/651
+    doh.register("umdNested",
+        [
+            function umdNested(t) {
+                file.deleteFile("lib/umdNested/main-built.js");
+
+                build(["lib/umdNested/build.js"]);
+
+                t.is(nol(c("lib/umdNested/expected.js")),
+                     nol(c("lib/umdNested/main-built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    //Keep parsing if a define uses an identifier, but is not part of
+    //a function wrapper for UMD
+    //https://github.com/jrburke/requirejs/issues/1133
+    doh.register("nonUmdIdentifiers",
+        [
+            function nonUmdIdentifiers(t) {
+                file.deleteFile("lib/nonUmdIdentifiers/main-built.js");
+
+                build(["lib/nonUmdIdentifiers/build.js"]);
+
+                t.is(nol(c("lib/nonUmdIdentifiers/expected.js")),
+                     nol(c("lib/nonUmdIdentifiers/main-built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    //out function should get source map if available.
+    //https://github.com/jrburke/r.js/issues/590
+    doh.register("sourcemapOutFunction",
+        [
+            function sourcemapOutFunction(t) {
+
+                var ugly, plain,
+                    config = {
+                        baseUrl: 'lib/sourcemapOutFunction/js',
+                        generateSourceMaps: true,
+                        preserveLicenseComments: false,
+                        name: 'main'
+                    };
+
+                build(lang.mixin({
+                    optimize: 'uglify2',
+                    out: function (text, sourceMap) {
+                        ugly = {
+                            text: text,
+                            sourceMap: sourceMap
+                        };
+                    }
+                }, config));
+
+                require._buildReset();
+
+                build(lang.mixin({
+                    optimize: 'none',
+                    out: function (text, sourceMap) {
+                        plain = {
+                            text: text,
+                            sourceMap: sourceMap
+                        };
+                    }
+                }, config));
+
+                /*
+                console.log(ugly.text);
+                console.log('=======');
+                console.log(ugly.sourceMap);
+                console.log('== NONE ==');
+                console.log(plain.text);
+                console.log('=======');
+                console.log(plain.sourceMap);
+                */
+
+                t.is(true, !!plain.text, 'has plain text');
+                t.is(true, !!ugly.text, 'has uglified text');
+                t.is(true, plain.text !== ugly.text, 'texts are not equal');
+                t.is(true, plain.sourceMap !== ugly.sourceMap, 'source maps are not equal');
+
+                ugly.sourceMap = JSON.parse(ugly.sourceMap);
+                plain.sourceMap = JSON.parse(plain.sourceMap);
+
+                t.is(true, !!ugly.sourceMap.sourcesContent, 'has uglified sourcesContent');
+                t.is(true, !!plain.sourceMap.sourcesContent, 'has plain sourcesContent');
+                t.is(true, plain.sourceMap.mappings !== ugly.sourceMap.mappings, 'mappings are not equal');
+
+                require._buildReset();
+
+            }
+
+        ]
+    );
+    doh.run();
+
+    //https://github.com/jrburke/r.js/issues/479
+    doh.register("allowSourceOverwrites",
+        [
+            function allowSourceOverwrites(t) {
+                file.deleteFile("lib/allowSourceOverwrites/output/main.js");
+
+                build(["lib/allowSourceOverwrites/build.js"]);
+
+                t.is(nol(c("lib/allowSourceOverwrites/expected.js")),
+                     nol(c("lib/allowSourceOverwrites/output/main.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    //Confirm dot trimming still works as usual.
+    //https://github.com/jrburke/requirejs/issues/1129
+    doh.register("dotTrim",
+        [
+            function dotTrim(t) {
+                file.deleteFile("lib/dotTrim/built.js");
+
+                build(["lib/dotTrim/build.js"]);
+
+                t.is(nol(c("lib/dotTrim/expected.js")),
+                     nol(c("lib/dotTrim/built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    //Confirm that the UMD skipping still finds jQuery-type inner
+    //defines inside a partial, non-AMD UMD wrapper.
+    //https://github.com/jrburke/r.js/issues/704
+    doh.register("nojQDupeDefine",
+        [
+            function nojQDupeDefine(t) {
+                file.deleteFile("lib/nojQDupeDefine/built.js");
+
+                build(["lib/nojQDupeDefine/build.js"]);
+
+                t.is(nol(c("lib/nojQDupeDefine/expected.js")),
+                     nol(c("lib/nojQDupeDefine/main-built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    //Deal with some build config files that could be compile outputs from
+    //other languages, like typescript.
+    //https://github.com/jrburke/r.js/issues/767
+    doh.register("typescriptConfig",
+        [
+            function typescriptConfig(t) {
+                file.deleteFile("lib/typescriptConfig/main-built.js");
+
+                build(["lib/typescriptConfig/build.js"]);
+
+                t.is(nol(c("lib/typescriptConfig/expected.js")),
+                     nol(c("lib/typescriptConfig/main-built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    //Allow arrow functions in require/define APIs
+    //https://github.com/jrburke/r.js/issues/800
+    doh.register("arrowFunctions",
+        [
+            function arrowFunctions(t) {
+                file.deleteFile("lib/arrow/main-built.js");
+
+                build(["lib/arrow/build.js"]);
+
+                t.is(nol(c("lib/arrow/expected.js")),
+                     nol(c("lib/arrow/main-built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    //See https://github.com/jrburke/r.js/pull/796
+    doh.register("periodInNameConfig",
+        [
+            function periodInNameConfig(t) {
+                file.deleteFile("lib/periodInNameConfig/out");
+
+                build(["lib/periodInNameConfig/build.js"]);
+
+                t.is(nol(c("lib/periodInNameConfig/scripts/main.js")),
+                     nol(c("lib/periodInNameConfig/out/main.js")));
+
+                t.is(nol(c("lib/periodInNameConfig/components/foo.bar.js")),
+                     nol(c("lib/periodInNameConfig/out/foo.bar.js")));
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    //Do not warn about unloaded loader plugin resources if they enter the build
+    //via named define calls.
+    //https://github.com/jrburke/r.js/issues/815
+    doh.register("inlineDefineNoRequire",
+        [
+            function inlineDefineNoRequire(t) {
+                file.deleteFile("lib/inlineDefineNoRequire/testmodule-built.js");
+
+                build(["lib/inlineDefineNoRequire/build.js"]);
+
+                t.is(nol(c("lib/inlineDefineNoRequire/expected.js")),
+                     nol(c("lib/inlineDefineNoRequire/testmodule-built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    //Allow define('id', depsAsIdentifier, function(){}) in files
+    //https://github.com/jrburke/r.js/issues/825
+    doh.register("dynamicDefine",
+        [
+            function dynamicDefine(t) {
+                file.deleteFile("lib/dynamicDefine/main-built.js");
+
+                build(["lib/dynamicDefine/build.js"]);
+
+                t.is(nol(c("lib/dynamicDefine/expected.js")),
+                     nol(c("lib/dynamicDefine/main-built.js")));
+
+                require._buildReset();
+            }
+
+        ]
+    );
+    doh.run();
+
+    //When running in Rhino and using Closure for optimization,
+    //it should be possible to declare externs for Closure's
+    //ADVANCED_OPTIMIZATION mode.
+    //https://github.com/jrburke/r.js/issues/860
+    if (env.get() === 'rhino') {
+        doh.register("closureExterns",
+            [
+                function closureExterns(t) {
+                    file.deleteFile("lib/closureExterns/built");
+
+                    build(["lib/closureExterns/build.js"]);
+                    var contents = c("lib/closureExterns/built/built.js");
+                    //Without a working externs definition, these property
+                    //names are typically replaced with one-character aliases.
+                    t.is(true, /define\.amd/.test(contents));
+                    t.is(true, /module\.exports/.test(contents));
+
+                    require._buildReset();
+                }
+            ]
+        );
+        doh.run();
+    }
 });

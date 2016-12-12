@@ -17,7 +17,20 @@ define(['pragma', 'env!env/file'], function (pragma, file) {
             function pragmaNamespace(t) {
                 t.is(c('pragma/good1Expected.js'), pragma.namespace(c('pragma/good1.js'), 'foo'));
                 t.is(c('pragma/good2Expected.js'), pragma.namespace(c('pragma/good2.js'), 'foo'));
+                t.is(c('pragma/good3Expected.js'), pragma.namespace(c('pragma/good3.js'), 'foo'));
+                t.is(c('pragma/good4Expected.js'), pragma.namespace(c('pragma/good4.js'), 'foo'));
+                t.is(c('pragma/good5Expected.js'), pragma.namespace(c('pragma/good5.js'), 'foo'));
             }
         ]);
     doh.run();
+
+    doh.register("pragmaUseStrict",
+        [
+            function pragmaUseStrict(t) {
+                var modifiedContents = pragma.removeStrict(c('pragma/goodStrict1.js'), {});
+                t.is(c('pragma/goodStrict1Expected.js'), modifiedContents);
+            }
+        ]);
+    doh.run();
+
 });

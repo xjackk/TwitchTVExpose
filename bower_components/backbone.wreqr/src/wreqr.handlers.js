@@ -26,7 +26,7 @@ Wreqr.Handlers = (function(Backbone, _){
 
     // Add multiple handlers using an object literal configuration
     setHandlers: function(handlers){
-      _.each(handlers, function(handler, name){
+      _.each(handlers, _.bind(function(handler, name){
         var context = null;
 
         if (_.isObject(handler) && !_.isFunction(handler)){
@@ -35,7 +35,7 @@ Wreqr.Handlers = (function(Backbone, _){
         }
 
         this.setHandler(name, handler, context);
-      }, this);
+      }, this));
     },
 
     // Add a handler for the given name, with an
@@ -63,12 +63,11 @@ Wreqr.Handlers = (function(Backbone, _){
       var config = this._wreqrHandlers[name];
 
       if (!config){
-        throw new Error("Handler not found for '" + name + "'");
+        return;
       }
 
       return function(){
-        var args = Array.prototype.slice.apply(arguments);
-        return config.callback.apply(config.context, args);
+        return config.callback.apply(config.context, arguments);
       };
     },
 

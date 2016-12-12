@@ -4,7 +4,7 @@
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(["marionette", "text"], function(Marionette) {
+  define(["backbone", "marionette"], function(Marionette) {
     var AppCollectionView, AppCompositeView, AppItemView, AppLayout, _remove;
     _remove = Marionette.View.prototype.remove;
     _.extend(Marionette.View.prototype, {
@@ -71,8 +71,6 @@
           return AppCollectionView.__super__.constructor.apply(this, arguments);
         }
 
-        AppCollectionView.prototype.itemViewEventPrefix = "childview";
-
         return AppCollectionView;
 
       })(Marionette.CollectionView),
@@ -82,8 +80,6 @@
         function AppCompositeView() {
           return AppCompositeView.__super__.constructor.apply(this, arguments);
         }
-
-        AppCompositeView.prototype.itemViewEventPrefix = "childview";
 
         return AppCompositeView;
 

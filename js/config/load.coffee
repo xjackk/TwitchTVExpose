@@ -14,7 +14,7 @@ define [
  "entities/oss",
  "components/form/controller",			#form component
  "components/loading/controller",		#loading component
- #"holderjs",    		                #img placeholders
  "bootstrap",        	                #twitter bootstrap
- "globalize"
+ "globalize",
+ "text"
 ], ->

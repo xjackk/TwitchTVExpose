@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2010-2011, The Dojo Foundation All Rights Reserved.
+ * @license Copyright (c) 2010-2014, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/requirejs for details
  */
@@ -19,6 +19,7 @@ function (lang,   logger,   envOptimize,        file,           parse,
         cssImportRegExp = /\@import\s+(url\()?\s*([^);]+)\s*(\))?([\w, ]*)(;)?/ig,
         cssCommentImportRegExp = /\/\*[^\*]*@import[^\*]*\*\//g,
         cssUrlRegExp = /\url\(\s*([^\)]+)\s*\)?/g,
+        protocolRegExp = /^\w+:/,
         SourceMapGenerator = sourceMap.SourceMapGenerator,
         SourceMapConsumer =sourceMap.SourceMapConsumer;
 
@@ -43,19 +44,19 @@ function (lang,   logger,   envOptimize,        file,           parse,
 
     function fixCssUrlPaths(fileName, path, contents, cssPrefix) {
         return contents.replace(cssUrlRegExp, function (fullMatch, urlMatch) {
-            var colonIndex, parts, i,
+            var firstChar, hasProtocol, parts, i,
                 fixedUrlMatch = cleanCssUrlQuotes(urlMatch);
 
             fixedUrlMatch = fixedUrlMatch.replace(lang.backSlashRegExp, "/");
 
-            //Only do the work for relative URLs. Skip things that start with / or have
+            //Only do the work for relative URLs. Skip things that start with / or #, or have
             //a protocol.
-            colonIndex = fixedUrlMatch.indexOf(":");
-            if (fixedUrlMatch.charAt(0) !== "/" && (colonIndex === -1 || colonIndex > fixedUrlMatch.indexOf("/"))) {
+            firstChar = fixedUrlMatch.charAt(0);
+            hasProtocol = protocolRegExp.test(fixedUrlMatch);
+            if (firstChar !== "/" && firstChar !== "#" && !hasProtocol) {
                 //It is a relative URL, tack on the cssPrefix and path prefix
                 urlMatch = cssPrefix + path + fixedUrlMatch;
-
-            } else {
+            } else if (!hasProtocol) {
                 logger.trace(fileName + "\n  URL not a relative URL, skipping: " + urlMatch);
             }
 
@@ -239,6 +240,7 @@ function (lang,   logger,   envOptimize,        file,           parse,
                 optConfig = config[optimizerName] || {};
                 if (config.generateSourceMaps) {
                     optConfig.generateSourceMaps = !!config.generateSourceMaps;
+                    optConfig._buildSourceMap = config._buildSourceMap;
                 }
 
                 try {
@@ -256,12 +258,19 @@ function (lang,   logger,   envOptimize,        file,           parse,
                                                              outFileName,
                                                              keepLines,
                                                              optConfig);
+                    if (optConfig._buildSourceMap && optConfig._buildSourceMap !== config._buildSourceMap) {
+                        config._buildSourceMap = optConfig._buildSourceMap;
+                    }
                 } catch (e) {
                     if (config.throwWhen && config.throwWhen.optimize) {
                         throw e;
                     } else {
                         logger.error(e);
                     }
+                }
+            } else {
+                if (config._buildSourceMap) {
+                    config._buildSourceMap = null;
                 }
             }
 
@@ -325,6 +334,20 @@ function (lang,   logger,   envOptimize,        file,           parse,
                     //Remove multiple empty lines.
                     fileContents = fileContents.replace(/(\r\n)+/g, "\r\n");
                     fileContents = fileContents.replace(/(\n)+/g, "\n");
+                }
+                //Remove unnecessary whitespace
+                if (config.optimizeCss.indexOf(".keepWhitespace") === -1) {
+                    //Remove leading and trailing whitespace from lines
+                    fileContents = fileContents.replace(/^[ \t]+/gm, "");
+                    fileContents = fileContents.replace(/[ \t]+$/gm, "");
+                    //Remove whitespace after semicolon, colon, curly brackets and commas
+                    fileContents = fileContents.replace(/(;|:|\{|}|,)[ \t]+/g, "$1");
+                    //Remove whitespace before opening curly brackets
+                    fileContents = fileContents.replace(/[ \t]+(\{)/g, "$1");
+                    //Truncate double whitespace
+                    fileContents = fileContents.replace(/([ \t])+/g, "$1");
+                    //Remove empty lines
+                    fileContents = fileContents.replace(/^[ \t]*[\r\n]/gm,'');
                 }
             } catch (e) {
                 fileContents = originalFileContents;
@@ -431,10 +454,13 @@ function (lang,   logger,   envOptimize,        file,           parse,
 
                 uconfig.fromString = true;
 
-                if (config.generateSourceMaps && outFileName) {
-                    uconfig.outSourceMap = baseName;
+                if (config.generateSourceMaps && (outFileName || config._buildSourceMap)) {
+                    uconfig.outSourceMap = baseName + '.map';
 
-                    if (file.exists(existingMapPath)) {
+                    if (config._buildSourceMap) {
+                        existingMap = JSON.parse(config._buildSourceMap);
+                        uconfig.inSourceMap = existingMap;
+                    } else if (file.exists(existingMapPath)) {
                         uconfig.inSourceMap = existingMapPath;
                         existingMap = JSON.parse(file.readFile(existingMapPath));
                     }
@@ -447,16 +473,17 @@ function (lang,   logger,   envOptimize,        file,           parse,
                     result = uglify2.minify(fileContents, uconfig, baseName + '.src.js');
                     if (uconfig.outSourceMap && result.map) {
                         resultMap = result.map;
-                        if (existingMap) {
-                            resultMap = JSON.parse(resultMap);
-                            finalMap = SourceMapGenerator.fromSourceMap(new SourceMapConsumer(resultMap));
-                            finalMap.applySourceMap(new SourceMapConsumer(existingMap));
-                            resultMap = finalMap.toString();
-                        } else {
+                        if (!existingMap && !config._buildSourceMap) {
                             file.saveFile(outFileName + '.src.js', fileContents);
                         }
-                        file.saveFile(outFileName + '.map', resultMap);
-                        fileContents = result.code + "\n//# sourceMappingURL=" + baseName + ".map";
+
+                        fileContents = result.code;
+
+                        if (config._buildSourceMap) {
+                            config._buildSourceMap = resultMap;
+                        } else {
+                            file.saveFile(outFileName + '.map', resultMap);
+                        }
                     } else {
                         fileContents = result.code;
                     }

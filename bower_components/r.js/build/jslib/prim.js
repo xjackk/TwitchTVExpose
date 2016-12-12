@@ -1,5 +1,5 @@
 /**
- * prim 0.0.1 Copyright (c) 2012-2013, The Dojo Foundation All Rights Reserved.
+ * prim 0.0.1 Copyright (c) 2012-2014, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/requirejs/prim for details
  */
@@ -40,7 +40,8 @@ var prim;
     function check(p) {
         if (hasProp(p, 'e') || hasProp(p, 'v')) {
             if (!prim.hideResolutionConflict) {
-                throw new Error('nope');
+                throw new Error('Prim promise already resolved: ' +
+                                JSON.stringify(p));
             }
             return false;
         }

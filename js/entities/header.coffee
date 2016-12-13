@@ -1,5 +1,6 @@
 # static header entities
 define ["backbone","msgbus"], (Backbone, msgBus ) ->
+    dataChannel = msgBus.dataChannel
 
     API =
         getHeaders:->
@@ -9,5 +10,5 @@ define ["backbone","msgbus"], (Backbone, msgBus ) ->
                     (name: "About", url: "#about", title: "Learn about responsive Twitch-TV", cssClass: "glyphicon glyphicon-align-justify")
                     ]
 
-    msgBus.reqres.setHandler "header:entities", ->
+    dataChannel.reply "header:entities", ->
         API.getHeaders()

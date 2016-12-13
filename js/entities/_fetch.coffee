@@ -1,6 +1,7 @@
 define ["msgbus"], (msgBus) ->
+    dataChannel = msgBus.dataChannel
 
-    msgBus.commands.setHandler "when:fetched", (entities, callback) ->
+    dataChannel.reply "when:fetched", (entities, callback) ->
         xhrs = _.chain([entities]).flatten().pluck("_fetch").value()
         $.when(xhrs...).done ->
             callback()

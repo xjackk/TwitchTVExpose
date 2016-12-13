@@ -1,5 +1,6 @@
 # static entities
 define ["backbone","msgbus"], (Backbone, msgBus ) ->
+    dataChannel = msgBus.dataChannel
 
     API =
         getReferences:->
@@ -23,5 +24,5 @@ define ["backbone","msgbus"], (Backbone, msgBus ) ->
                     (type: "book", title: "Creating Animated Bubble Charts in D3", author:"Jim Vallandingham", url:"vallandingham.me/bubble_charts_in_d3.html")
                     ]
 
-    msgBus.reqres.setHandler "reference:entities", ->
+    dataChannel.reply "reference:entities", ->
         API.getReferences()

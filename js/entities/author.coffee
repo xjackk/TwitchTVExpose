@@ -1,4 +1,5 @@
 define ["backbone", "msgbus",], (Backbone, msgBus ) ->
+    dataChannel = msgBus.dataChannel
 
     class Author extends Backbone.Model
         defaults:
@@ -10,5 +11,5 @@ define ["backbone", "msgbus",], (Backbone, msgBus ) ->
         getAuthor: ->
             new Author
 
-    msgBus.reqres.setHandler "get:authorModel:info", ->
+    dataChannel.reply "get:authorModel:info", ->
         API.getAuthor()

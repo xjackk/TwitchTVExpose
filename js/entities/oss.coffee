@@ -1,5 +1,7 @@
 # static entities/collection:  open source software
 define ["backbone","msgbus"], (Backbone, msgBus ) ->
+    dataChannel = msgBus.dataChannel
+
     API =
         getOSS:->
             new Backbone.Collection [
@@ -12,5 +14,5 @@ define ["backbone","msgbus"], (Backbone, msgBus ) ->
                         (name: "D3", site: "http://d3js.org", image:"http://d3js.org/ex/cloud.png", ghurl:"https://github.com/mbostock/d3")
                         (name: "JQuery", site: "http://jquery.com", image:"http://jquery.com/jquery-wp-content/themes/jquery/images/logo-jquery.png", ghurl:"https://github.com/jquery/jquery")
                     ]
-    msgBus.reqres.setHandler "oss:entities", ->
+    dataChannel.reply "oss:entities", ->
         API.getOSS()

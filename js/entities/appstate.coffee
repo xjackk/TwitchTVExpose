@@ -1,4 +1,4 @@
-define ["backbone", "msgbus"], (Backbone, msgBus ) ->
+define ["backbone"], (Backbone) ->
 
     class AppState extends Backbone.Model
         defaults:
@@ -12,11 +12,5 @@ define ["backbone", "msgbus"], (Backbone, msgBus ) ->
     API =
         getAppState: ->
             appState
-
-    msgBus.reqres.setHandler "get:current:appstate", ->
-        API.getAppState()
-
-    msgBus.reqres.setHandler "get:current:token", ->
-        appState.get "accessToken"
 
     appState = new AppState

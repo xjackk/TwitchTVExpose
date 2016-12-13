@@ -1,5 +1,6 @@
-define ["backbone", "msgbus"], (Backbone, msgBus ) ->
+define ["backbone", "msgbus", "appstate"], (Backbone, msgBus, AppState ) ->
     # this _fetch is our private property added to overridden config backbone sync
+    dataChannel = msgBus.dataChannel
 
     class Game extends Backbone.Model
     class Stream extends Backbone.Model
@@ -23,7 +24,7 @@ define ["backbone", "msgbus"], (Backbone, msgBus ) ->
         model: Game
 
         initialize: ->
-            msgBus.reqres.setHandler "games:fetchmore", =>
+            dataChannel.reply "games:fetchmore", =>
                 @moreGames()
 
             @limit = 50
@@ -40,13 +41,13 @@ define ["backbone", "msgbus"], (Backbone, msgBus ) ->
             loaded = @fetch
                 remove: false
                 data:
-                    oauth_token: msgBus.reqres.request "get:current:token"
+                    oauth_token: AppState.get "accessToken" #msgBus.reqres.request "get:current:token"
                     limit: @limit
                     offset: @offset * @limit
 
             $.when(loaded).then =>
                 @loading=false
-                console.log "Loaded page", @offset+1, "Games fetched so far", @length, "Total games available to fetch ", @_total,
+                #console.log "Loaded page", @offset+1, "Games fetched so far", @length, "Total games available to fetch ", @_total,
 
 
         searchName: (_name)->
@@ -63,7 +64,7 @@ define ["backbone", "msgbus"], (Backbone, msgBus ) ->
         model: Stream
 
         initialize: ->
-            msgBus.reqres.setHandler "streams:fetchmore", =>
+            dataChannel.reply "streams:fetchmore", =>
                 @moreStreams()
 
             @limit = 12
@@ -79,7 +80,7 @@ define ["backbone", "msgbus"], (Backbone, msgBus ) ->
             loaded = @fetch
                 remove: false
                 data:
-                    oauth_token: msgBus.reqres.request "get:current:token"
+                    oauth_token: AppState.get "accessToken" #msgBus.reqres.request "get:current:token"
                     q: @game
                     limit: @limit
                     offset: @offset * @limit
@@ -103,7 +104,7 @@ define ["backbone", "msgbus"], (Backbone, msgBus ) ->
             elapsedSeconds = Math.round(((new Date() - games.timeStamp ) / 1000) % 60)
             if elapsedSeconds > 45 or games.length is 0
                 _.defaults params,
-                    oauth_token: msgBus.reqres.request "get:current:token"
+                    oauth_token: AppState.get "accessToken" #msgBus.reqres.request "get:current:token"
                 games = new GamesCollection
                 games.timeStamp = new Date()
                 games.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
@@ -125,7 +126,7 @@ define ["backbone", "msgbus"], (Backbone, msgBus ) ->
 
         getStreams: (url, params = {}) ->
             _.defaults params,
-                oauth_token: msgBus.reqres.request "get:current:token"
+                oauth_token: AppState.get "accessToken" #msgBus.reqres.request "get:current:token"
             streams = new StreamCollection
             streams.game=params.q #tack this on/custom class property
             streams.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
@@ -138,7 +139,7 @@ define ["backbone", "msgbus"], (Backbone, msgBus ) ->
         getStream: (url, params = {}) ->
             console.log "getStream", url, params
             _.defaults params,
-                oauth_token: msgBus.reqres.request "get:current:token"
+                oauth_token: AppState.get "accessToken" #msgBus.reqres.request "get:current:token"
             stream = new StreamGet # model
             stream.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
             stream.fetch
@@ -146,29 +147,29 @@ define ["backbone", "msgbus"], (Backbone, msgBus ) ->
             stream
 
     # initial collection search 'top games' twitchAPI
-    msgBus.reqres.setHandler "games:top:entities", ->
+    dataChannel.reply "games:top:entities", ->
         API.getGames "games/top",
             limit: 24
             offset: 0
 
     #implement TWITCHAPI call
-    msgBus.reqres.setHandler "search:games", (query)->
+    dataChannel.reply "search:games", (query)->
         API.searchGames "search/games",
             q: query #encodeURIComponent query
             type: "suggest"
             live: false
 
     # search internal cached collection for a game models, speed up the UI
-    msgBus.reqres.setHandler "games:searchName", (query)->
+    dataChannel.reply "games:searchName", (query)->
         games.searchName query
 
     #search for streams by game
-    msgBus.reqres.setHandler "search:stream:entities", (game)->
+    dataChannel.reply "search:stream:entities", (game)->
         API.getStreams "search/streams",
             q: game
             limit: 12
             offset: 0
 
     # twitchAPI, grab a channels live stream
-    msgBus.reqres.setHandler "search:stream:model", (channel)->
+    dataChannel.reply "search:stream:model", (channel)->
         API.getStream "streams/#{channel}"

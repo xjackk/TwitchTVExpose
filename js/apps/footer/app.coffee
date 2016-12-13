@@ -1,6 +1,6 @@
 # footer app/module.
-define ["msgbus","apps/footer/show/controller"], (msgBus, Controller) ->
-    channel = msgBus.appChannel    
+define ["msgbus", "apps/footer/show/controller"], (msgBus, Controller) ->
+	channel = msgBus.appChannel    
 
 	API =
 		show: ->

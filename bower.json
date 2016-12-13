@@ -23,6 +23,7 @@
     "r.js": "~2.1.18",
     "requirejs": "~2.1.20",
     "text": "requirejs-text#~2.0.14",
-    "backbone.syphon": "~0.6.3"
+    "backbone.syphon": "~0.6.3",
+    "backbone.radio": "^2.0.0"
   }
 }

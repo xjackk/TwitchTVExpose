@@ -1,6 +1,6 @@
 define ["marionette", "msgbus"], (Marionette, msgBus) ->
 	channel = msgBus.appChannel
-
+	componentChannel = msgBus.componentChannel
 	class AppController extends Marionette.Controller
 		constructor: (options = {}) ->
 			@region = options.region or channel.request "default:region"
@@ -30,6 +30,7 @@ define ["marionette", "msgbus"], (Marionette, msgBus) ->
 
 		_manageView: (view, options) ->
 			if options.loading
-				channel.trigger "show:loading", view, options
+				#important!  using the component msg channle to request the loading controller  it's listening on this channel'
+				componentChannel.request "show:loading", view, options
 			else
 				options.region.show view

@@ -14,8 +14,7 @@ rjs               = require 'gulp-requirejs'
 
 # config
 buildRoot =       './build'
-deployRoot =      '../zd'
-serverRoot =      './lib'
+deployRoot =      './public'
 
 
 build= 
@@ -24,17 +23,6 @@ build=
     css:          "#{buildRoot}/css"
     fonts:        "#{buildRoot}/fonts"
     vendor:       "#{buildRoot}/bower_components"
-    mocks:        "#{buildRoot}/mocks"
-  server:         serverRoot
-
-
-src =
-  client:         './zd/src/client'
-  server:         './zd/src/server'
-
-srcGLOB=
-  client:         './zd/src/client/**/*.coffee'
-  server:         './zd/src/server/**/*.coffee'
 
 deploy=
   client:
@@ -42,6 +30,15 @@ deploy=
     css:        "#{deployRoot}/css"
     fonts:      "#{deployRoot}/fonts"
     vendor:     "#{deployRoot}/bower_components"
+
+src =
+  client:         './src/client'
+  server:         './src/server'
+
+srcGLOB=
+  client:         './src/client/**/*.coffee'
+  server:         './src/server/**/*.coffee'
+
         
 
 # this will run in THIS ORDER
@@ -67,82 +64,31 @@ gulp.task "build", (callback) ->
 # CLEAN TASK 
 # delete build folders for client and server projects
 gulp.task "build-clean",  ->
-  gulp.src [buildRoot, deployRoot, serverRoot], read:false
+  gulp.src [buildRoot, deployRoot], read:false
     .pipe clean force: true
   
 
-#prepare to push to Open Source repo for offline coding (chain 3 steps)
-gulp.task "clean-wip-dev",  ->
-  task = gulp.src ['../../wip/dev','../../wip/App_Code'], read: false
-    .pipe clean force: true
-  task
-
-gulp.task 'copy-client-root', ['clean-wip-dev'],->
-  task = gulp.src ['bower.json', 'package.json', 'gulpfile.coffee', 'gulpfile.js', 'index.html', 'web.config']
-    .pipe gulp.dest '../../wip/dev'
-  task.on 'error', (err)->
-    console.warn "copy-client-dev", err.message
-  task
-
-gulp.task 'copy-client-app_code', ['copy-client-root'],->
-  task = gulp.src ['../App_Code/**/*']
-    .pipe gulp.dest '../../wip/App_Code'
-  task.on 'error', (err)->
-    console.warn "copy-client-app_code", err.message
-  task
-
-gulp.task 'copy-client-dev', ['copy-client-app_code'],->
-  task = gulp.src ['./zd/**/*']
-    .pipe gulp.dest '../../wip/dev/zd'
-  task.on 'error', (err)->
-    console.warn "copy-client-app_code", err.message
-  task
-
 
 # COPY TASKS
-gulp.task 'cpyrequire', ->
+gulp.task 'copystatic', ->
   task=gulp.src './bower_components/requirejs/require.js'  
     .pipe uglify()
-    .pipe gulp.dest build.client.js 
+    .pipe gulp.dest deployRoot 
   task.on 'error', (err)->
-    console.warn "cpyrequire:", err.message
+    console.warn "copy static:#{err.message}"
   task
-
-gulp.task 'cpycomponents', ->
-  task=gulp.src './bower_components/**/*'  
-    .pipe gulp.dest build.client.vendor
+  task=gulp.src './index.html'  
+    .pipe gulp.dest deployRoot 
   task.on 'error', (err)->
-    console.warn "cpycomponents:", err.message
-  task
-
-gulp.task 'cpyselect2', ->
-  task=gulp.src ['./bower_components/select2/**/*.png','./bower_components/select2/**/*.gif']
-    .pipe gulp.dest build.client.css
-  task.on 'error', (err)->
-    console.warn "cpystatic:", err.message
+    console.warn "copy static: #{err.message}"
   task
 
 
-gulp.task 'cpystatic', ->
-  task=gulp.src ['./index.html', './web.config']
-    .pipe gulp.dest buildRoot
-  task.on 'error', (err)->
-    console.warn "cpystatic:", err.message
-  task
-
-gulp.task 'cpyfonts', ->
-  task=gulp.src ['./bower_components/bootstrap/fonts/**/*',
-  './bower_components/bootstrap-material-design/fonts/**/*']
-    .pipe gulp.dest build.client.fonts 
-  task.on 'error', (err)->
-    console.warn "cpyfonts:", err.message
-  task
-
-gulp.task 'deployfonts', ->
-  task=gulp.src  "#{build.client.fonts}/**/*"
+gulp.task 'copyfonts', ->
+  task=gulp.src ['./bower_components/bootstrap/fonts/**/*', './bower_components/bootstrap-material-design/fonts/**/*']
     .pipe gulp.dest deploy.client.fonts 
   task.on 'error', (err)->
-    console.warn "deployfonts:", err.message
+    console.warn "cpyfonts:", err.message
   task
 
 gulp.task 'deploycss', ['compile-less'],->
@@ -150,22 +96,7 @@ gulp.task 'deploycss', ['compile-less'],->
     .pipe gulp.dest deploy.client.css
   task
 
-gulp.task 'deploystatic', ->
-  task=gulp.src ["#{buildRoot}/index.html","#{buildRoot}/web.config"]
-    .pipe gulp.dest deployRoot
-  task.on 'error', (err)->
-    console.warn "deploystatic:", err.message
-  task
 
-
-
-gulp.task 'deployrequire', ->
-  task=gulp.src "#{build.client.js}/require.js"
-    .pipe uglify()
-    .pipe gulp.dest deploy.client.js
-  task.on 'error', (err)->
-    console.warn "deployrequire:", err.message
-  task
 
 gulp.task 'deployjs', ['compile-coffee-client'], ->
   task=gulp.src "#{build.client.js}/**/*"
@@ -182,16 +113,8 @@ gulp.task 'deployhtm', ['cpytemplates'], ->
   task
 
 
-# only for dev mode
-gulp.task 'deploycomponents', ->
-  task=gulp.src "#{build.client.vendor}/**/*"
-    .pipe gulp.dest deploy.client.vendor
-  task.on 'error', (err)->
-    console.warn "cpycomponents:", err.message
-  task
 
-
-gulp.task 'cpytemplates', ->
+gulp.task 'copytemplates', ->
   #templates GLOB
   task = gulp.src "#{src.client}/**/*.htm"
     .pipe gulp.dest build.client.js
@@ -200,20 +123,11 @@ gulp.task 'cpytemplates', ->
   task
 
 
-gulp.task 'cpymock', ->
-  task=gulp.src './zd/mocks/**/*'
-    .pipe gulp.dest build.client.mocks
-  task.on 'error', (err)->
-    console.warn "cpymock:", err.message
-  task
-
-
 # COMPILE TASKS
-#less to css + minifyCSS
+# less to css + minifyCSS
 gulp.task 'compile-less', ->
   task = gulp.src "#{src.client}/styles/main.less"
     .pipe less()
-    #.pipe autoprefixer()
     .pipe minifyCSS()
     .pipe gulp.dest build.client.css
   task.on 'error', (err)->

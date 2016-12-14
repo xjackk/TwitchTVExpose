@@ -1,5 +1,5 @@
 gulp              = require 'gulp'
-gulpif            = require 'gulp-if'
+#gulpif            = require 'gulp-if'
 watch             = require 'gulp-watch'
 runSequence       = require 'run-sequence'
 gutil             = require 'gulp-util'
@@ -14,36 +14,50 @@ rjs               = require 'gulp-requirejs'
 #async             = require 'async'
 
 
-ENV = "development"  #"production"
 
 
 # config
 isDevelopment = ->
-  return true if ENV==="development"
+  return true if process.env.NODE_ENV is "development"
   return false 
 
 target = ->
-  return "./lib" if isDevelopment()
-  return "./public" 
+  return "./lib"
+ 
 
 
-buildRoot =       './build'
-deployRoot =      './public'
-
-
-build= 
+root = 
   client: 
-    js:           "#{buildRoot}/js"
-    css:          "#{buildRoot}/css"
-    fonts:        "#{buildRoot}/fonts"
-    vendor:       "#{buildRoot}/bower_components"
+    js:           "#{target}/js"
+    css:          "#{target}/css"
+    fonts:        "#{target}/fonts"
+    vendor:       "#{target}/bower_components"
 
-deploy=
-  client:
-    js:         "#{deployRoot}/js"
-    css:        "#{deployRoot}/css"
-    fonts:      "#{deployRoot}/fonts"
-    vendor:     "#{deployRoot}/bower_components"
+
+gulp.task 'set-dev-env', ->
+  return process.env.NODE_ENV = 'development'
+
+
+gulp.task 'set-prod-env', -> 
+  process.env.NODE_ENV = 'production'
+
+
+gulp.task 'dev', ['set-dev-env'], (callback)-> 
+  runSequence "build-clean", [
+    "copystatic"
+    "copytemplates"
+    "copyfonts"
+  ], [
+    "compile-coffee-client"
+    "compile-less"
+  ], callback
+  
+
+gulp.task 'prod', ['set-prod-env'],  () ->
+      # your code
+
+
+
 
 src =
   client:         './src/client'
@@ -55,24 +69,10 @@ srcGLOB=
 
         
 
-# this will run in THIS ORDER
-# build-clean
-# copy tasks cpy* will run in parallel
-# compile task compile* will run in parallel
-gulp.task "build", (callback) ->
-  runSequence "build-clean", [
-    "copyrequire"
-    "copytemplates"
-    "copystatic"
-  ], [
-    "compile-coffee-client"
-  ], callback
-  #return
-
 # CLEAN TASK 
 # delete build folders for client and server projects
 gulp.task "build-clean",  ->
-  gulp.src [buildRoot, deployRoot], read:false
+  gulp.src ['./lib', './public'], read:false
     .pipe clean force: true
   
 
@@ -81,53 +81,34 @@ gulp.task "build-clean",  ->
 gulp.task 'copystatic', ->
   task=gulp.src './bower_components/requirejs/require.js'  
     .pipe uglify()
-    .pipe gulp.dest deploy.client.js 
+    .pipe gulp.dest root.client.js 
   task.on 'error', (err)->
     console.warn "copy static:#{err.message}"
   task
   task=gulp.src './index.html'  
-    .pipe gulp.dest deployRoot 
+    .pipe gulp.dest target 
   task.on 'error', (err)->
     console.warn "copy static: #{err.message}"
   task
 
 
+
 gulp.task 'copyfonts', ->
   task=gulp.src ['./bower_components/bootstrap/fonts/**/*', './bower_components/bootstrap-material-design/fonts/**/*']
-    .pipe gulp.dest deploy.client.fonts 
+    .pipe gulp.dest root.client.fonts 
   task.on 'error', (err)->
     console.warn "cpyfonts:", err.message
   task
 
-gulp.task 'deploycss', ['compile-less'],->
-  task =gulp.src  "#{build.client.css}/**/*"
-    .pipe gulp.dest deploy.client.css
-  task
-
-
-
-gulp.task 'deployjs', ['compile-coffee-client'], ->
-  task=gulp.src "#{build.client.js}/**/*"
-    .pipe gulp.dest deploy.client.js
-  task.on 'error', (err)->
-    console.warn "deployjs:", err.message
-  task
-
-gulp.task 'deployhtm', ['cpytemplates'], ->
-  task=gulp.src "#{build.client.js}/**/*.htm"
-    .pipe gulp.dest deploy.client.js
-  task.on 'error', (err)->
-    console.warn "deployjs:", err.message
-  task
 
 
 
 gulp.task 'copytemplates', ->
   #templates GLOB
   task = gulp.src "#{src.client}/**/*.htm"
-    .pipe gulp.dest build.client.js
+    .pipe gulp.dest root.client.js
   task.on 'error', (err)->
-    console.warn "cpytemplates:", err.message
+    console.warn "copytemplates:", err.message
   task
 
 
@@ -137,7 +118,7 @@ gulp.task 'compile-less', ->
   task = gulp.src "#{src.client}/styles/main.less"
     .pipe less()
     .pipe minifyCSS()
-    .pipe gulp.dest build.client.css
+    .pipe gulp.dest root.client.css
   task.on 'error', (err)->
     console.warn "compile-less:", err.message
   task

@@ -22,20 +22,20 @@ isDevelopment = ->
   return false 
 
 target = ->
-  return "./lib"
- 
+  return "./lib" if isDevelopment()
+  return "./public" 
 
 
 root = 
   client: 
-    js:           "#{target}/js"
-    css:          "#{target}/css"
-    fonts:        "#{target}/fonts"
-    vendor:       "#{target}/bower_components"
+    js:           "#{target()}/js"
+    css:          "#{target()}/css"
+    fonts:        "#{target()}/fonts"
+    vendor:       "#{target()}/bower_components"
 
 
 gulp.task 'set-dev-env', ->
-  return process.env.NODE_ENV = 'development'
+  process.env.NODE_ENV = 'development'
 
 
 gulp.task 'set-prod-env', -> 
@@ -45,13 +45,16 @@ gulp.task 'set-prod-env', ->
 gulp.task 'dev', ['set-dev-env'], (callback)-> 
   runSequence "build-clean", [
     "copystatic"
+    "copyassets"
     "copytemplates"
     "copyfonts"
+    'copyvendor'
   ], [
     "compile-coffee-client"
     "compile-less"
   ], callback
   
+
 
 gulp.task 'prod', ['set-prod-env'],  () ->
       # your code
@@ -75,6 +78,9 @@ gulp.task "build-clean",  ->
   gulp.src ['./lib', './public'], read:false
     .pipe clean force: true
   
+gulp.task "clean-src-js",  ->
+  gulp.src "#{src.client}/**/*.js", read:false
+    .pipe clean force: true
 
 
 # COPY TASKS
@@ -85,10 +91,19 @@ gulp.task 'copystatic', ->
   task.on 'error', (err)->
     console.warn "copy static:#{err.message}"
   task
-  task=gulp.src './index.html'  
-    .pipe gulp.dest target 
+
+gulp.task 'copyassets', ->
+  task=gulp.src './src/wwwroot/index.html'  
+    .pipe gulp.dest './public'
   task.on 'error', (err)->
-    console.warn "copy static: #{err.message}"
+    console.warn "copy assets: #{err.message}"
+  task
+
+gulp.task 'copyvendor', ->
+  task=gulp.src './bower_components/**/*'  
+    .pipe gulp.dest root.client.vendor
+  task.on 'error', (err)->
+    console.warn "copy assets: #{err.message}"
   task
 
 
@@ -115,7 +130,7 @@ gulp.task 'copytemplates', ->
 # COMPILE TASKS
 # less to css + minifyCSS
 gulp.task 'compile-less', ->
-  task = gulp.src "#{src.client}/styles/main.less"
+  task = gulp.src "./src/styles/main.less"
     .pipe less()
     .pipe minifyCSS()
     .pipe gulp.dest root.client.css
@@ -124,14 +139,6 @@ gulp.task 'compile-less', ->
   task
 
 
-gulp.task 'compile-coffee-server', ->
-  # bare true for server/nodejs modules
-  task = gulp.src srcGLOB.server
-    .pipe coffee bare: true
-    .pipe gulp.dest build.server
-  task.on 'error', (err)->
-    console.warn "compile-coffee-server:", err.message
-  task
 
 gulp.task 'compile-coffee-client', ->
   # bare false for AMD client modules wraps modules
@@ -139,7 +146,7 @@ gulp.task 'compile-coffee-client', ->
     .pipe coffeelint()  
     .pipe coffee bare: false  
     # wrap js modules
-    .pipe gulp.dest build.client.js
+    .pipe gulp.dest root.client.js
   task.on 'error', (err)->
     console.warn "compile-coffee-client:", err.message
   task

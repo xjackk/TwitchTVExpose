@@ -1,4 +1,5 @@
 gulp              = require 'gulp'
+gulpif            = require 'gulp-if'
 watch             = require 'gulp-watch'
 runSequence       = require 'run-sequence'
 gutil             = require 'gulp-util'
@@ -12,7 +13,20 @@ minifyCSS         = require 'gulp-minify-css'
 rjs               = require 'gulp-requirejs'
 #async             = require 'async'
 
+
+ENV = "development"  #"production"
+
+
 # config
+isDevelopment = ->
+  return true if ENV==="development"
+  return false 
+
+target = ->
+  return "./lib" if isDevelopment()
+  return "./public" 
+
+
 buildRoot =       './build'
 deployRoot =      './public'
 
@@ -47,17 +61,11 @@ srcGLOB=
 # compile task compile* will run in parallel
 gulp.task "build", (callback) ->
   runSequence "build-clean", [
-    "cpyrequire"
-    "cpycomponents"    
-    "cpytemplates"
-    "cpystatic"
-    "cpymock"
-    "cpyfonts"
-    "cpyselect2"
+    "copyrequire"
+    "copytemplates"
+    "copystatic"
   ], [
-    "compile-less"
     "compile-coffee-client"
-    "compile-coffee-server"
   ], callback
   #return
 
@@ -73,7 +81,7 @@ gulp.task "build-clean",  ->
 gulp.task 'copystatic', ->
   task=gulp.src './bower_components/requirejs/require.js'  
     .pipe uglify()
-    .pipe gulp.dest deployRoot 
+    .pipe gulp.dest deploy.client.js 
   task.on 'error', (err)->
     console.warn "copy static:#{err.message}"
   task

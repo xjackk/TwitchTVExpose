@@ -1,5 +1,5 @@
 define ["msgbus", "apps/games/detail/views", "controller/_base" ], (msgBus, Views, AppController) ->
-    channel = msgBus.appChannel    
+    dataChannel = msgBus.dataChannel    
     console.log "games detail", Views
 
     class Controller extends AppController
@@ -9,7 +9,7 @@ define ["msgbus", "apps/games/detail/views", "controller/_base" ], (msgBus, View
             #console.log "OPTIONS passed to detail controller", options
 
             if gameModel is undefined
-                gameModel = channel.request "games:searchName", gameName
+                gameModel = dataChannel.request "games:searchName", gameName
 
             @layout = @getLayoutView()
             @listenTo @layout, "show", =>
@@ -22,7 +22,7 @@ define ["msgbus", "apps/games/detail/views", "controller/_base" ], (msgBus, View
 
         gameRegion: (model) ->
             view = @getGameView model
-            channel.trigger "app:stream:list", @layout.streamRegion, model.get("game").name
+            dataChannel.trigger "app:stream:list", @layout.streamRegion, model.get("game").name
             @layout.gameRegion.show view
 
 

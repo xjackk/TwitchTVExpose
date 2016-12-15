@@ -1,14 +1,14 @@
 # derive from base views and use templates for this app
-define ['marionette', 'apps/streams/list/templates'], (Marionette, Templates) ->
+define ['views/_base', 'apps/streams/list/templates'], (AppView, Templates) ->
 
-    class StreamItem extends Marionette.ItemView
+    class StreamItem extends AppView.ItemView
         template: _.template(Templates.streamitem)
         tagName: "li"
         className: "col-md-6 col-xs-12 streamitem"
         triggers:
             "click" : "stream:item:clicked"
 
-    ListView: class StreamList extends Marionette.CompositeView
+    ListView: class StreamList extends AppView.CompositeView
         template: _.template(Templates.streams)
         itemView: StreamItem
         itemViewContainer: "#items"

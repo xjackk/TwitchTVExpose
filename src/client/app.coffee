@@ -1,5 +1,5 @@
 # app startup.
-define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette, msgBus) ->
+define ["backbone", "marionette", "msgbus"], (Backbone, Marionette, msgBus) ->
     appChannel = msgBus.appChannel
     dataChannel = msgBus.dataChannel
 
@@ -33,12 +33,12 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
         app.unregister instance, id
 
     app.on "before:start", ->
-        @appState = dataChannel.request "get:current:appstate"
         console.log "before:start"
+        @appState = dataChannel.request "get:current:appstate"
     
 
     app.on "start", (options={})->
-        console.log "app:start"
+        console.log "app:start", @appState
 
         # trigger a specific event when the loginStatus ever changes (to be handled by our header list controller to show/hide login UI
         # appstate.on "change:loginStatus" (model, status)->
@@ -46,14 +46,22 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
 
         if Backbone.history
             Backbone.history.start()
+            
+            console.log "start about"
+            appChannel.trigger "start:about:app"
+            console.log "start footer"
+            appChannel.trigger "start:footer:app"
+            console.log "start d3"
+            appChannel.trigger "start:d3:app"
+            console.log "start games"
+            #appChannel.trigger "start:games:app"
+            console.log "start playa"
+            #appChannel.trigger "start:playa:app"
+            console.log "start header"
+            #appChannel.trigger "start:header:app"
+
             frag = Backbone.history.fragment
             match = /access_token/i.test frag # calling back into our app from twitch sign-in
-            appChannel.trigger "start:header:app"
-            appChannel.trigger "start:about:app"
-            appChannel.trigger "start:footer:app"
-            appChannel.trigger "start:d3:app"
-            appChannel.trigger "start:games:app"
-            appChannel.trigger "start:playa:app"
             
             if match
                 # NEW, find the token as the string between '=','&' IE: http://twitchtvexpose.herokuapp.com/#access_token=a;ajf;aljf;adljkf;flajf&scope=..... 
@@ -63,6 +71,8 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
                 #console.log "TwitchTV accessToken: #{appstate.get("accessToken")}"
                 @navigate @authRoute, trigger: true
             else
+                @appState.set "accessToken", "none"
+                console.log "accessToken", @appState.get "accessToken"
                 @appState.set "loginStatus", false
                 @navigate @rootRoute, trigger: true if @getCurrentRoute() is null
         else

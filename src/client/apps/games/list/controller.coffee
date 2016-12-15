@@ -1,6 +1,7 @@
 define ["msgbus", "apps/games/list/views", "controller/_base"], (msgBus, Views, AppController) ->
-    channel = msgBus.appChannel    
+    dataChannel = msgBus.dataChannel    
     console.log "games list", Views
+
     class Controller extends AppController
         initialize: (options={})->
             @entities = channel.request "games:top:entities"
@@ -20,10 +21,10 @@ define ["msgbus", "apps/games/list/views", "controller/_base"], (msgBus, Views, 
             view = @getGameView @entities
             @listenTo view, "childview:game:item:clicked", (child, args) ->  # listen to events from itemview (we've overridden the eventnamePrefix to childview)
                 #console.log "game:item:clicked => model", args.model
-                channel.trigger "app:game:detail", args.model
+                dataChannel.trigger "app:game:detail", args.model
 
             @listenTo view, "scroll:more", ->
-                channel.request "games:fetchmore"
+                dataChannel.request "games:fetchmore"
 
             @layout.gameRegion.show view
 
@@ -41,3 +42,4 @@ define ["msgbus", "apps/games/list/views", "controller/_base"], (msgBus, Views, 
 
         getLayoutView: ->
             new Views.Layout
+            

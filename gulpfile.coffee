@@ -159,23 +159,17 @@ gulp.task "deploy-dev", (callback)->
     'deploycomponents'
   ], callback
 
-gulp.task "deploy-dev-watch", ['deploy-dev'] ,->
+gulp.task "devw", ['dev'] ,->
   gutil.log "=> WATCHING..."
-  watcher = gulp.watch(srcGLOB.client, ['deployjs'])
+  watcher = gulp.watch(srcGLOB.client, ['compile-coffee-client'])
   watcher.on 'change', (event) ->
-    console.log "File: " + event.path + ": " + event.type + "=>COFFEE cli"
+    console.log "File: " + event.path + ": " + event.type + "=>Coffee-client"
 
-  swatcher = gulp.watch(srcGLOB.server, ['compile-coffee-server'])
-  swatcher.on 'change', (event) ->
-    console.log "File: " + event.path + ": " + event.type + "=>COFFEE srv"
 
-  twatcher = gulp.watch("#{src.client}/**/*.htm", ['deployhtm'])
+  twatcher = gulp.watch("#{src.client}/**/*.htm", ['copytemplates'])
   twatcher.on 'change', (event) ->
-    console.log "File: " + event.path + ": " + event.type + "=>CPY tmpl"
+    console.log "File: " + event.path + ": " + event.type + "=>Copy template"
 
-  lwatcher = gulp.watch("#{src.client}/styles/**/*.less", ['deploycss'])
-  lwatcher.on 'change', (event) ->
-    console.log "File: " + event.path + ": " + event.type + "=>COMILE LESS"
 
 
 # production deployment (note will have PUSH to development server also)

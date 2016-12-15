@@ -1,6 +1,6 @@
 # list currency views
-define ['marionette', 'components/loading/templates'], (Marionette, Templates) ->
-	Loading: class _LoadingView extends Marionette.ItemView
+define ['views/_base', 'components/loading/templates'], (AppView, Templates) ->
+	Loading: class _LoadingView extends AppView.ItemView
 		template: _.template(Templates.main)
 		className: "loading-container"
 

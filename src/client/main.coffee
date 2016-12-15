@@ -1,4 +1,3 @@
-# require bootloader
 require.config
 
     paths:
@@ -21,5 +20,7 @@ require.config
         spin:       ["jquery"]
         jqueryspin: ["jquery"]
 
-	require ["config/load","entities/load", "app" ], (_config,_entities, app) -> # ensure that base application settings are loaded before we can call the app.  Templates, settings and jquery plugins
+	require ["config/load", "entities/load", "apps/load", "app" ], (_config, _entities, _apps, app) -> 
+        # ensure that base application settings are loaded before we can call the app.  
+        # Templates, settings and jquery plugins
         app.start()

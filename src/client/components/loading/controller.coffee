@@ -2,7 +2,7 @@
 # the module API will pass in the glogal collection of ccys
 define ["msgbus", "controller/_base", "components/loading/views" ], (msgBus, AppController, Views) ->
 	console.log "components/loading/views", Views
-	channel = msgBus.appChannel
+	dataChannel = msgBus.dataChannel
 	componentChannel = msgBus.componentChannel
 
 	class LoadingController extends AppController
@@ -28,7 +28,7 @@ define ["msgbus", "controller/_base", "components/loading/views" ], (msgBus, App
 			@showRealView view, loadingView, config
 
 		showRealView: (realView, loadingView, config) ->
-			channel.request "when:fetched", config.entities, =>
+			dataChannel.request "when:fetched", config.entities, =>
 				switch config.loadingType
 					when "opacity"
 						@region.currentView.$el.removeAttr "style"
@@ -41,6 +41,7 @@ define ["msgbus", "controller/_base", "components/loading/views" ], (msgBus, App
 		getLoadingView: ->
 			new Views.Loading
 
+    # note we are responding on the component channel
 	componentChannel.reply "show:loading", (view, options) ->
 		new LoadingController
 			view: view

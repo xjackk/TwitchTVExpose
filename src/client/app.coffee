@@ -51,13 +51,13 @@ define ["backbone", "marionette", "msgbus"], (Backbone, Marionette, msgBus) ->
             appChannel.trigger "start:about:app"
             console.log "start footer"
             appChannel.trigger "start:footer:app"
-            console.log "start d3"
-            appChannel.trigger "start:d3:app"
-            console.log "start games"
+            #console.log "start d3"
+            #appChannel.trigger "start:d3:app"
+            #console.log "start games"
             #appChannel.trigger "start:games:app"
-            console.log "start playa"
+            #console.log "start playa"
             #appChannel.trigger "start:playa:app"
-            console.log "start header"
+            #console.log "start header"
             #appChannel.trigger "start:header:app"
 
             frag = Backbone.history.fragment

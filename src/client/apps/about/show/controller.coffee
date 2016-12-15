@@ -1,11 +1,12 @@
 define ["msgbus", "apps/about/show/views", "controller/_base"], (msgBus, Views, AppController) ->
     dataChannel = msgBus.dataChannel
+
     console.log "about show", Views
+
     class Controller extends AppController
         initialize:(options)->
             entities    = dataChannel.request "reference:entities"      # msgBus.reqres.request "reference:entities"
             ossentities = dataChannel.request "oss:entities"            # msgBus.reqres.request "oss:entities"
-            #console.log ossentities
             @layout = @getLayoutView()
 
             @listenTo @layout, "show", =>
@@ -15,7 +16,7 @@ define ["msgbus", "apps/about/show/views", "controller/_base"], (msgBus, Views, 
 
             @show @layout,
                 loading:
-                    entities: entities
+                    entities: [entities, ossentities]
 
 
         aboutRegion:  ->
@@ -43,5 +44,3 @@ define ["msgbus", "apps/about/show/views", "controller/_base"], (msgBus, Views, 
 
         getLayoutView: ->
             new Views.Layout
-
-

@@ -1,4 +1,4 @@
-define ["msgbus", "apps/header/list/views", "controller/_base" ], (msgBus, Views, AppController) ->
+define ["apps/header/list/views", "controller/_base", "msgbus" ], (Views, AppController, msgBus ) ->
     dataChannel = msgBus.dataChannel
 
     class Controller extends AppController

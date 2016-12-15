@@ -1,6 +1,6 @@
 define ['views/_base', 'apps/d3/list/templates', 'd3'], (AppView, Templates ) ->
 
-    DataVis: class _item extends AppView.ItemView
+    DataVis: class D3Item extends AppView.ItemView
         template: _.template(Templates.datavis)
         className: "well"
 
@@ -62,7 +62,7 @@ define ['views/_base', 'apps/d3/list/templates', 'd3'], (AppView, Templates ) ->
                             quad.point.y += y
                     x1 > nx2 or x2 < nx1 or y1 > ny2 or y2 < ny1
 
-    Layout: class DataVisLayout extends AppView.Layout
+    Layout: class D3Layout extends AppView.Layout
         template: _.template(Templates.layout)
         regions:
             panelRegion: "#panel-region"

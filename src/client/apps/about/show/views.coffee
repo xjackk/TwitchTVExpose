@@ -18,14 +18,12 @@ define ['views/_base', 'apps/about/show/templates',  'd3'], (AppView, Templates,
         itemView: Oss
         itemViewContainer: "tbody"
 
-    About: class _item extends AppView.ItemView
+    About: class AboutItem extends AppView.ItemView
         template: _.template(Templates.about)
 
-    Layout: class DataVisLayout extends AppView.Layout
+    Layout: class AboutLayout extends AppView.Layout
         template: _.template(Templates.layout)
         regions:
             aboutRegion: "#about-region"
             bookRegion: "#book-region"
             ossRegion: "#oss-region"
-
-

@@ -39,13 +39,12 @@ define ["marionette"], (Marionette) ->
 
         "<a href='#{url}'>#{@escape(name)}</a>"
 
+  View:     Marionette.View
 
-  ItemView: class AppItemView extends Marionette.ItemView
+  ItemView: Marionette.ItemView
 
   CollectionView: Marionette.CollectionView
-    #childViewEventPrefix: "childview"
 
   CompositeView: Marionette.CompositeView
-    #childViewEventPrefix: "childview"
 
   LayoutView: Marionette.LayoutView

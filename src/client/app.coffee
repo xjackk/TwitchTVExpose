@@ -1,5 +1,5 @@
-# app startup.
 define ["backbone", "marionette", "msgbus"], (Backbone, Marionette, msgBus) ->
+
     appChannel = msgBus.appChannel
     dataChannel = msgBus.dataChannel
 
@@ -26,19 +26,21 @@ define ["backbone", "marionette", "msgbus"], (Backbone, Marionette, msgBus) ->
     appChannel.reply "main:region", ->
         app.mainRegion
 
-    appChannel.reply "register:instance", (instance, id) ->
-        app.register instance, id
+    #appChannel.reply "register:instance", (instance, id) ->
+    #    app.register instance, id
 
-    appChannel.reply "unregister:instance", (instance, id) ->
-        app.unregister instance, id
+    #appChannel.reply "unregister:instance", (instance, id) ->
+    #    app.unregister instance, id
 
     app.on "before:start", ->
-        console.log "before:start"
         @appState = dataChannel.request "get:current:appstate"
-    
+
+        console.log "before:start", @appState
+        console.log "before:start",Backbone
+        console.log "before:start",Marionette
+     
 
     app.on "start", (options={})->
-        console.log "app:start", @appState
 
         # trigger a specific event when the loginStatus ever changes (to be handled by our header list controller to show/hide login UI
         # appstate.on "change:loginStatus" (model, status)->

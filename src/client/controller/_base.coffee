@@ -1,18 +1,19 @@
 define ["marionette", "msgbus"], (Marionette, msgBus) ->
 	channel = msgBus.appChannel
 	componentChannel = msgBus.componentChannel
+
 	class AppController extends Marionette.Controller
 		constructor: (options = {}) ->
 			@region = options.region or channel.request "default:region"
 			#App.execute "register:instance", @, @_instance_id
-			@_instance_id = _.uniqueId("controller")
-			channel.trigger "register:instance", @, @_instance_id
+			#@_instance_id = _.uniqueId("controller")
+			#channel.trigger "register:instance", @, @_instance_id
 			super options
 
 		close: (args...) ->
 			delete @region
 			delete @options
-			channel.trigger "unregister:instance", @, @_instance_id
+			#channel.trigger "unregister:instance", @, @_instance_id
 			super args
 
 		show: (view, options = {}) ->

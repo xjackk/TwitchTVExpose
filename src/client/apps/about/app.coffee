@@ -9,6 +9,9 @@ define ["msgbus", "marionette", "apps/about/show/controller"], (msgBus, Marionet
         about: ->
             new Controller
 
+
+
     channel.on "start:about:app", ->
+        console.log "startup for ABOUT APP"
         new Router
             controller: API

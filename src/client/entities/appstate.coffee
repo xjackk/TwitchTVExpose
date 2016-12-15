@@ -1,4 +1,5 @@
-define ["backbone"], (Backbone) ->
+define ["backbone","msgbus"], (Backbone, MsgBus) ->
+    dataChannel = MsgBus.dataChannel
 
     class AppState extends Backbone.Model
         defaults:
@@ -8,9 +9,12 @@ define ["backbone"], (Backbone) ->
             loginStatus: false
             uri: "http://localhost:3000" #"http://twitchtvexpose.herokuapp.com"
 
+    appState = new AppState
 
     API =
         getAppState: ->
             appState
 
-    appState = new AppState
+
+    dataChannel.reply "get:current:appstate", ->
+        API.getAppState()

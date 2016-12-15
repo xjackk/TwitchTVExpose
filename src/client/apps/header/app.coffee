@@ -9,3 +9,4 @@ define ["msgbus","apps/header/list/controller"], (msgBus, Controller) ->
     #start up
     channel.on "start:header:app", ->
         API.list()
+        

@@ -1,6 +1,7 @@
-define ["backbone", "msgbus", "entities/appstate"], (Backbone, msgBus, AppState ) ->
+define ["backbone", "msgbus"], (Backbone, msgBus) ->
     # this _fetch is our private property added to overridden config backbone sync
     dataChannel = msgBus.dataChannel
+    appState = dataChannel.request "get:current:appstate"
 
     class Game extends Backbone.Model
     class Stream extends Backbone.Model
@@ -41,7 +42,7 @@ define ["backbone", "msgbus", "entities/appstate"], (Backbone, msgBus, AppState 
             loaded = @fetch
                 remove: false
                 data:
-                    oauth_token: AppState.get "accessToken" #msgBus.reqres.request "get:current:token"
+                    oauth_token: appState.get "accessToken" #msgBus.reqres.request "get:current:token"
                     limit: @limit
                     offset: @offset * @limit
 
@@ -80,7 +81,7 @@ define ["backbone", "msgbus", "entities/appstate"], (Backbone, msgBus, AppState 
             loaded = @fetch
                 remove: false
                 data:
-                    oauth_token: AppState.get "accessToken" #msgBus.reqres.request "get:current:token"
+                    oauth_token: appState.get "accessToken" #msgBus.reqres.request "get:current:token"
                     q: @game
                     limit: @limit
                     offset: @offset * @limit
@@ -104,7 +105,7 @@ define ["backbone", "msgbus", "entities/appstate"], (Backbone, msgBus, AppState 
             elapsedSeconds = Math.round(((new Date() - games.timeStamp ) / 1000) % 60)
             if elapsedSeconds > 45 or games.length is 0
                 _.defaults params,
-                    oauth_token: AppState.get "accessToken" #msgBus.reqres.request "get:current:token"
+                    oauth_token: appState.get "accessToken" #msgBus.reqres.request "get:current:token"
                 games = new GamesCollection
                 games.timeStamp = new Date()
                 games.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
@@ -115,7 +116,7 @@ define ["backbone", "msgbus", "entities/appstate"], (Backbone, msgBus, AppState 
 
         searchGames: (url, params = {}) ->
             _.defaults params,
-                oauth_token: msgBus.reqres.request "get:current:token"
+                oauth_token: appState.get "accessToken" #msgBus.reqres.request "get:current:token"
             sgames = new SearchCollection
             sgames.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
             sgames.fetch
@@ -126,7 +127,7 @@ define ["backbone", "msgbus", "entities/appstate"], (Backbone, msgBus, AppState 
 
         getStreams: (url, params = {}) ->
             _.defaults params,
-                oauth_token: AppState.get "accessToken" #msgBus.reqres.request "get:current:token"
+                oauth_token: appState.get "accessToken" #msgBus.reqres.request "get:current:token"
             streams = new StreamCollection
             streams.game=params.q #tack this on/custom class property
             streams.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
@@ -139,7 +140,7 @@ define ["backbone", "msgbus", "entities/appstate"], (Backbone, msgBus, AppState 
         getStream: (url, params = {}) ->
             console.log "getStream", url, params
             _.defaults params,
-                oauth_token: AppState.get "accessToken" #msgBus.reqres.request "get:current:token"
+                oauth_token: appState.get "accessToken" #msgBus.reqres.request "get:current:token"
             stream = new StreamGet # model
             stream.url = "https://api.twitch.tv/kraken/#{url}?callback=?"
             stream.fetch

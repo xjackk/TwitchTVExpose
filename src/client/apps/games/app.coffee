@@ -1,6 +1,8 @@
-define ["msgbus", "marionette", "backbone", "apps/games/list/controller","apps/games/detail/controller","entities/appstate"], (msgBus, Marionette, Backbone, ListController, DetailController, AppState) ->
+define ["msgbus", "marionette", "backbone", "apps/games/list/controller","apps/games/detail/controller"], (msgBus, Marionette, Backbone, ListController, DetailController) ->
     channel = msgBus.appChannel    
-    
+    dataChannel = msgBus.dataChannel    
+
+    appState = dataChannel.request "get:current:appstate"
     class Router extends Marionette.AppRouter
         appRoutes:
             "games": "list"
@@ -10,7 +12,7 @@ define ["msgbus", "marionette", "backbone", "apps/games/list/controller","apps/g
     API =
         list: ->
             #only show games if logged in to TwitchTV api
-            return Backbone.history.navigate("#d3", trigger:true) if AppState.get("loginStatus") isnt true
+            return Backbone.history.navigate("#d3", trigger:true) if appState.get("loginStatus") isnt true
             new ListController
 
         detail: (id, model) ->

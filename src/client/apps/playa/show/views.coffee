@@ -1,6 +1,6 @@
-define ['apps/playa/show/templates', 'views/_base'], (Templates, AppView) ->
+define ['marionette', 'apps/playa/show/templates'], (Marionette, Templates ) ->
 
-    Player: class Player extends AppView.ItemView
+    Player: class Player extends Marionette.ItemView
         template: _.template(Templates.player)
         ui:
             panelbody:      ".panel-body"
@@ -19,13 +19,13 @@ define ['apps/playa/show/templates', 'views/_base'], (Templates, AppView) ->
             console.log "Panel Width (var): #{pw}"
 
 
-    User: class User extends AppView.ItemView
+    User: class User extends Marionette.ItemView
         template: _.template(Templates.user)
 
-    Chat: class Chat extends AppView.ItemView
+    Chat: class Chat extends Marionette.ItemView
         template: _.template(Templates.chat)
 
-    Layout: class Layout extends AppView.Layout
+    Layout: class Layout extends Marionette.Layout
         template: _.template(Templates.layout)
         regions:
             playerRegion:   "#player-region"

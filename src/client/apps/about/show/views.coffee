@@ -1,27 +1,27 @@
-define ['views/_base', 'apps/about/show/templates',  'd3'], (AppView, Templates, D3) ->
+define ['marionette', 'apps/about/show/templates',  'd3'], (Marionette, Templates, D3) ->
 
-    class Book extends AppView.ItemView
+    class Book extends Marionette.ItemView
         template: _.template(Templates.bookitem)
         tagName: "tr"
 
-    class Oss extends AppView.ItemView
+    class Oss extends Marionette.ItemView
         template: _.template(Templates.ossitem)
         tagName: "tr"
 
-    Books: class Books extends AppView.CompositeView
+    Books: class Books extends Marionette.CompositeView
         template: _.template(Templates.books)
         itemView: Book
         itemViewContainer: "tbody"
 
-    Oss: class Osslist extends AppView.CompositeView
+    Oss: class Osslist extends Marionette.CompositeView
         template: _.template(Templates.oss)
         itemView: Oss
         itemViewContainer: "tbody"
 
-    About: class _item extends AppView.ItemView
+    About: class _item extends Marionette.ItemView
         template: _.template(Templates.about)
 
-    Layout: class DataVisLayout extends AppView.Layout
+    Layout: class DataVisLayout extends Marionette.Layout
         template: _.template(Templates.layout)
         regions:
             aboutRegion: "#about-region"

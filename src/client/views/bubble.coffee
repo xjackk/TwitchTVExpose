@@ -1,4 +1,4 @@
-define ['underscore', 'msgbus', 'd3' ], (_, msgBus) ->
+define ['msgbus', 'd3' ], (msgBus) ->
     appChannel = msgBus.appChannel
 
     class BubbleChart

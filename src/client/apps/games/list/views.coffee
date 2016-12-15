@@ -1,13 +1,13 @@
-define ['views/_base', 'views/bubble', 'apps/games/list/templates' ], (AppView, BubbleChart, Templates) ->
+define ['marionette', 'views/bubble', 'apps/games/list/templates' ], (Marionette, BubbleChart, Templates) ->
 
-    class GameItem extends AppView.ItemView
+    class GameItem extends Marionette.ItemView
         template: _.template(Templates.gameitem)
         tagName: "li"
         className: "col-md-2 col-sm-4 col-xs-12 game"
         triggers:
             "click" : "game:item:clicked"
 
-    TopGameList: class TopGameList extends AppView.CompositeView
+    TopGameList: class TopGameList extends Marionette.CompositeView
         template: _.template(Templates.gameslist)
         itemView: GameItem
         id: "gamelist"
@@ -24,7 +24,7 @@ define ['views/_base', 'views/bubble', 'apps/games/list/templates' ], (AppView, 
             if ((scrollTop + margin) >= virtualHeight)
                 @trigger "scroll:more"
 
-    GamesBubbleView: class GamesBubbleView extends AppView.ItemView
+    GamesBubbleView: class GamesBubbleView extends Marionette.ItemView
         template: _.template(Templates.gamesbubble)
         id: "gamesbubble"
 
@@ -35,7 +35,7 @@ define ['views/_base', 'views/bubble', 'apps/games/list/templates' ], (AppView, 
             @chart.start()
             @chart.display()
 
-    Layout: class GamesLayout extends AppView.Layout
+    Layout: class GamesLayout extends Marionette.Layout
         template: _.template(Templates.layout)
         regions:
             gameRegion:  "#game-region"

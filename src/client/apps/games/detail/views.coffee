@@ -1,13 +1,13 @@
-define ['apps/games/detail/templates', 'views/_base'], (Templates, AppView) ->
+define ['marionette', 'apps/games/detail/templates' ], (Marionette, Templates) ->
 
-    Detail: class GameDetail extends AppView.ItemView
+    Detail: class GameDetail extends Marionette.ItemView
         template: _.template(Templates.gamedetail)
         className: "col-xs-12"
         #triggers:
         #    "click" : "game:item:clicked"
 
 
-    Layout: class GamesLayout extends AppView.Layout
+    Layout: class GamesLayout extends Marionette.Layout
         template: _.template(Templates.layout)
         regions:
             gameRegion:  "#game-region"

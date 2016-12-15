@@ -1,4 +1,4 @@
-define ["marionette"], (Marionette) ->
+define ["backbone","marionette"], (Backbone, Marionette) ->
     
     Marionette.TemplateCache::loadTemplate = (templateId) ->
         # Marionette expects "templateId" to be the ID of a DOM element.

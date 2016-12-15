@@ -1,5 +1,5 @@
 # override marionette views for any of our application specific needs
-define ["marionette"], (Marionette) ->
+define ["backbone","marionette"], (Backbone, Marionette) ->
   _remove = Marionette.View::remove
 
   _.extend Marionette.View::,
@@ -38,14 +38,3 @@ define ["marionette"], (Marionette) ->
         url = "#" + url unless options.external
 
         "<a href='#{url}'>#{@escape(name)}</a>"
-
-
-  ItemView: class AppItemView extends Marionette.ItemView
-
-  CollectionView: class AppCollectionView extends Marionette.CollectionView
-    #childViewEventPrefix: "childview"
-
-  CompositeView: class AppCompositeView extends Marionette.CompositeView
-    #childViewEventPrefix: "childview"
-
-  LayoutView: class AppLayoutView extends Marionette.LayoutView

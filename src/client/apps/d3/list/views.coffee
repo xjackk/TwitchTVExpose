@@ -1,6 +1,6 @@
-define ['apps/d3/list/templates', 'views/_base', 'd3'], (Templates, AppView) ->
+define ['marionette', 'apps/d3/list/templates', 'd3'], (Marionette, Templates ) ->
 
-    DataVis: class _item extends AppView.ItemView
+    DataVis: class _item extends Marionette.ItemView
         template: _.template(Templates.datavis)
         className: "well"
 
@@ -62,7 +62,7 @@ define ['apps/d3/list/templates', 'views/_base', 'd3'], (Templates, AppView) ->
                             quad.point.y += y
                     x1 > nx2 or x2 < nx1 or y1 > ny2 or y2 < ny1
 
-    Layout: class DataVisLayout extends AppView.Layout
+    Layout: class DataVisLayout extends Marionette.Layout
         template: _.template(Templates.layout)
         regions:
             panelRegion: "#panel-region"

@@ -1,4 +1,6 @@
 define ['underscore', 'msgbus', 'd3' ], (_, msgBus) ->
+    appChannel = msgBus.appChannel
+
     class BubbleChart
         constructor: (data, el, width, height) ->
             @data = data
@@ -132,4 +134,4 @@ define ['underscore', 'msgbus', 'd3' ], (_, msgBus) ->
         select_details: (data, i, element) =>
             @hide_details data,i,element
             # bingo pass the model to our game detail view
-            msgBus.events.trigger "app:game:detail", data.model
+            appChannel.trigger "app:game:detail", data.model

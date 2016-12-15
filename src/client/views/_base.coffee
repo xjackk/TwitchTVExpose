@@ -1,40 +1,51 @@
 # override marionette views for any of our application specific needs
-define ["backbone", "marionette"], (Backbone, Marionette) ->
-	_remove = Marionette.View::remove
+define ["marionette"], (Marionette) ->
+  _remove = Marionette.View::remove
 
-	_.extend Marionette.View::,
-		addOpacityWrapper: (init = true) ->
-			@$el.toggleWrapper
-				className: "opacity"
-			, init
+  _.extend Marionette.View::,
 
-		remove: (args...) ->
-			#console.log "removing", @
-			if @model?.isDestroyed?()
-				wrapper = @$el.toggleWrapper
-					className: "opacity"
-					backgroundColor: "red"
+    addOpacityWrapper: (init = true) ->
+      @$el.toggleWrapper
+          className: "opacity"
+      , init
 
-				wrapper.fadeOut 400, ->
-					$(@).remove()
+    # @options not supported in backbone v1.1.0
+    # setInstancePropertiesFor: (args...) ->
+    #    for key, val of _.pick(@options, args...)
+    #        @[key] = val
 
-				@$el.fadeOut 400, =>
-					_remove.apply @, args
-			else
-				_remove.apply @, args
+    remove: (args...) ->
+      #console.log "removing", @
+      if @model?.isDestroyed?()
+          wrapper = @$el.toggleWrapper
+              className: "opacity"
+              backgroundColor: "red"
 
-		templateHelpers: ->
-			linkTo: (name, url, options = {}) ->
-			_.defaults options,
-				external: false
+          wrapper.fadeOut 400, ->
+              $(@).remove()
 
-			url = "#" + url unless options.external
-			"<a href='#{url}'>#{@escape(name)}</a>"
+          @$el.fadeOut 400, =>
+              _remove.apply @, args
+      else
+          _remove.apply @, args
 
-	ItemView: 		class _AppItemView extends Marionette.ItemView
+    templateHelpers: ->
 
-	CollectionView: class _AppCollectionView extends Marionette.CollectionView
+      linkTo: (name, url, options = {}) ->
+        _.defaults options,
+            external: false
 
-	CompositeView: 	class _AppCompositeView extends Marionette.CompositeView
+        url = "#" + url unless options.external
 
-	LayoutView: 	class _AppLayoutView extends Marionette.LayoutView
+        "<a href='#{url}'>#{@escape(name)}</a>"
+
+
+  ItemView: class AppItemView extends Marionette.ItemView
+
+  CollectionView: class AppCollectionView extends Marionette.CollectionView
+    #childViewEventPrefix: "childview"
+
+  CompositeView: class AppCompositeView extends Marionette.CompositeView
+    #childViewEventPrefix: "childview"
+
+  LayoutView: class AppLayoutView extends Marionette.LayoutView

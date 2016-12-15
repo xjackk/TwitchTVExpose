@@ -1,6 +1,7 @@
 # form component controller
 # the module API will pass in the glogal collection of ccys
 define ["msgbus", "controller/_base", "components/loading/views" ], (msgBus, AppController, Views) ->
+	console.log "components/loading/views", Views
 	channel = msgBus.appChannel
 	componentChannel = msgBus.componentChannel
 

@@ -1,6 +1,6 @@
 define ["msgbus", "apps/about/show/views", "controller/_base"], (msgBus, Views, AppController) ->
     channel = msgBus.appChannel
-
+    console.log "about show", Views
     class Controller extends AppController
         initialize:(options)->
             entities    = channel.request "reference:entities"      # msgBus.reqres.request "reference:entities"

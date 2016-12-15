@@ -1,6 +1,7 @@
 # footer_app controller
-define ["msgbus","apps/footer/show/views", "controller/_base"], (msgBus, View, AppController) ->
+define ["msgbus","apps/footer/show/views", "controller/_base"], (msgBus, Views, AppController) ->
     channel = msgBus.appChannel
+    console.log "apps/footer/show/views", Views
 
     class Controller extends AppController
         initialize:->
@@ -9,5 +10,5 @@ define ["msgbus","apps/footer/show/views", "controller/_base"], (msgBus, View, A
             @show footerView
 
         getFooterView: (model) ->
-            new View.ItemView
+            new Views.ItemView
                 model: model

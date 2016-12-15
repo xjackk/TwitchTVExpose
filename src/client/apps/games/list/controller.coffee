@@ -1,6 +1,6 @@
-define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (msgBus, Views, AppController, Backbone) ->
+define ["msgbus", "apps/games/list/views", "controller/_base"], (msgBus, Views, AppController) ->
     channel = msgBus.appChannel    
-
+    console.log "games list", Views
     class Controller extends AppController
         initialize: (options={})->
             @entities = channel.request "games:top:entities"

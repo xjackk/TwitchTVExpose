@@ -1,5 +1,6 @@
-define ["msgbus", "apps/games/detail/views", "controller/_base", "backbone" ], (msgBus, Views, AppController, Backbone) ->
+define ["msgbus", "apps/games/detail/views", "controller/_base" ], (msgBus, Views, AppController) ->
     channel = msgBus.appChannel    
+    console.log "games detail", Views
 
     class Controller extends AppController
 

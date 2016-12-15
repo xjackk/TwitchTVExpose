@@ -1,4 +1,5 @@
 define ["apps/d3/list/views", "controller/_base"], (Views, AppController) ->
+    console.log "d3 list", Views
 
     class Controller extends AppController
         initialize:(options)->

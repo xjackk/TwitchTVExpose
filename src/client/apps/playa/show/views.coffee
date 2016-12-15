@@ -4,7 +4,7 @@ define ['apps/playa/show/templates', 'views/_base'], (Templates, AppView) ->
         template: _.template(Templates.player)
         ui:
             panelbody:      ".panel-body"
-        
+
         modelEvents:
             "change:video_height": "render"
 

@@ -1,12 +1,12 @@
 # list header views
-define ['views/_base', 'apps/header/list/templates'], (BaseView, Templates) ->
-    console.log BaseView
+define ['apps/header/list/templates', 'views/_base' ], (Templates, BaseView) ->
+    console.log "BASE VIEW IS:  ", BaseView
 
     class _itemview extends BaseView.ItemView
         template: _.template(Templates.item)
         tagName: "li"
 
-    LoginView: class _Loginview extends BaseView.ItemView
+    Login_View: class _Loginview extends BaseView.ItemView
         template: _.template(Templates.login)
         el: "#login"
 

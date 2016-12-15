@@ -1,5 +1,6 @@
-define ["msgbus", "apps/streams/list/views", "controller/_base", "entities/appstate"  ], (msgBus, Views, AppController, AppState) ->
+define ["msgbus", "apps/streams/list/views", "controller/_base"  ], (msgBus, Views, AppController) ->
     channel = msgBus.appChannel
+    console.log "streams list:", Views
 
     class Controller extends AppController
         initialize:(options={})->

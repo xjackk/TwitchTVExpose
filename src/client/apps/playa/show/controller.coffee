@@ -1,6 +1,7 @@
 define ["apps/playa/show/views", "controller/_base","msgbus"], (Views, AppController, msgBus) ->
 
     channel = msgBus.appChannel
+    console.log "playa:", Views
 
     class Controller extends AppController
         initialize:(options={})->

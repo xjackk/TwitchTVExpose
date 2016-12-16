@@ -1,9 +1,8 @@
 # header app/module.
-define ["msgbus","apps/header/list/controller"], (msgBus, Controller) ->
-    channel = msgBus.appChannel
+define ["msgbus","apps/header/list/controller", "class/app","apps/header/list/views"], (msgBus, Controller, App, Views) ->
+    app = new App "header"
 
-    temp = channel.request "header:region"
-    console.log "header region", temp
+    channel = msgBus.appChannel
 
     API =
         list: ->
@@ -13,4 +12,6 @@ define ["msgbus","apps/header/list/controller"], (msgBus, Controller) ->
     #start up
     channel.on "start:header:app", ->
         API.list()
-        
+    
+    app
+#

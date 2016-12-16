@@ -1,4 +1,4 @@
-define ['views/_base', 'apps/about/show/templates',  'd3'], (AppView, Templates, D3) ->
+define ['views/_base', 'apps/about/show/templates',  'd3', ], (AppView, Templates, D3) ->
     class Book extends AppView.ItemView
         template: _.template(Templates.bookitem)
         tagName: "tr"

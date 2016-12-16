@@ -1,8 +1,8 @@
-define ["marionette", "msgbus"], (Marionette, msgBus) ->
+define ["marionette", "msgbus", "config/backbone/sync" ], (Marionette, msgBus) ->
 	channel = msgBus.appChannel
 	componentChannel = msgBus.componentChannel
 
-	class AppController extends Marionette.Controller
+	class TTVController extends Marionette.Controller
 		constructor: (options = {}) ->
 			@region = options.region or channel.request "default:region"
 			#App.execute "register:instance", @, @_instance_id
@@ -32,6 +32,9 @@ define ["marionette", "msgbus"], (Marionette, msgBus) ->
 		_manageView: (view, options) ->
 			if options.loading
 				#important!  using the component msg channle to request the loading controller  it's listening on this channel'
+				console.log "loading view", view
+				console.log "loading options", options
 				componentChannel.request "show:loading", view, options
 			else
 				options.region.show view
+#

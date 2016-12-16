@@ -1,11 +1,9 @@
 # form component controller
 # the module API will pass in the glogal collection of ccys
 define ["msgbus", "controller/_base", "components/loading/views" ], (msgBus, AppController, Views) ->
+
 	dataChannel = msgBus.dataChannel
 	componentChannel = msgBus.componentChannel
-
-	console.log "dataChan", dataChannel
-	console.log "compChan", componentChannel
 
 	class LoadingController extends AppController
 		initialize: (options) ->
@@ -42,10 +40,11 @@ define ["msgbus", "controller/_base", "components/loading/views" ], (msgBus, App
 			_.chain(view).pick("model", "collection").toArray().compact().value()
 
 		getLoadingView: ->
-			new Views.Loading
+			new Views.LoadingView
 
     # note we are responding on the component channel
 	componentChannel.reply "show:loading", (view, options) ->
+		console.log "show:loaded REPLY"
 		new LoadingController
 			view: view
 			region: options.region

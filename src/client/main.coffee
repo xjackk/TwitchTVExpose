@@ -4,9 +4,9 @@ require.config
         jquery: "../bower_components/jquery/dist/jquery" 
         underscore: "../bower_components/underscore/underscore" 
         backbone: "../bower_components/backbone/backbone" 
+        marionette: "../bower_components/marionette/lib/backbone.marionette" 
         "backbone.syphon": "../bower_components/backbone.syphon/lib/backbone.syphon" 
         "backbone.radio": "../bower_components/backbone.radio/build/backbone.radio" 
-        marionette: "../bower_components/marionette/lib/backbone.marionette" 
         moment: "../bower_components/moment/moment"
         globalize: "../bower_components/globalize/lib/globalize"
         text: "../bower_components/text/text"
@@ -20,7 +20,8 @@ require.config
         spin:       ["jquery"]
         jqueryspin: ["jquery"]
 
-	require ["config/load", "entities/load", "apps/load", "app" ], (_config, _entities, _apps, app) -> 
+	require ["config/load", "entities/load", "components/loading/controller", "apps/load", "app" ], (_config, _entities,base, modules, app) -> 
         # ensure that base application settings are loaded before we can call the app.  
         # Templates, settings and jquery plugins
-        app.start()
+        #app.start
+        #    startEvents: modules.startEvents

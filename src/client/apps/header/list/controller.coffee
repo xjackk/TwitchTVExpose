@@ -10,17 +10,15 @@ define ["apps/header/list/views", "controller/_base", "msgbus" ], (Views, AppCon
             # new appstate is now a property of the controller have the controller listen to the specific attribute
             # so from anywhere you can set the appstate's loginStatus to T/F and this button will toggle
             @listenTo @appState, "change:loginStatus", (model, status) =>
-                @loginView?.close() if status is true
-                @loginView?.render() if status is false
+                @loginView.close() if status is true
+                @loginView.render() if status is false
 
             @listenTo @layout, "show", =>
                 @listRegion @links
                 @loginView = @getLoginView @appState
                 @loginView.render()  #stick-it into the DOM
 
-            @show @layout,
-                loading:
-                    entities: [@links, @appState]
+            @show @layout()
 
         getHeaderView: (links) ->
             new Views.HeaderView
@@ -31,7 +29,7 @@ define ["apps/header/list/views", "controller/_base", "msgbus" ], (Views, AppCon
                 model: model
 
         getLayoutView: ->
-            new Views.LayoutView()
+            new Views.LayoutView
 
         listRegion: (links) ->
             view = @getHeaderView links

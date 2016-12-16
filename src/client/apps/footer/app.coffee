@@ -1,5 +1,7 @@
 # footer app/module.
-define ["msgbus", "apps/footer/show/controller"], (msgBus, Controller) ->
+define ["msgbus", "apps/footer/show/controller", "class/app"], (msgBus, Controller, App) ->
+	app = new App "footer"
+
 	channel = msgBus.appChannel    
 
 	API =
@@ -10,3 +12,5 @@ define ["msgbus", "apps/footer/show/controller"], (msgBus, Controller) ->
 	channel.on "start:footer:app", ->
         console.log "startup for FOOTER APP"	
 		API.show()
+
+	app

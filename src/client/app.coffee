@@ -32,36 +32,19 @@ define ["backbone", "marionette", "msgbus"], (Backbone, Marionette, msgBus) ->
     #appChannel.reply "unregister:instance", (instance, id) ->
     #    app.unregister instance, id
 
-    app.on "before:start", ->
+    app.on "before:start", (options={}) ->
+        {startEvents} = options  #passed on from apps/load
         @appState = dataChannel.request "get:current:appstate"
-
-        console.log "before:start", @appState
-        console.log "before:start",Backbone
-        console.log "before:start",Marionette
-     
-
+        appChannel.trigger event for event in startEvents
+        
     app.on "start", (options={})->
-
+        
         # trigger a specific event when the loginStatus ever changes (to be handled by our header list controller to show/hide login UI
         # appstate.on "change:loginStatus" (model, status)->
         #    msgBus.events.trigger "login:status:change", status
 
         if Backbone.history
             Backbone.history.start()
-            
-            console.log "start header"
-            appChannel.trigger "start:header:app"
-            #console.log "start about"
-            #appChannel.trigger "start:about:app"
-            console.log "start footer"
-            appChannel.trigger "start:footer:app"
-            #console.log "start d3"
-            #appChannel.trigger "start:d3:app"
-            #console.log "start games"
-            #appChannel.trigger "start:games:app"
-            #console.log "start playa"
-            #appChannel.trigger "start:playa:app"
-
             frag = Backbone.history.fragment
             match = /access_token/i.test frag # calling back into our app from twitch sign-in
             
@@ -74,9 +57,8 @@ define ["backbone", "marionette", "msgbus"], (Backbone, Marionette, msgBus) ->
                 @navigate @authRoute, trigger: true
             else
                 @appState.set "accessToken", "none"
-                console.log "accessToken", @appState.get "accessToken"
                 @appState.set "loginStatus", false
-                #@navigate @rootRoute, trigger: true if @getCurrentRoute() is null
+                @navigate @rootRoute, trigger: true if @getCurrentRoute() is null
         else
             console.log "No BackBone.history"
 

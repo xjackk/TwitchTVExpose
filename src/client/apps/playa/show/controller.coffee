@@ -43,4 +43,5 @@ define ["apps/playa/show/views", "controller/_base","msgbus"], (Views, AppContro
                 model: model
 
         getLayoutView: ->
-            new Views.Layout
+            new Views.Layout()
+#

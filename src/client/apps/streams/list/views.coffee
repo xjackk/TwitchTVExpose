@@ -24,3 +24,4 @@ define ['views/_base', 'apps/streams/list/templates'], (AppView, Templates) ->
             #console.log "virtualHeight:", virtualHeight, "scrollTop:", scrollTop, "elHeight", @$el.height()
             if ((scrollTop + margin) >= virtualHeight)
                 @trigger "scroll:more"
+#

@@ -41,5 +41,6 @@ define ["msgbus", "apps/games/list/views", "controller/_base"], (msgBus, Views, 
                 collection: collection
 
         getLayoutView: ->
-            new Views.Layout
+            new Views.Layout()
+#
             

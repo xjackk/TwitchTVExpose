@@ -1,6 +1,7 @@
 define ["msgbus", "apps/games/detail/views", "controller/_base" ], (msgBus, Views, AppController) ->
     dataChannel = msgBus.dataChannel    
     console.log "games detail", Views
+    console.log "appcontroller", AppController
 
     class Controller extends AppController
 
@@ -31,4 +32,5 @@ define ["msgbus", "apps/games/detail/views", "controller/_base" ], (msgBus, View
                 model: model
 
         getLayoutView: ->
-            new Views.Layout
+            new Views.Layout()
+#

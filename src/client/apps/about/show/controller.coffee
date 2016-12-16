@@ -40,7 +40,8 @@ define ["msgbus", "apps/about/show/views", "controller/_base"], (msgBus, AppView
                 collection: collection
 
         getAboutView:  ->
-            new AppView.About
+            new AppView.About()
 
         getLayoutView: ->
-            new AppView.Layout
+            new AppView.Layout()
+#

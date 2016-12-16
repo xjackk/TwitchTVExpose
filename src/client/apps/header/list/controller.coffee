@@ -16,23 +16,23 @@ define ["apps/header/list/views", "controller/_base", "msgbus" ], (Views, AppCon
             @listenTo @layout, "show", =>
                 @listRegion @links
                 @loginView = @getLoginView @appState
-                @loginView?.render()  #stick-it into the DOM
+                @loginView.render()  #stick-it into the DOM
 
             @show @layout,
                 loading:
                     entities: [@links, @appState]
 
         getHeaderView: (links) ->
-            new Views?.HeaderView
+            new Views.HeaderView
                 collection: links
 
         getLoginView: (model) ->
-            new Views?.Login_View
+            new Views.Login_View
                 model: model
 
         getLayoutView: ->
-            new Views?.LayoutView
+            new Views.LayoutView()
 
         listRegion: (links) ->
             view = @getHeaderView links
-            @layout.listRegion?.show view
+            @layout.listRegion.show view

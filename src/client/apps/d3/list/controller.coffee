@@ -13,7 +13,8 @@ define ["apps/d3/list/views", "controller/_base"], (Views, AppController) ->
             @layout.dataVisRegion1.show view
 
         getDataVisView:  ->
-            new Views.DataVis
+            new Views.DataVis()
 
         getLayoutView: ->
-            new Views.Layout
+            new Views.Layout()
+#

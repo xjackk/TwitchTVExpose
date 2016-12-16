@@ -49,8 +49,10 @@ define ["backbone", "marionette", "msgbus"], (Backbone, Marionette, msgBus) ->
         if Backbone.history
             Backbone.history.start()
             
-            console.log "start about"
-            appChannel.trigger "start:about:app"
+            console.log "start header"
+            appChannel.trigger "start:header:app"
+            #console.log "start about"
+            #appChannel.trigger "start:about:app"
             console.log "start footer"
             appChannel.trigger "start:footer:app"
             #console.log "start d3"
@@ -59,8 +61,6 @@ define ["backbone", "marionette", "msgbus"], (Backbone, Marionette, msgBus) ->
             #appChannel.trigger "start:games:app"
             #console.log "start playa"
             #appChannel.trigger "start:playa:app"
-            #console.log "start header"
-            #appChannel.trigger "start:header:app"
 
             frag = Backbone.history.fragment
             match = /access_token/i.test frag # calling back into our app from twitch sign-in
@@ -76,7 +76,7 @@ define ["backbone", "marionette", "msgbus"], (Backbone, Marionette, msgBus) ->
                 @appState.set "accessToken", "none"
                 console.log "accessToken", @appState.get "accessToken"
                 @appState.set "loginStatus", false
-                @navigate @rootRoute, trigger: true if @getCurrentRoute() is null
+                #@navigate @rootRoute, trigger: true if @getCurrentRoute() is null
         else
             console.log "No BackBone.history"
 

@@ -31,3 +31,4 @@ define ['views/_base', 'apps/playa/show/templates'], (AppView, Templates ) ->
             playerRegion:   "#player-region"
             userRegion:     "#user-region"
             chatRegion:     "#chat-region"
+#

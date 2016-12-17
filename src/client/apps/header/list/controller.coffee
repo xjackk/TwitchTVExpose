@@ -18,7 +18,7 @@ define ["apps/header/list/views", "controller/_base", "msgbus" ], (Views, AppCon
                 @loginView = @getLoginView @appState
                 @loginView.render()  #stick-it into the DOM
 
-            @show @layout()
+            @show @layout, loading: true
 
         getHeaderView: (links) ->
             new Views.HeaderView

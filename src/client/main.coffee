@@ -23,5 +23,6 @@ require.config
 	require ["config/load", "entities/load", "components/loading/controller", "apps/load", "app" ], (_config, _entities,base, modules, app) -> 
         # ensure that base application settings are loaded before we can call the app.  
         # Templates, settings and jquery plugins
-        #app.start
-        #    startEvents: modules.startEvents
+        console.log modules.startEvents
+        app.start
+            startEvents: modules.startEvents

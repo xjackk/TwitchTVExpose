@@ -1,6 +1,4 @@
-define ["apps/d3/list/views", "controller/_base"], (Views, AppController) ->
-    console.log "d3 list", Views
-
+define ["controller/_base", "apps/d3/list/views"], (AppController, Views) ->
     class Controller extends AppController
         initialize:(options)->
             @layout = @getLayoutView()
@@ -13,8 +11,8 @@ define ["apps/d3/list/views", "controller/_base"], (Views, AppController) ->
             @layout.dataVisRegion1.show view
 
         getDataVisView:  ->
-            new Views.DataVis()
+            new Views.DataVis
 
         getLayoutView: ->
-            new Views.Layout()
+            new Views.Layout
 #

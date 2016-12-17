@@ -33,15 +33,13 @@ define ["backbone", "marionette", "msgbus"], (Backbone, Marionette, msgBus) ->
     #    app.unregister instance, id
 
     app.on "before:start", (options={}) ->
-        {startEvents} = options  #passed on from apps/load
-        @appState = dataChannel.request "get:current:appstate"
-        appChannel.trigger event for event in startEvents
+
+
         
     app.on "start", (options={})->
-        
-        # trigger a specific event when the loginStatus ever changes (to be handled by our header list controller to show/hide login UI
-        # appstate.on "change:loginStatus" (model, status)->
-        #    msgBus.events.trigger "login:status:change", status
+        {startEvents} = options  #passed on from apps/load
+        #@appState = dataChannel.request "get:current:appstate"
+        appChannel.trigger event for event in startEvents        
 
         if Backbone.history
             Backbone.history.start()
@@ -58,7 +56,7 @@ define ["backbone", "marionette", "msgbus"], (Backbone, Marionette, msgBus) ->
             else
                 @appState.set "accessToken", "none"
                 @appState.set "loginStatus", false
-                @navigate @rootRoute, trigger: true if @getCurrentRoute() is null
+                @navigate @rootRoute, trigger: true #if @getCurrentRoute() is null
         else
             console.log "No BackBone.history"
 

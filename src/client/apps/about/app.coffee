@@ -1,4 +1,6 @@
-define ["msgbus", "marionette", "apps/about/show/controller"], (msgBus, Marionette, Controller) ->
+define ["msgbus", "marionette", "apps/about/show/controller","class/app"], (msgBus, Marionette, Controller, App) ->
+    app = new App "about"
+
     channel = msgBus.appChannel    
 
     class Router extends Marionette.AppRouter
@@ -11,7 +13,8 @@ define ["msgbus", "marionette", "apps/about/show/controller"], (msgBus, Marionet
 
 
 
-    channel.on "start:about:app", ->
-        console.log "startup for ABOUT APP"
+    channel.on app.startEvent , ->
+        console.log "handled: #{app.startEvent}"
         new Router
             controller: API
+    app

@@ -1,5 +1,7 @@
 define ["msgbus", "apps/games/detail/views", "controller/_base" ], (msgBus, Views, AppController) ->
-    dataChannel = msgBus.dataChannel    
+    dataChannel = msgBus.dataChannel 
+    appChannel = msgBus.appChannel 
+
     console.log "games detail", Views
     console.log "appcontroller", AppController
 
@@ -23,7 +25,7 @@ define ["msgbus", "apps/games/detail/views", "controller/_base" ], (msgBus, View
 
         gameRegion: (model) ->
             view = @getGameView model
-            dataChannel.trigger "app:stream:list", @layout.streamRegion, model.get("game").name
+            appChannel.trigger "app:stream:list", @layout.streamRegion, model.get("game").name
             @layout.gameRegion.show view
 
 

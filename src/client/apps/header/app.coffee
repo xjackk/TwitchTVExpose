@@ -10,8 +10,9 @@ define ["msgbus","apps/header/list/controller", "class/app","apps/header/list/vi
                 region: channel.request "header:region"
                 
     #start up
-    channel.on "start:header:app", ->
+    channel.on app.startEvent, ->
+        console.log "handled: #{app.startEvent}"
         API.list()
-    
+
     app
 #

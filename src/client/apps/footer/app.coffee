@@ -9,8 +9,8 @@ define ["msgbus", "apps/footer/show/controller", "class/app"], (msgBus, Controll
 			new Controller
 				region: channel.request "footer:region"
 
-	channel.on "start:footer:app", ->
-        console.log "startup for FOOTER APP"	
+	channel.on app.startEvent, ->
+		console.log "handled: #{app.startEvent}"
 		API.show()
 
 	app

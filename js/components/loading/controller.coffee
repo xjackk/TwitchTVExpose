@@ -1,8 +1,10 @@
 # form component controller
 # the module API will pass in the glogal collection of ccys
 define ["msgbus", "controller/_base", "components/loading/views" ], (msgBus, AppController, Views) ->
-    class LoadingController extends AppController
-    	initialize: (options) ->
+	appChannel = msgBus.appChannel
+
+	class LoadingController extends AppController
+		initialize: (options) ->
     		{ view, config } = options
     
     		config = if _.isBoolean(config) then {} else config
@@ -24,7 +26,7 @@ define ["msgbus", "controller/_base", "components/loading/views" ], (msgBus, App
     		@showRealView view, loadingView, config
     
     	showRealView: (realView, loadingView, config) ->
-    		msgBus.commands.execute "when:fetched", config.entities, =>
+    		appChannel.trigger "when:fetched", config.entities, =>
     			switch config.loadingType
     				when "opacity"
     					@region.currentView.$el.removeAttr "style"
@@ -37,7 +39,7 @@ define ["msgbus", "controller/_base", "components/loading/views" ], (msgBus, App
     	getLoadingView: ->
     		new Views.Loading
 
-    msgBus.commands.setHandler "show:loading", (view, options) ->
+    appChannel.on "show:loading", (view, options) ->
     	new LoadingController
     		view: view
     		region: options.region

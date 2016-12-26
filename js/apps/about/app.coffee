@@ -1,4 +1,5 @@
 define ["msgbus", "marionette", "apps/about/show/controller"], (msgBus, Marionette, Controller) ->
+    appChannel = msgBus.appChannel
 
     class Router extends Marionette.AppRouter
         appRoutes:
@@ -7,7 +8,8 @@ define ["msgbus", "marionette", "apps/about/show/controller"], (msgBus, Marionet
     API =
         about: ->
             new Controller
+                region: appChannel.request "default:region"
 
-    msgBus.commands.setHandler "start:about:app", ->
+    appChannel.on "start:about:app", ->
         new Router
             controller: API

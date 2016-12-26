@@ -1,4 +1,6 @@
 define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
+    appChannel = msgBus.appChannel
+
 
     class AppState extends _Backbone.Model
         defaults:
@@ -13,10 +15,10 @@ define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
         getAppState: ->
             appState
 
-    msgBus.reqres.setHandler "get:current:appstate", ->
+    appChannel.reply "get:current:appstate", ->
         API.getAppState()
 
-    msgBus.reqres.setHandler "get:current:token", ->
+    appChannel.reply "get:current:token", ->
         appState.get "accessToken"
 
     appState = new AppState

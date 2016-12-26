@@ -3,8 +3,9 @@
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(["msgbus", "apps/about/show/views", "controller/_base"], function(msgBus, Views, AppController) {
-    var Controller;
+  define(["marionette", "msgbus", "apps/about/show/views", "controller/_base"], function(Mn, msgBus, Views, AppController) {
+    var Controller, appChannel;
+    appChannel = msgBus.appChannel;
     return Controller = (function(superClass) {
       extend(Controller, superClass);
 
@@ -13,60 +14,24 @@
       }
 
       Controller.prototype.initialize = function(options) {
-        var entities, ossentities;
-        entities = msgBus.reqres.request("reference:entities");
-        ossentities = msgBus.reqres.request("oss:entities");
-        this.layout = this.getLayoutView();
-        this.listenTo(this.layout, "show", (function(_this) {
-          return function() {
-            _this.aboutRegion();
-            _this.bookRegion(entities);
-            return _this.ossRegion(ossentities);
-          };
-        })(this));
-        return this.show(this.layout, {
+        var data, layout;
+        if (options == null) {
+          options = {};
+        }
+        data = {
+          bookEntities: appChannel.request("reference:entities"),
+          ossEntities: appChannel.request("oss:entities")
+        };
+        layout = this.getLayoutView(data);
+        return this.show(layout, {
           loading: {
-            entities: entities
+            entities: [data.bookEntities, data.ossEntities]
           }
         });
       };
 
-      Controller.prototype.aboutRegion = function() {
-        var view;
-        view = this.getAboutView();
-        return this.layout.aboutRegion.show(view);
-      };
-
-      Controller.prototype.bookRegion = function(collection) {
-        var view;
-        view = this.getBookView(collection);
-        return this.layout.bookRegion.show(view);
-      };
-
-      Controller.prototype.ossRegion = function(collection) {
-        var view;
-        view = this.getOssView(collection);
-        return this.layout.ossRegion.show(view);
-      };
-
-      Controller.prototype.getOssView = function(collection) {
-        return new Views.Oss({
-          collection: collection
-        });
-      };
-
-      Controller.prototype.getBookView = function(collection) {
-        return new Views.Books({
-          collection: collection
-        });
-      };
-
-      Controller.prototype.getAboutView = function() {
-        return new Views.About;
-      };
-
-      Controller.prototype.getLayoutView = function() {
-        return new Views.Layout;
+      Controller.prototype.getLayoutView = function(options) {
+        return new Views.LayoutView(options);
       };
 
       return Controller;

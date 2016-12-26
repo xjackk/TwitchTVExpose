@@ -1,5 +1,5 @@
 # msgbus decoupled from app
-define ["backbone.wreqr"], (Wreqr) ->    
-    reqres: new Wreqr.RequestResponse()
-    commands: new Wreqr.Commands()
-    events: new Wreqr.EventAggregator()
+define ["backbone", "backbone.radio"], (Backbone) ->    
+    appChannel: new Backbone.Radio.channel "app"
+    dataChannel: new Backbone.Radio.channel "data"
+

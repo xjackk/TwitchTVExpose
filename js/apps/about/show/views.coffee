@@ -1,31 +1,62 @@
-define ['apps/about/show/templates', 'views/_base', 'd3'], (Templates, AppView) ->
+define ["marionette" "apps/about/show/templates"], (Mn, Templates) ->
 
-    class Book extends AppView.ItemView
-        template: _.template(Templates.bookitem)
+    class BookRowView extends Mn.View
+        template: _.template(Templates.bookItem)
         tagName: "tr"
 
-    class Oss extends AppView.ItemView
-        template: _.template(Templates.ossitem)
+    class OssRowView extends Mn.View
+        template: _.template(Templates.ossItem)
         tagName: "tr"
 
-    Books: class Books extends AppView.CompositeView
-        template: _.template(Templates.books)
-        itemView: Book
-        itemViewContainer: "tbody"
-
-    Oss: class Osslist extends AppView.CompositeView
-        template: _.template(Templates.oss)
-        itemView: Oss
-        itemViewContainer: "tbody"
-
-    About: class _item extends AppView.ItemView
+    class About extends Mn.View
         template: _.template(Templates.about)
 
-    Layout: class DataVisLayout extends AppView.Layout
+
+    class BookTableBody extends Mn.CollectionView
+        tagName: "tbody"
+        childView: BookRowView
+
+    class OssTableBody extends Mn.CollectionView
+        tagName: "tbody"
+        childView: OssRowView
+
+
+    class BookTableView extends Mn.View
+        template: _.template(Templates.bookTable)
+        regions:
+            body:
+                el: 'tbody'
+                replaceElement: true
+
+        onRender: ->
+            @showChildView "body", new BookTableBody
+                collection: @collection
+
+    class OSSTableView extends Mn.View
+        template: _.template(Templates.ossTable)
+        regions:
+            body:
+                el: 'tbody'
+                replaceElement: true
+
+        onRender: ->
+            @showChildView "body", new OssTableBody
+                collection: @collection
+
+
+    LayoutView: class AppLayout extends Mn.View
         template: _.template(Templates.layout)
         regions:
-            aboutRegion: "#about-region"
-            bookRegion: "#book-region"
-            ossRegion: "#oss-region"
+            aboutRegion:    "#about-region"
+            bookRegion:     "#book-region"
+            ossRegion:      "#oss-region"
 
+        onRender: ->
+            console.log 'getOptions', @getOption("bookEntities")
+            console.log 'getOptions', @getOption("ossEntities")
 
+            @showChildView "aboutRegion", new About()
+            @showChildView "bookRegion", new BookTableView 
+                collection: @getOption("bookEntities")
+            @showChildView "ossRegion", new OSSTableView 
+                collection: @getOption("ossEntities")

@@ -2,13 +2,11 @@
 (function() {
   require.config({
     paths: {
-      jquery: "../bower_components/jquery/jquery",
-      underscore: "../bower_components/underscore-amd/underscore",
-      backbone: "../bower_components/backbone-amd/backbone",
-      "backbone.babysitter": "../bower_components/backbone.babysitter/lib/amd/backbone.babysitter",
-      "backbone.wreqr": "../bower_components/backbone.wreqr/lib/amd/backbone.wreqr",
-      "backbone.syphon": "../bower_components/backbone.syphon/lib/amd/backbone.syphon",
-      marionette: "../bower_components/marionette/lib/core/amd/backbone.marionette",
+      jquery: "../bower_components/jquery/dist/jquery",
+      underscore: "../bower_components/underscore/underscore",
+      backbone: "../bower_components/backbone/backbone",
+      marionette: "../bower_components/backbone.marionette/lib/backbone.marionette",
+      "backbone.radio": "../bower_components/backbone.radio/build/backbone.radio",
       moment: "../bower_components/moment/moment",
       globalize: "../bower_components/globalize/lib/globalize",
       text: "../bower_components/requirejs-text/text",

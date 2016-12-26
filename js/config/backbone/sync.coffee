@@ -1,4 +1,6 @@
-define ["backbone"], (Backbone) ->
+define ["backbone", "msgbus"], (Backbone, msgBus) ->
+    appChannel = msgBus.appChannel
+
     _sync = Backbone.sync
     
     Backbone.sync = (method, entity, options = {}) ->
@@ -16,3 +18,10 @@ define ["backbone"], (Backbone) ->
     		@trigger "sync:start", @
     	complete: ->
     		@trigger "sync:stop", @
+
+
+
+    appChannel.on "when:fetched", (entities, callback) ->
+        xhrs = _.chain([entities]).flatten().pluck("_fetch").value()
+        $.when(xhrs...).done ->
+            callback()			

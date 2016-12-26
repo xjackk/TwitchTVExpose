@@ -1,45 +1,21 @@
-define ["msgbus", "apps/about/show/views", "controller/_base"], (msgBus, Views, AppController) ->
+define ["marionette", "msgbus", "apps/about/show/views", "controller/_base"], (Mn, msgBus, Views, AppController) ->
+    appChannel = msgBus.appChannel
+
+
     class Controller extends AppController
-        initialize:(options)->
-            entities=msgBus.reqres.request "reference:entities"
-            ossentities=msgBus.reqres.request "oss:entities"
-            #console.log ossentities
-            @layout = @getLayoutView()
+        initialize:(options={})->
 
-            @listenTo @layout, "show", =>
-                @aboutRegion()
-                @bookRegion entities
-                @ossRegion ossentities
+            data=
+                bookEntities:   appChannel.request "reference:entities"
+                ossEntities:    appChannel.request "oss:entities"
 
-            @show @layout,
+            layout = @getLayoutView data
+
+            @show layout,
                 loading:
-                    entities: entities
+                    entities: [data.bookEntities, data.ossEntities]
 
-
-        aboutRegion:  ->
-            view = @getAboutView()
-            @layout.aboutRegion.show view
-
-        bookRegion: (collection) ->
-            view = @getBookView collection
-            @layout.bookRegion.show view
-
-        ossRegion: (collection) ->
-            view = @getOssView collection
-            @layout.ossRegion.show view
-
-        getOssView: (collection) ->
-            new Views.Oss
-                collection: collection
-
-        getBookView: (collection) ->
-            new Views.Books
-                collection: collection
-
-        getAboutView:  ->
-            new Views.About
-
-        getLayoutView: ->
-            new Views.Layout
+        getLayoutView: (options)->
+            new Views.LayoutView options
 
 

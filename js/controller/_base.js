@@ -5,7 +5,8 @@
     slice = [].slice;
 
   define(["marionette", "msgbus"], function(Marionette, msgBus) {
-    var AppController;
+    var AppController, appChannel;
+    appChannel = msgBus.appChannel;
     return AppController = (function(superClass) {
       extend(AppController, superClass);
 
@@ -13,9 +14,7 @@
         if (options == null) {
           options = {};
         }
-        this.region = options.region || msgBus.reqres.request("default:region");
-        this._instance_id = _.uniqueId("controller");
-        msgBus.commands.execute("register:instance", this, this._instance_id);
+        this.region = options.region || appChannel.request("default:region");
         AppController.__super__.constructor.call(this, options);
       }
 
@@ -24,7 +23,6 @@
         args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
         delete this.region;
         delete this.options;
-        msgBus.commands.execute("unregister:instance", this, this._instance_id);
         return AppController.__super__.close.call(this, args);
       };
 
@@ -49,16 +47,17 @@
       };
 
       AppController.prototype._manageView = function(view, options) {
+        var ref;
         if (options.loading) {
-          return msgBus.commands.execute("show:loading", view, options);
+          return appChannel.trigger("show:loading", view, options);
         } else {
-          return options.region.show(view);
+          return (ref = options.region) != null ? ref.show(view) : void 0;
         }
       };
 
       return AppController;
 
-    })(Marionette.Controller);
+    })(Marionette.Object);
   });
 
 }).call(this);

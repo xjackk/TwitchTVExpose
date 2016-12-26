@@ -4,7 +4,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(["entities/_backbone", "msgbus"], function(_Backbone, msgBus) {
-    var API, AppState, appState;
+    var API, AppState, appChannel, appState;
+    appChannel = msgBus.appChannel;
     AppState = (function(superClass) {
       extend(AppState, superClass);
 
@@ -27,10 +28,10 @@
         return appState;
       }
     };
-    msgBus.reqres.setHandler("get:current:appstate", function() {
+    appChannel.reply("get:current:appstate", function() {
       return API.getAppState();
     });
-    msgBus.reqres.setHandler("get:current:token", function() {
+    appChannel.reply("get:current:token", function() {
       return appState.get("accessToken");
     });
     return appState = new AppState;

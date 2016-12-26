@@ -4,8 +4,9 @@
     hasProp = {}.hasOwnProperty;
 
   define(["msgbus", "controller/_base", "components/loading/views"], function(msgBus, AppController, Views) {
-    var LoadingController;
-    LoadingController = (function(superClass) {
+    var LoadingController, appChannel;
+    appChannel = msgBus.appChannel;
+    return LoadingController = (function(superClass) {
       extend(LoadingController, superClass);
 
       function LoadingController() {
@@ -36,7 +37,7 @@
       };
 
       LoadingController.prototype.showRealView = function(realView, loadingView, config) {
-        return msgBus.commands.execute("when:fetched", config.entities, (function(_this) {
+        return appChannel.trigger("when:fetched", config.entities, (function(_this) {
           return function() {
             var ref;
             switch (config.loadingType) {
@@ -63,16 +64,17 @@
         return new Views.Loading;
       };
 
+      appChannel.on("show:loading", function(view, options) {
+        return new LoadingController({
+          view: view,
+          region: options.region,
+          config: options.loading
+        });
+      });
+
       return LoadingController;
 
     })(AppController);
-    return msgBus.commands.setHandler("show:loading", function(view, options) {
-      return new LoadingController({
-        view: view,
-        region: options.region,
-        config: options.loading
-      });
-    });
   });
 
 }).call(this);

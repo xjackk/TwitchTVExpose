@@ -1,38 +1,33 @@
 # app startup.
 define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette, msgBus ) ->
-    app = new Marionette.Application()
+    appChannel= msgBus.appChannel
+
+    app = new Marionette.Application
+        region: "#main-region"
+
 
     app.rootRoute = "about"
     app.authRoute = "games"
 
-    app.addRegions
-        headerRegion : "#header-region"
-        mainRegion : "#main-region"
-        footerRegion : "#footer-region"
 
-    app.on "initialize:before", (options={}) ->
-        #console.log "init:before", options
+    appChannel.reply "default:region", ->
+        app.getRegion()
 
-    msgBus.reqres.setHandler "default:region",->
-        app.mainRegion
 
-    msgBus.reqres.setHandler "header:region", ->
-        app.headerRegion
+    app.on "before:start" , (options={})->
+        appChannel.trigger "start:about:app"
 
-    msgBus.reqres.setHandler "footer:region", ->
-        app.footerRegion
+        
+        #appChannel.trigger "start:header:app"
+        #msgBus.commands.execute "start:footer:app"
+        #sgBus.commands.execute "start:d3:app"
+        #msgBus.commands.execute "start:about:app"
+        #msgBus.commands.execute "start:games:app"
+        #sgBus.commands.execute "start:playa:app"
+    
 
-    msgBus.reqres.setHandler "main:region", ->
-        app.mainRegion
-
-    msgBus.commands.setHandler "register:instance", (instance, id) ->
-        app.register instance, id
-
-    msgBus.commands.setHandler "unregister:instance", (instance, id) ->
-        app.unregister instance, id
-
-    app.on "initialize:after", (options={})->
-        appstate = msgBus.reqres.request "get:current:appstate"
+    app.on "start", (options={})->
+        appstate = appChannel.request  "get:current:appstate"
         # trigger a specific event when the loginStatus ever changes (to be handled by our header list controller to show/hide login UI
         # appstate.on "change:loginStatus" (model, status)->
         #    msgBus.events.trigger "login:status:change", status
@@ -46,18 +41,11 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
                 appstate.set "accessToken",  frag.split(/[=&]/)[1]  #was frag.split("=")[1]  but the return now includes &scopes... after access_token
                 appstate.set "loginStatus", true
                 #console.log "TwitchTV accessToken: #{appstate.get("accessToken")}"
-                @navigate @authRoute, trigger: true
+                #@navigate @authRoute, trigger: true
+                @navigate @rootRoute, trigger: true if @getCurrentRoute() is null
             else
                 appstate.set "loginStatus", false
                 @navigate @rootRoute, trigger: true if @getCurrentRoute() is null
 
-    app.addInitializer (options) ->
-        #console.log "addinitializers"
-        msgBus.commands.execute "start:header:app"
-        msgBus.commands.execute "start:footer:app"
-        msgBus.commands.execute "start:d3:app"
-        msgBus.commands.execute "start:about:app"
-        msgBus.commands.execute "start:games:app"
-        msgBus.commands.execute "start:playa:app"
-
+   
     app

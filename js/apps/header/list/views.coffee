@@ -11,7 +11,7 @@ define ["marionette", 'apps/header/list/templates', 'entities/header', 'entities
 
     class MenuItemsView extends Mn.CollectionView
         tagName: "ul"
-        className: "navbar nav"
+        className: "nav navbar-nav"
         childView: MenuView
 
 
@@ -20,7 +20,7 @@ define ["marionette", 'apps/header/list/templates', 'entities/header', 'entities
         template: _.template(Templates.header)
         regions:
             menuRegion: 
-                el: "#mainmenu"
+                el: "ul"
                 replaceElement: true
 
             loginRegion: 

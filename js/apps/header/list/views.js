@@ -42,7 +42,7 @@
 
       MenuItemsView.prototype.tagName = "ul";
 
-      MenuItemsView.prototype.className = "navbar nav";
+      MenuItemsView.prototype.className = "nav navbar-nav";
 
       MenuItemsView.prototype.childView = MenuView;
 
@@ -63,7 +63,7 @@
 
         HeaderLayout.prototype.regions = {
           menuRegion: {
-            el: "#mainmenu",
+            el: "ul",
             replaceElement: true
           },
           loginRegion: {

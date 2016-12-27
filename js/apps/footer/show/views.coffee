@@ -1,8 +1,10 @@
 # show footer views.
-define ['views/_base', 'apps/footer/show/templates'], (AppViews, Templates) ->
+define ['marionette', 'apps/footer/show/templates'], (Mn, Templates) ->
 
-	ItemView: class ShowFooterView extends AppViews.ItemView
+	FooterView: class ShowFooterView extends Mn.View
+		el: "#footer-region"
 		template: _.template(Templates.footer)
+
 
 		modelEvents:
 			"change" : "render"

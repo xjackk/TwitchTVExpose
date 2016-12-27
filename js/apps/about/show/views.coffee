@@ -11,7 +11,6 @@ define ["marionette", "apps/about/show/templates"], (Mn, Templates) ->
     class About extends Mn.View
         template: _.template(Templates.about)
 
-
     class BookTableBody extends Mn.CollectionView
         tagName: "tbody"
         childView: BookRowView
@@ -43,7 +42,6 @@ define ["marionette", "apps/about/show/templates"], (Mn, Templates) ->
             @showChildView "body", new OssTableBody
                 collection: @collection
 
-
     LayoutView: class AppLayout extends Mn.View
         template: _.template(Templates.layout)
         regions:
@@ -52,9 +50,6 @@ define ["marionette", "apps/about/show/templates"], (Mn, Templates) ->
             ossRegion:      "#oss-region"
 
         onRender: ->
-            console.log 'getOptions', @getOption("bookEntities")
-            console.log 'getOptions', @getOption("ossEntities")
-
             @showChildView "aboutRegion", new About()
             @showChildView "bookRegion", new BookTableView 
                 collection: @getOption("bookEntities")

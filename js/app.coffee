@@ -17,8 +17,8 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
     app.on "before:start" , (options={})->
         appChannel.trigger "start:about:app"
         appChannel.trigger "start:header:app"
-        #msgBus.commands.execute "start:footer:app"
-        #sgBus.commands.execute "start:d3:app"
+        appChannel.trigger "start:footer:app"
+        appChannel.trigger "start:d3:app"
         #msgBus.commands.execute "start:about:app"
         #msgBus.commands.execute "start:games:app"
         #sgBus.commands.execute "start:playa:app"

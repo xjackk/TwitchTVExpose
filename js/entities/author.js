@@ -4,7 +4,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(["backbone", "msgbus"], function(Backbone, msgBus) {
-    var API, Author;
+    var Author, appChannel, author;
+    appChannel = msgBus.appChannel;
     Author = (function(superClass) {
       extend(Author, superClass);
 
@@ -21,14 +22,7 @@
       return Author;
 
     })(Backbone.Model);
-    API = {
-      getAuthor: function() {
-        return new Author;
-      }
-    };
-    return msgBus.reqres.setHandler("get:authorModel:info", function() {
-      return API.getAuthor();
-    });
+    return author = new Author;
   });
 
 }).call(this);

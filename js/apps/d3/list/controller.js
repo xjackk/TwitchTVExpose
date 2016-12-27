@@ -13,27 +13,9 @@
       }
 
       Controller.prototype.initialize = function(options) {
-        this.layout = this.getLayoutView();
-        this.listenTo(this.layout, "show", (function(_this) {
-          return function() {
-            return _this.visRegion();
-          };
-        })(this));
-        return this.show(this.layout);
-      };
-
-      Controller.prototype.visRegion = function() {
-        var view;
-        view = this.getDataVisView();
-        return this.layout.dataVisRegion1.show(view);
-      };
-
-      Controller.prototype.getDataVisView = function() {
-        return new Views.DataVis;
-      };
-
-      Controller.prototype.getLayoutView = function() {
-        return new Views.Layout;
+        var layout;
+        layout = new Views.Layout;
+        return this.show(layout);
       };
 
       return Controller;

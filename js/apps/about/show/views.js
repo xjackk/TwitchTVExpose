@@ -140,8 +140,6 @@
         };
 
         AppLayout.prototype.onRender = function() {
-          console.log('getOptions', this.getOption("bookEntities"));
-          console.log('getOptions', this.getOption("ossEntities"));
           this.showChildView("aboutRegion", new About());
           this.showChildView("bookRegion", new BookTableView({
             collection: this.getOption("bookEntities")

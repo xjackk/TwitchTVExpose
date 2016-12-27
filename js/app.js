@@ -16,7 +16,9 @@
         options = {};
       }
       appChannel.trigger("start:about:app");
-      return appChannel.trigger("start:header:app");
+      appChannel.trigger("start:header:app");
+      appChannel.trigger("start:footer:app");
+      return appChannel.trigger("start:d3:app");
     });
     app.on("start", function(options) {
       var appstate, frag, match;

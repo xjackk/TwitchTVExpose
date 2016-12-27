@@ -1,13 +1,17 @@
-define ['apps/d3/list/templates', 'views/_base', 'd3'], (Templates, AppView) ->
+define ['marionette', 'apps/d3/list/templates', 'd3'], (Mn, Templates) ->
 
-    DataVis: class _item extends AppView.ItemView
-        template: _.template(Templates.datavis)
+    class PanelView extends Mn.View
+        template: _.template(Templates.panel)
+
+
+    class D3View extends Mn.View
+        template: false #_.template(Templates.d3)
         className: "well"
 
         # use D3 to render a canvas on our view
-        onShow: =>
-            width = @$el.outerWidth(false)
-            height= Math.floor width * 9 / 16
+        onDomRefresh: =>
+            width = @$el.outerWidth(true)
+            height= Math.floor width * 12 / 16
 
             nodes = d3.range(250).map ->
                 radius: Math.random() * 16 + 4
@@ -62,8 +66,16 @@ define ['apps/d3/list/templates', 'views/_base', 'd3'], (Templates, AppView) ->
                             quad.point.y += y
                     x1 > nx2 or x2 < nx1 or y1 > ny2 or y2 < ny1
 
-    Layout: class DataVisLayout extends AppView.Layout
+    Layout: class D3LayoutView extends Mn.View
         template: _.template(Templates.layout)
+
         regions:
-            panelRegion: "#panel-region"
-            dataVisRegion1: "#datavis-region"
+            panelRegion:    "#panel-region"
+            d3Region:
+                el:         "#d3-region"
+                replaceElement: false
+
+
+        onRender:->
+            @showChildView "panelRegion", new PanelView()
+            @showChildView "d3Region", new D3View()

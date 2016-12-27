@@ -3,8 +3,9 @@
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(["msgbus", "apps/footer/show/views", "controller/_base"], function(msgBus, View, AppController) {
-    var Controller;
+  define(["msgbus", "apps/footer/show/views", "controller/_base", 'entities/author'], function(msgBus, View, AppController, Author) {
+    var Controller, appChannel;
+    appChannel = msgBus.appChannel;
     return Controller = (function(superClass) {
       extend(Controller, superClass);
 
@@ -13,16 +14,12 @@
       }
 
       Controller.prototype.initialize = function() {
-        var author, footerView;
-        author = msgBus.reqres.request("get:authorModel:info");
-        footerView = this.getFooterView(author);
-        return this.show(footerView);
-      };
-
-      Controller.prototype.getFooterView = function(model) {
-        return new View.ItemView({
-          model: model
-        });
+        var footerView, options;
+        options = {
+          model: Author
+        };
+        footerView = new View.FooterView(options);
+        return footerView.render();
       };
 
       return Controller;

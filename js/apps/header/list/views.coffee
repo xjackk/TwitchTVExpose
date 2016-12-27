@@ -28,9 +28,6 @@ define ["marionette", 'apps/header/list/templates', 'entities/header', 'entities
                 replaceElement: true
 
         onRender: ->
-            console.log appState
-            console.log menuCollection
-
             @showChildView "menuRegion", new MenuItemsView
                 collection: menuCollection
             @showChildView "loginRegion", new LoginView

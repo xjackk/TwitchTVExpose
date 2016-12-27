@@ -73,8 +73,6 @@
         };
 
         HeaderLayout.prototype.onRender = function() {
-          console.log(appState);
-          console.log(menuCollection);
           this.showChildView("menuRegion", new MenuItemsView({
             collection: menuCollection
           }));

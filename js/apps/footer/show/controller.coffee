@@ -1,13 +1,11 @@
 # footer_app controller
-define ["msgbus","apps/footer/show/views", "controller/_base"], (msgBus, View, AppController) ->
+define ["msgbus","apps/footer/show/views", "controller/_base", 'entities/author'], (msgBus, View, AppController, Author) ->
+    appChannel = msgBus.appChannel
 
     class Controller extends AppController
         initialize:->
-            author = msgBus.reqres.request "get:authorModel:info"
-            #console.log author
-            footerView = @getFooterView author
-            @show footerView
+            options =
+                model: Author
 
-        getFooterView: (model) ->
-            new View.ItemView
-                model: model
+            footerView = new View.FooterView options 
+            footerView.render()

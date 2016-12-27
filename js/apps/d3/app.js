@@ -4,7 +4,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(["msgbus", "marionette", "apps/d3/list/controller"], function(msgBus, Marionette, Controller) {
-    var API, Router;
+    var API, Router, appChannel;
+    appChannel = msgBus.appChannel;
     Router = (function(superClass) {
       extend(Router, superClass);
 
@@ -24,7 +25,7 @@
         return new Controller;
       }
     };
-    return msgBus.commands.setHandler("start:d3:app", function() {
+    return appChannel.on("start:d3:app", function() {
       return new Router({
         controller: API
       });

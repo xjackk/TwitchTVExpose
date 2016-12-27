@@ -7,23 +7,26 @@ define ['apps/games/list/templates', 'marionette', 'views/bubble'], (Templates, 
         triggers:
             "click" : "game:item:clicked"
 
-    class TopGameList extends Mn.CollectionView
-        #template: _.template(Templates.gameslist)
-        tagName: "ul"
+
+    TopGameList: class TopGameList extends Mn.CollectionView
         childView: GameItem
-        #id: "gamelist"
-        #itemViewContainer: "#gameitems"
+        tagName: "ul"
+        className: "list-inline"
 
         events:
             "scroll": "checkScroll"
 
         checkScroll: (e) =>
+            console.log e
             virtualHeight = @$("> div").height()    #important this div must have css height: 100% to enable calculattion of virtual height scroll
+            console.log virtualHeight
+
             scrollTop = @$el.scrollTop() + @$el.height()
             margin = 200
             #console.log "virtualHeight:", virtualHeight, "scrollTop:", scrollTop, "elHeight", @$el.height()
             if ((scrollTop + margin) >= virtualHeight)
                 @trigger "scroll:more"
+
 
     GamesBubbleView: class GamesBubbleView extends Mn.View
         template: _.template(Templates.gamesbubble)
@@ -39,15 +42,17 @@ define ['apps/games/list/templates', 'marionette', 'views/bubble'], (Templates, 
     Layout: class GamesLayout extends Mn.View
         template: _.template(Templates.layout)
         regions:
-            topGameList:  "ul#topgames"
+            topGameList:
+                el:  "ul"
+                replaceElement: true
 
         ui:
             btnBubble:  "button.bubble"
             btnGrid:    "button.grid"
         
         triggers:
-            "click @ui.btnBubble": "show:bubble"
-            "click @ui.btnGrid": "show"
+            "click @ui.btnBubble":  "show:bubble"
+            "click @ui.btnGrid":    "show:grid"
 
         onRender:->
             @showChildView "topGameList", new TopGameList

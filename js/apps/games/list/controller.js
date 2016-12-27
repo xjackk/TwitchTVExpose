@@ -24,6 +24,11 @@
           collection: this.entities
         };
         this.layout = this.getLayoutView(data);
+        this.listenTo(this.layout, "show:grid", (function(_this) {
+          return function() {
+            return _this.gameRegion(_this.entities);
+          };
+        })(this));
         this.listenTo(this.layout, "show:bubble", (function(_this) {
           return function() {
             return _this.gameBubbleRegion(_this.entities);
@@ -36,9 +41,9 @@
         });
       };
 
-      Controller.prototype.gameRegion = function() {
+      Controller.prototype.gameRegion = function(games) {
         var view;
-        view = this.getGameView(this.entities);
+        view = this.getGameView(games);
         this.listenTo(view, "childview:game:item:clicked", function(child, args) {
           return appChannel.trigger("app:game:detail", args.model);
         });
@@ -56,6 +61,12 @@
 
       Controller.prototype.getBubbleView = function(collection) {
         return new Views.GamesBubbleView({
+          collection: collection
+        });
+      };
+
+      Controller.prototype.getGameView = function(collection) {
+        return new Views.TopGameList({
           collection: collection
         });
       };

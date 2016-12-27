@@ -26,36 +26,40 @@
       return GameItem;
 
     })(Mn.View);
-    TopGameList = (function(superClass) {
-      extend(TopGameList, superClass);
-
-      function TopGameList() {
-        this.checkScroll = bind(this.checkScroll, this);
-        return TopGameList.__super__.constructor.apply(this, arguments);
-      }
-
-      TopGameList.prototype.tagName = "ul";
-
-      TopGameList.prototype.childView = GameItem;
-
-      TopGameList.prototype.events = {
-        "scroll": "checkScroll"
-      };
-
-      TopGameList.prototype.checkScroll = function(e) {
-        var margin, scrollTop, virtualHeight;
-        virtualHeight = this.$("> div").height();
-        scrollTop = this.$el.scrollTop() + this.$el.height();
-        margin = 200;
-        if ((scrollTop + margin) >= virtualHeight) {
-          return this.trigger("scroll:more");
-        }
-      };
-
-      return TopGameList;
-
-    })(Mn.CollectionView);
     return {
+      TopGameList: TopGameList = (function(superClass) {
+        extend(TopGameList, superClass);
+
+        function TopGameList() {
+          this.checkScroll = bind(this.checkScroll, this);
+          return TopGameList.__super__.constructor.apply(this, arguments);
+        }
+
+        TopGameList.prototype.childView = GameItem;
+
+        TopGameList.prototype.tagName = "ul";
+
+        TopGameList.prototype.className = "list-inline";
+
+        TopGameList.prototype.events = {
+          "scroll": "checkScroll"
+        };
+
+        TopGameList.prototype.checkScroll = function(e) {
+          var margin, scrollTop, virtualHeight;
+          console.log(e);
+          virtualHeight = this.$("> div").height();
+          console.log(virtualHeight);
+          scrollTop = this.$el.scrollTop() + this.$el.height();
+          margin = 200;
+          if ((scrollTop + margin) >= virtualHeight) {
+            return this.trigger("scroll:more");
+          }
+        };
+
+        return TopGameList;
+
+      })(Mn.CollectionView),
       GamesBubbleView: GamesBubbleView = (function(superClass) {
         extend(GamesBubbleView, superClass);
 
@@ -89,7 +93,10 @@
         GamesLayout.prototype.template = _.template(Templates.layout);
 
         GamesLayout.prototype.regions = {
-          topGameList: "ul#topgames"
+          topGameList: {
+            el: "ul",
+            replaceElement: true
+          }
         };
 
         GamesLayout.prototype.ui = {
@@ -99,7 +106,7 @@
 
         GamesLayout.prototype.triggers = {
           "click @ui.btnBubble": "show:bubble",
-          "click @ui.btnGrid": "show"
+          "click @ui.btnGrid": "show:grid"
         };
 
         GamesLayout.prototype.onRender = function() {

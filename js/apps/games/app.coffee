@@ -1,4 +1,4 @@
-define ["msgbus", "marionette", "backbone", "apps/games/list/controller","apps/games/detail/controller","entities/appstate","entities/twitchtv"],
+define ["msgbus", "marionette", "backbone", "apps/games/list/controller","apps/games/detail/controller","entities/appstate"],
 (msgBus, Marionette, Backbone, ListController, DetailController, AppState) ->
     appChannel = msgBus.appChannel
 

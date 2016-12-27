@@ -9,7 +9,6 @@
       function BubbleChart(data, el, width, height) {
         this.select_details = bind(this.select_details, this);
         this.hide_details = bind(this.hide_details, this);
-        this.show_details = bind(this.show_details, this);
         this.display = bind(this.display, this);
         this.start = bind(this.start, this);
         this.create_vis = bind(this.create_vis, this);

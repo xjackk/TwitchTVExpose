@@ -34,6 +34,7 @@
             return _this.gameBubbleRegion(_this.entities);
           };
         })(this));
+        this.listenTo(this.layout, "childview:game:item:clicked", function(cv) {});
         return this.show(this.layout, {
           loading: {
             entities: this.entities
@@ -44,9 +45,6 @@
       Controller.prototype.gameRegion = function(games) {
         var view;
         view = this.getGameView(games);
-        this.listenTo(view, "childview:game:item:clicked", function(child, args) {
-          return appChannel.trigger("app:game:detail", args.model);
-        });
         this.listenTo(view, "scroll:more", function() {
           return appChannel.request("games:fetchmore");
         });

@@ -114,7 +114,7 @@ define ['underscore', 'msgbus', 'd3' ], (_, msgBus) ->
                 d.x = d.x + (@center.x - d.x) * (@damper + 0.02) * alpha
                 d.y = d.y + (@center.y - d.y) * (@damper + 0.02) * alpha
 
-        show_details: (data, i, element) =>
+        show_details: (data, i, element) ->
             d3.select(element).style("stroke", "black")
             bubble=$("#bub#{data.id}")
             options =

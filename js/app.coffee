@@ -22,7 +22,7 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
                 match = /access_token/i.test frag # calling back into our app from twitch sign-in
                 if match
                     # NEW, find the token as the string between '=','&'
-                    # IE: http://twitchtvexpose.herokuapp.com/#access_token=a;ajf;aljf;adljkf;flajf&scope=xyz 
+                    # IE: http://twitchtvexpose.herokuapp.com/#access_token=a;ajf;aljf;adljkf;flajf&scope=xyz
                     appstate.set "accessToken",  frag.split(/[=&]/)[1]  #was frag.split("=")[1]  but the return now includes &scopes... after access_token
                     appstate.set "authState": true
                     Backbone.history.navigate "#games", trigger: true

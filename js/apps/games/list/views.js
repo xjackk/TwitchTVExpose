@@ -4,8 +4,9 @@
     hasProp = {}.hasOwnProperty,
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['apps/games/list/templates', 'marionette', 'views/bubble'], function(Templates, Mn, BubbleChart) {
-    var GameItem, GamesBubbleView, GamesLayout, TopGameList;
+  define(['msgbus', 'apps/games/list/templates', 'marionette', 'views/bubble'], function(msgBus, Templates, Mn, BubbleChart) {
+    var GameItem, GamesBubbleView, GamesLayout, TopGameList, appChannel;
+    appChannel = msgBus.appChannel;
     GameItem = (function(superClass) {
       extend(GameItem, superClass);
 
@@ -40,6 +41,12 @@
         TopGameList.prototype.tagName = "ul";
 
         TopGameList.prototype.className = "list-inline";
+
+        TopGameList.prototype.childViewEvents = {
+          'game:item:clicked': function(cv) {
+            return appChannel.trigger("app:game:detail", cv.model);
+          }
+        };
 
         TopGameList.prototype.events = {
           "scroll": "checkScroll"
@@ -107,6 +114,10 @@
         GamesLayout.prototype.triggers = {
           "click @ui.btnBubble": "show:bubble",
           "click @ui.btnGrid": "show:grid"
+        };
+
+        GamesLayout.prototype.onShowGrid = function() {
+          return console.log("showGrid!");
         };
 
         GamesLayout.prototype.onRender = function() {

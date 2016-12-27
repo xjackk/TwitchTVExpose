@@ -13,10 +13,13 @@ define ["msgbus", "apps/games/list/views", "controller/_base","entities/twitchtv
             @layout = @getLayoutView data
 
             @listenTo @layout, "show:grid", =>
-               @gameRegion @entities
+                @gameRegion @entities
 
             @listenTo @layout, "show:bubble", =>
                 @gameBubbleRegion @entities
+
+            @listenTo @layout, "childview:game:item:clicked", (cv) ->  # listen to events from itemview (we've overridden the eventnamePrefix to childview)
+
 
             @show @layout,
                 loading:
@@ -24,8 +27,8 @@ define ["msgbus", "apps/games/list/views", "controller/_base","entities/twitchtv
 
         gameRegion:  (games) ->
             view = @getGameView games
-            @listenTo view, "childview:game:item:clicked", (child, args) ->  # listen to events from itemview (we've overridden the eventnamePrefix to childview)
-                appChannel.trigger "app:game:detail", args.model
+            #@listenTo view, "childview:game:item:clicked", (child, args) ->  # listen to events from itemview (we've overridden the eventnamePrefix to childview)
+            #    appChannel.trigger "app:game:detail", args.model
 
             @listenTo view, "scroll:more", ->
                 appChannel.request "games:fetchmore"

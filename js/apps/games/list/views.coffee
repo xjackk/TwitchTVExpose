@@ -1,4 +1,5 @@
-define ['apps/games/list/templates', 'marionette', 'views/bubble'], (Templates, Mn, BubbleChart) ->
+define ['msgbus', 'apps/games/list/templates', 'marionette', 'views/bubble'], (msgBus, Templates, Mn, BubbleChart) ->
+    appChannel = msgBus.appChannel
 
     class GameItem extends Mn.View
         template: _.template(Templates.gameitem)
@@ -12,6 +13,9 @@ define ['apps/games/list/templates', 'marionette', 'views/bubble'], (Templates, 
         childView: GameItem
         tagName: "ul"
         className: "list-inline"
+        childViewEvents:
+            'game:item:clicked': (cv)->
+                appChannel.trigger "app:game:detail", cv.model
 
         events:
             "scroll": "checkScroll"
@@ -54,6 +58,8 @@ define ['apps/games/list/templates', 'marionette', 'views/bubble'], (Templates, 
             "click @ui.btnBubble":  "show:bubble"
             "click @ui.btnGrid":    "show:grid"
 
+        onShowGrid:->
+            console.log "showGrid!"
         onRender:->
             @showChildView "topGameList", new TopGameList
                 collection: @collection

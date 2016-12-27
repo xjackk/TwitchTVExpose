@@ -15,7 +15,8 @@
       if (options == null) {
         options = {};
       }
-      return appChannel.trigger("start:about:app");
+      appChannel.trigger("start:about:app");
+      return appChannel.trigger("start:header:app");
     });
     app.on("start", function(options) {
       var appstate, frag, match;
@@ -36,7 +37,6 @@
             });
           }
         } else {
-          appstate.set("loginStatus", false);
           if (this.getCurrentRoute() === null) {
             return this.navigate(this.rootRoute, {
               trigger: true

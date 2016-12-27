@@ -3,69 +3,89 @@
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(['apps/header/list/templates', 'views/_base'], function(Templates, AppView) {
-    var Header, ListHeaders, Loginview, _itemview;
-    _itemview = (function(superClass) {
-      extend(_itemview, superClass);
+  define(["marionette", 'apps/header/list/templates', 'entities/header', 'entities/appstate'], function(Mn, Templates, menuCollection, appState) {
+    var HeaderLayout, LoginView, MenuItemsView, MenuView;
+    MenuView = (function(superClass) {
+      extend(MenuView, superClass);
 
-      function _itemview() {
-        return _itemview.__super__.constructor.apply(this, arguments);
+      function MenuView() {
+        return MenuView.__super__.constructor.apply(this, arguments);
       }
 
-      _itemview.prototype.template = _.template(Templates.item);
+      MenuView.prototype.template = _.template(Templates.item);
 
-      _itemview.prototype.tagName = "li";
+      MenuView.prototype.tagName = "li";
 
-      return _itemview;
+      return MenuView;
 
-    })(AppView.ItemView);
+    })(Mn.View);
+    LoginView = (function(superClass) {
+      extend(LoginView, superClass);
+
+      function LoginView() {
+        return LoginView.__super__.constructor.apply(this, arguments);
+      }
+
+      LoginView.prototype.template = _.template(Templates.login);
+
+      LoginView.prototype.el = "#login";
+
+      return LoginView;
+
+    })(Mn.View);
+    MenuItemsView = (function(superClass) {
+      extend(MenuItemsView, superClass);
+
+      function MenuItemsView() {
+        return MenuItemsView.__super__.constructor.apply(this, arguments);
+      }
+
+      MenuItemsView.prototype.tagName = "ul";
+
+      MenuItemsView.prototype.className = "navbar nav";
+
+      MenuItemsView.prototype.childView = MenuView;
+
+      return MenuItemsView;
+
+    })(Mn.CollectionView);
     return {
-      LoginView: Loginview = (function(superClass) {
-        extend(Loginview, superClass);
+      Layout: HeaderLayout = (function(superClass) {
+        extend(HeaderLayout, superClass);
 
-        function Loginview() {
-          return Loginview.__super__.constructor.apply(this, arguments);
+        function HeaderLayout() {
+          return HeaderLayout.__super__.constructor.apply(this, arguments);
         }
 
-        Loginview.prototype.template = _.template(Templates.login);
+        HeaderLayout.prototype.el = "#header-region";
 
-        Loginview.prototype.el = "#login";
+        HeaderLayout.prototype.template = _.template(Templates.header);
 
-        return Loginview;
-
-      })(AppView.ItemView),
-      HeaderView: ListHeaders = (function(superClass) {
-        extend(ListHeaders, superClass);
-
-        function ListHeaders() {
-          return ListHeaders.__super__.constructor.apply(this, arguments);
-        }
-
-        ListHeaders.prototype.template = _.template(Templates.header);
-
-        ListHeaders.prototype.itemView = _itemview;
-
-        ListHeaders.prototype.itemViewContainer = "ul";
-
-        return ListHeaders;
-
-      })(AppView.CompositeView),
-      Layout: Header = (function(superClass) {
-        extend(Header, superClass);
-
-        function Header() {
-          return Header.__super__.constructor.apply(this, arguments);
-        }
-
-        Header.prototype.template = _.template(Templates.layout);
-
-        Header.prototype.regions = {
-          listRegion: "#list-region"
+        HeaderLayout.prototype.regions = {
+          menuRegion: {
+            el: "#mainmenu",
+            replaceElement: true
+          },
+          loginRegion: {
+            el: "#login",
+            replaceElement: true
+          }
         };
 
-        return Header;
+        HeaderLayout.prototype.onRender = function() {
+          console.log(appState);
+          console.log(menuCollection);
+          this.showChildView("menuRegion", new MenuItemsView({
+            collection: menuCollection
+          }));
+          return this.showChildView("loginRegion", new LoginView({
+            model: appState
+          }));
+        };
 
-      })(AppView.Layout)
+        return HeaderLayout;
+
+      })(Mn.View)
     };
   });
 

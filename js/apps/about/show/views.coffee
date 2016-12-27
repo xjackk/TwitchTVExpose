@@ -1,4 +1,4 @@
-define ["marionette" "apps/about/show/templates"], (Mn, Templates) ->
+define ["marionette", "apps/about/show/templates"], (Mn, Templates) ->
 
     class BookRowView extends Mn.View
         template: _.template(Templates.bookItem)

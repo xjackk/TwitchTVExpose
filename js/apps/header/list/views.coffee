@@ -1,20 +1,37 @@
 # list header views
-define ['apps/header/list/templates', 'views/_base'], (Templates, AppView) ->
-
-    class _itemview extends AppView.ItemView
+define ["marionette", 'apps/header/list/templates', 'entities/header', 'entities/appstate' ], (Mn, Templates, menuCollection, appState) ->
+    class MenuView extends Mn.View
         template: _.template(Templates.item)
         tagName: "li"
 
-    LoginView: class Loginview extends AppView.ItemView
+    class LoginView extends Mn.View
         template: _.template(Templates.login)
         el: "#login"
 
-    HeaderView: class ListHeaders extends AppView.CompositeView
-        template: _.template(Templates.header)
-        itemView: _itemview
-        itemViewContainer: "ul"
 
-    Layout: class Header extends AppView.Layout
-        template: _.template(Templates.layout)
+    class MenuItemsView extends Mn.CollectionView
+        tagName: "ul"
+        className: "navbar nav"
+        childView: MenuView
+
+
+    Layout: class HeaderLayout extends Mn.View
+        el: "#header-region"
+        template: _.template(Templates.header)
         regions:
-            listRegion: "#list-region"
+            menuRegion: 
+                el: "#mainmenu"
+                replaceElement: true
+
+            loginRegion: 
+                el: "#login"
+                replaceElement: true
+
+        onRender: ->
+            console.log appState
+            console.log menuCollection
+
+            @showChildView "menuRegion", new MenuItemsView
+                collection: menuCollection
+            @showChildView "loginRegion", new LoginView
+                model: appState

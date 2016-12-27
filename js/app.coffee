@@ -5,20 +5,18 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
     app = new Marionette.Application
         region: "#main-region"
 
-
     app.rootRoute = "about"
     app.authRoute = "games"
 
 
+    # default region to show views....
     appChannel.reply "default:region", ->
         app.getRegion()
 
 
     app.on "before:start" , (options={})->
         appChannel.trigger "start:about:app"
-
-        
-        #appChannel.trigger "start:header:app"
+        appChannel.trigger "start:header:app"
         #msgBus.commands.execute "start:footer:app"
         #sgBus.commands.execute "start:d3:app"
         #msgBus.commands.execute "start:about:app"
@@ -44,7 +42,7 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
                 #@navigate @authRoute, trigger: true
                 @navigate @rootRoute, trigger: true if @getCurrentRoute() is null
             else
-                appstate.set "loginStatus", false
+                #appstate.set "loginStatus", false
                 @navigate @rootRoute, trigger: true if @getCurrentRoute() is null
 
    

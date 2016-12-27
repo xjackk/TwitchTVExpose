@@ -1,6 +1,6 @@
 # preload all apps here
 define [
- #"apps/header/app",
+ "apps/header/app",
  #"apps/footer/app",
  #"apps/games/app",
  #"apps/d3/app",

@@ -1,8 +1,8 @@
-define ["entities/_backbone", "msgbus"], (_Backbone, msgBus ) ->
+define ["backbone", "msgbus"], (Backbone, msgBus ) ->
     appChannel = msgBus.appChannel
 
 
-    class AppState extends _Backbone.Model
+    class AppState extends Backbone.Model
         defaults:
             #clientId: "hqxyqc9bf41e6grm6txrsdcwncoxavz" # this is the JackApp clientId
             clientId: "x77jaxed6gmro98hgmv3poxrzf9dty"  # newly created to point back to http://localhost:3000

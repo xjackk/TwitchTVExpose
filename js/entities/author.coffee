@@ -1,6 +1,6 @@
-define ["entities/_backbone", "msgbus",], (_Backbone, msgBus ) ->
+define ["backbone", "msgbus",], (Backbone, msgBus ) ->
 
-    class Author extends _Backbone.Model
+    class Author extends Backbone.Model
         defaults:
             fullName: "Jack Killilea"
             twitter: "https://www.twitter.com/jack_killilea"

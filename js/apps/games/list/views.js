@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty,
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['apps/games/list/templates', 'views/_base', 'msgbus', 'views/bubble'], function(Templates, AppView, msgBus, BubbleChart) {
+  define(['apps/games/list/templates', 'marionette', 'views/bubble'], function(Templates, Mn, BubbleChart) {
     var GameItem, GamesBubbleView, GamesLayout, TopGameList;
     GameItem = (function(superClass) {
       extend(GameItem, superClass);
@@ -25,41 +25,37 @@
 
       return GameItem;
 
-    })(AppView.ItemView);
-    return {
-      TopGameList: TopGameList = (function(superClass) {
-        extend(TopGameList, superClass);
+    })(Mn.View);
+    TopGameList = (function(superClass) {
+      extend(TopGameList, superClass);
 
-        function TopGameList() {
-          this.checkScroll = bind(this.checkScroll, this);
-          return TopGameList.__super__.constructor.apply(this, arguments);
+      function TopGameList() {
+        this.checkScroll = bind(this.checkScroll, this);
+        return TopGameList.__super__.constructor.apply(this, arguments);
+      }
+
+      TopGameList.prototype.tagName = "ul";
+
+      TopGameList.prototype.childView = GameItem;
+
+      TopGameList.prototype.events = {
+        "scroll": "checkScroll"
+      };
+
+      TopGameList.prototype.checkScroll = function(e) {
+        var margin, scrollTop, virtualHeight;
+        virtualHeight = this.$("> div").height();
+        scrollTop = this.$el.scrollTop() + this.$el.height();
+        margin = 200;
+        if ((scrollTop + margin) >= virtualHeight) {
+          return this.trigger("scroll:more");
         }
+      };
 
-        TopGameList.prototype.template = _.template(Templates.gameslist);
+      return TopGameList;
 
-        TopGameList.prototype.itemView = GameItem;
-
-        TopGameList.prototype.id = "gamelist";
-
-        TopGameList.prototype.itemViewContainer = "#gameitems";
-
-        TopGameList.prototype.events = {
-          "scroll": "checkScroll"
-        };
-
-        TopGameList.prototype.checkScroll = function(e) {
-          var margin, scrollTop, virtualHeight;
-          virtualHeight = this.$("> div").height();
-          scrollTop = this.$el.scrollTop() + this.$el.height();
-          margin = 200;
-          if ((scrollTop + margin) >= virtualHeight) {
-            return this.trigger("scroll:more");
-          }
-        };
-
-        return TopGameList;
-
-      })(AppView.CompositeView),
+    })(Mn.CollectionView);
+    return {
       GamesBubbleView: GamesBubbleView = (function(superClass) {
         extend(GamesBubbleView, superClass);
 
@@ -71,10 +67,10 @@
 
         GamesBubbleView.prototype.id = "gamesbubble";
 
-        GamesBubbleView.prototype.onShow = function() {
+        GamesBubbleView.prototype.onDomRefresh = function() {
           var $height, $width;
-          $width = this.$el.outerWidth(false);
-          $height = Math.floor($width * 9 / 16);
+          $width = this.$el.outerWidth(true);
+          $height = Math.floor($width * 10 / 16);
           this.chart = new BubbleChart(this.collection, this.el, $width, $height);
           this.chart.start();
           return this.chart.display();
@@ -82,7 +78,7 @@
 
         return GamesBubbleView;
 
-      })(AppView.ItemView),
+      })(Mn.View),
       Layout: GamesLayout = (function(superClass) {
         extend(GamesLayout, superClass);
 
@@ -93,25 +89,28 @@
         GamesLayout.prototype.template = _.template(Templates.layout);
 
         GamesLayout.prototype.regions = {
-          gameRegion: "#game-region"
+          topGameList: "ul#topgames"
         };
 
-        GamesLayout.prototype.events = {
-          "click .bubble": "bubble",
-          "click .grid": "grid"
+        GamesLayout.prototype.ui = {
+          btnBubble: "button.bubble",
+          btnGrid: "button.grid"
         };
 
-        GamesLayout.prototype.bubble = function() {
-          return this.trigger("show:bubble");
+        GamesLayout.prototype.triggers = {
+          "click @ui.btnBubble": "show:bubble",
+          "click @ui.btnGrid": "show"
         };
 
-        GamesLayout.prototype.grid = function() {
-          return this.trigger("show");
+        GamesLayout.prototype.onRender = function() {
+          return this.showChildView("topGameList", new TopGameList({
+            collection: this.collection
+          }));
         };
 
         return GamesLayout;
 
-      })(AppView.Layout)
+      })(Mn.View)
     };
   });
 

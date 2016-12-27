@@ -28,7 +28,7 @@
 
       LoginView.prototype.template = _.template(Templates.login);
 
-      LoginView.prototype.el = "#login";
+      LoginView.prototype.tagName = "strong";
 
       return LoginView;
 
@@ -66,10 +66,7 @@
             el: "ul",
             replaceElement: true
           },
-          loginRegion: {
-            el: "#login",
-            replaceElement: true
-          }
+          loginRegion: "#login"
         };
 
         HeaderLayout.prototype.onRender = function() {

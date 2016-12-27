@@ -15,8 +15,8 @@
 
       AppState.prototype.defaults = {
         clientId: "x77jaxed6gmro98hgmv3poxrzf9dty",
-        accessToken: "n/a",
-        loginStatus: false,
+        accessToken: null,
+        authState: null,
         uri: "http://localhost:3000"
       };
 

@@ -1,17 +1,18 @@
-define ['apps/games/list/templates', 'views/_base', 'msgbus', 'views/bubble'], (Templates, AppView, msgBus, BubbleChart) ->
+define ['apps/games/list/templates', 'marionette', 'views/bubble'], (Templates, Mn, BubbleChart) ->
 
-    class GameItem extends AppView.ItemView
+    class GameItem extends Mn.View
         template: _.template(Templates.gameitem)
         tagName: "li"
         className: "col-md-2 col-sm-4 col-xs-12 game"
         triggers:
             "click" : "game:item:clicked"
 
-    TopGameList: class TopGameList extends AppView.CompositeView
-        template: _.template(Templates.gameslist)
-        itemView: GameItem
-        id: "gamelist"
-        itemViewContainer: "#gameitems"
+    class TopGameList extends Mn.CollectionView
+        #template: _.template(Templates.gameslist)
+        tagName: "ul"
+        childView: GameItem
+        #id: "gamelist"
+        #itemViewContainer: "#gameitems"
 
         events:
             "scroll": "checkScroll"
@@ -24,28 +25,40 @@ define ['apps/games/list/templates', 'views/_base', 'msgbus', 'views/bubble'], (
             if ((scrollTop + margin) >= virtualHeight)
                 @trigger "scroll:more"
 
-    GamesBubbleView: class GamesBubbleView extends AppView.ItemView
+    GamesBubbleView: class GamesBubbleView extends Mn.View
         template: _.template(Templates.gamesbubble)
         id: "gamesbubble"
 
-        onShow: ->
-            $width 	= @$el.outerWidth(false)
-            $height = Math.floor $width * 9 / 16
+        onDomRefresh: ->
+            $width 	= @$el.outerWidth(true)
+            $height = Math.floor $width * 10 / 16
             @chart = new BubbleChart @collection, @el, $width, $height
             @chart.start()
             @chart.display()
 
-    Layout: class GamesLayout extends AppView.Layout
+    Layout: class GamesLayout extends Mn.View
         template: _.template(Templates.layout)
         regions:
-            gameRegion:  "#game-region"
+            topGameList:  "ul#topgames"
 
-        events:
-                "click .bubble":    "bubble"
-                "click .grid":      "grid"
+        ui:
+            btnBubble:  "button.bubble"
+            btnGrid:    "button.grid"
+        
+        triggers:
+            "click @ui.btnBubble": "show:bubble"
+            "click @ui.btnGrid": "show"
 
-        bubble:->
-            @trigger "show:bubble"
+        onRender:->
+            @showChildView "topGameList", new TopGameList
+                collection: @collection
 
-        grid:->
-            @trigger "show"
+        #events:
+        #        "click button.bubble":    "bubble"
+        #        "click button.grid":      "grid"
+
+        #bubble:->
+        #    @trigger "show:bubble"
+
+        #grid:->
+        #    @trigger "show"

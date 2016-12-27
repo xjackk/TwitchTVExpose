@@ -4,48 +4,45 @@
     var app, appChannel;
     appChannel = msgBus.appChannel;
     app = new Marionette.Application({
-      region: "#main-region"
-    });
-    app.rootRoute = "about";
-    app.authRoute = "games";
-    appChannel.reply("default:region", function() {
-      return app.getRegion();
-    });
-    app.on("before:start", function(options) {
-      if (options == null) {
-        options = {};
-      }
-      appChannel.trigger("start:about:app");
-      appChannel.trigger("start:header:app");
-      appChannel.trigger("start:footer:app");
-      return appChannel.trigger("start:d3:app");
-    });
-    app.on("start", function(options) {
-      var appstate, frag, match;
-      if (options == null) {
-        options = {};
-      }
-      appstate = appChannel.request("get:current:appstate");
-      if (Backbone.history) {
-        Backbone.history.start();
-        frag = Backbone.history.fragment;
-        match = /access_token/i.test(frag);
-        if (match) {
-          appstate.set("accessToken", frag.split(/[=&]/)[1]);
-          appstate.set("loginStatus", true);
-          if (this.getCurrentRoute() === null) {
-            return this.navigate(this.rootRoute, {
+      region: "#main-region",
+      onBeforeStart: function(options) {
+        if (options == null) {
+          options = {};
+        }
+        appChannel.trigger("start:about:app");
+        appChannel.trigger("start:header:app");
+        appChannel.trigger("start:footer:app");
+        appChannel.trigger("start:games:app");
+        return appChannel.trigger("start:d3:app");
+      },
+      onStart: function() {
+        var appstate, frag, match;
+        appstate = appChannel.request("get:current:appstate");
+        if (Backbone.history) {
+          Backbone.history.start();
+          frag = Backbone.history.fragment;
+          match = /access_token/i.test(frag);
+          if (match) {
+            appstate.set("accessToken", frag.split(/[=&]/)[1]);
+            appstate.set({
+              "authState": true
+            });
+            return Backbone.history.navigate("#games", {
               trigger: true
             });
-          }
-        } else {
-          if (this.getCurrentRoute() === null) {
-            return this.navigate(this.rootRoute, {
+          } else {
+            appstate.set({
+              "authState": false
+            });
+            return Backbone.history.navigate("#about", {
               trigger: true
             });
           }
         }
       }
+    });
+    appChannel.reply("default:region", function() {
+      return app.getRegion();
     });
     return app;
   });

@@ -3,7 +3,7 @@
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(['apps/games/detail/templates', 'views/_base', 'msgbus'], function(Templates, AppView, msgBus) {
+  define(['apps/games/detail/templates', 'marionette', 'msgbus'], function(Templates, Mn, msgBus) {
     var GameDetail, GamesLayout;
     return {
       Detail: GameDetail = (function(superClass) {
@@ -19,7 +19,7 @@
 
         return GameDetail;
 
-      })(AppView.ItemView),
+      })(Mn.View),
       Layout: GamesLayout = (function(superClass) {
         extend(GamesLayout, superClass);
 
@@ -36,7 +36,7 @@
 
         return GamesLayout;
 
-      })(AppView.Layout)
+      })(Mn.View)
     };
   });
 

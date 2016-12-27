@@ -3,8 +3,9 @@
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(["msgbus", "apps/games/list/views", "controller/_base", "backbone"], function(msgBus, Views, AppController, Backbone) {
-    var Controller;
+  define(["msgbus", "apps/games/list/views", "controller/_base", "entities/twitchtv"], function(msgBus, Views, AppController) {
+    var Controller, appChannel;
+    appChannel = msgBus.appChannel;
     return Controller = (function(superClass) {
       extend(Controller, superClass);
 
@@ -13,19 +14,19 @@
       }
 
       Controller.prototype.initialize = function(options) {
+        var data;
         if (options == null) {
           options = {};
         }
-        this.entities = msgBus.reqres.request("games:top:entities");
-        this.layout = this.getLayoutView();
-        this.listenTo(this.layout, "show", (function(_this) {
-          return function() {
-            return _this.gameRegion();
-          };
-        })(this));
+        this.entities = appChannel.request("games:top:entities");
+        console.log(this.entities);
+        data = {
+          collection: this.entities
+        };
+        this.layout = this.getLayoutView(data);
         this.listenTo(this.layout, "show:bubble", (function(_this) {
           return function() {
-            return _this.gameBubbleRegion();
+            return _this.gameBubbleRegion(_this.entities);
           };
         })(this));
         return this.show(this.layout, {
@@ -39,18 +40,18 @@
         var view;
         view = this.getGameView(this.entities);
         this.listenTo(view, "childview:game:item:clicked", function(child, args) {
-          return msgBus.events.trigger("app:game:detail", args.model);
+          return appChannel.trigger("app:game:detail", args.model);
         });
         this.listenTo(view, "scroll:more", function() {
-          return msgBus.reqres.request("games:fetchmore");
+          return appChannel.request("games:fetchmore");
         });
-        return this.layout.gameRegion.show(view);
+        return this.layout.getRegion("topGameList").show(view);
       };
 
-      Controller.prototype.gameBubbleRegion = function() {
+      Controller.prototype.gameBubbleRegion = function(collection) {
         var view;
         view = this.getBubbleView(this.entities);
-        return this.layout.gameRegion.show(view);
+        return this.layout.getRegion("topGameList").show(view);
       };
 
       Controller.prototype.getBubbleView = function(collection) {
@@ -59,14 +60,11 @@
         });
       };
 
-      Controller.prototype.getGameView = function(collection) {
-        return new Views.TopGameList({
-          collection: collection
-        });
-      };
-
-      Controller.prototype.getLayoutView = function() {
-        return new Views.Layout;
+      Controller.prototype.getLayoutView = function(options) {
+        if (options == null) {
+          options = {};
+        }
+        return new Views.Layout(options);
       };
 
       return Controller;

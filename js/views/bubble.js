@@ -3,7 +3,8 @@
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   define(['underscore', 'msgbus', 'd3'], function(_, msgBus) {
-    var BubbleChart;
+    var BubbleChart, appChannel;
+    appChannel = msgBus.appChannel;
     return BubbleChart = (function() {
       function BubbleChart(data, el, width, height) {
         this.select_details = bind(this.select_details, this);
@@ -148,7 +149,7 @@
 
       BubbleChart.prototype.select_details = function(data, i, element) {
         this.hide_details(data, i, element);
-        return msgBus.events.trigger("app:game:detail", data.model);
+        return appChannel.trigger("app:game:detail", data.model);
       };
 
       return BubbleChart;

@@ -6,7 +6,7 @@ define ["marionette", 'apps/header/list/templates', 'entities/header', 'entities
 
     class LoginView extends Mn.View
         template: _.template(Templates.login)
-        el: "#login"
+        tagName: "strong"
 
 
     class MenuItemsView extends Mn.CollectionView
@@ -23,9 +23,9 @@ define ["marionette", 'apps/header/list/templates', 'entities/header', 'entities
                 el: "ul"
                 replaceElement: true
 
-            loginRegion: 
-                el: "#login"
-                replaceElement: true
+            loginRegion: "#login"
+                #el: "#login"
+                #replaceElement: true
 
         onRender: ->
             @showChildView "menuRegion", new MenuItemsView

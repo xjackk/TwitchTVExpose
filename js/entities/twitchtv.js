@@ -3,8 +3,9 @@
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(["entities/_backbone", "msgbus"], function(_Backbone, msgBus) {
-    var API, Game, GamesCollection, SearchCollection, SearchStreams, Stream, StreamCollection, StreamGet, games;
+  define(["backbone", "msgbus"], function(Backbone, msgBus) {
+    var API, Game, GamesCollection, SearchCollection, SearchStreams, Stream, StreamCollection, StreamGet, appChannel, games;
+    appChannel = msgBus.appChannel;
     Game = (function(superClass) {
       extend(Game, superClass);
 
@@ -14,7 +15,7 @@
 
       return Game;
 
-    })(_Backbone.Model);
+    })(Backbone.Model);
     Stream = (function(superClass) {
       extend(Stream, superClass);
 
@@ -24,7 +25,7 @@
 
       return Stream;
 
-    })(_Backbone.Model);
+    })(Backbone.Model);
     StreamGet = (function(superClass) {
       extend(StreamGet, superClass);
 
@@ -38,7 +39,7 @@
 
       return StreamGet;
 
-    })(_Backbone.Model);
+    })(Backbone.Model);
     SearchStreams = (function(superClass) {
       extend(SearchStreams, superClass);
 
@@ -54,7 +55,7 @@
 
       return SearchStreams;
 
-    })(_Backbone.Collection);
+    })(Backbone.Collection);
     SearchCollection = (function(superClass) {
       extend(SearchCollection, superClass);
 
@@ -70,7 +71,7 @@
 
       return SearchCollection;
 
-    })(_Backbone.Collection);
+    })(Backbone.Collection);
     GamesCollection = (function(superClass) {
       extend(GamesCollection, superClass);
 
@@ -81,7 +82,7 @@
       GamesCollection.prototype.model = Game;
 
       GamesCollection.prototype.initialize = function() {
-        msgBus.reqres.setHandler("games:fetchmore", (function(_this) {
+        appChannel.reply("games:fetchmore", (function(_this) {
           return function() {
             return _this.moreGames();
           };
@@ -103,7 +104,7 @@
         loaded = this.fetch({
           remove: false,
           data: {
-            oauth_token: msgBus.reqres.request("get:current:token"),
+            oauth_token: appChannel.request("get:current:token"),
             limit: this.limit,
             offset: this.offset * this.limit
           }
@@ -129,7 +130,7 @@
 
       return GamesCollection;
 
-    })(_Backbone.Collection);
+    })(Backbone.Collection);
     StreamCollection = (function(superClass) {
       extend(StreamCollection, superClass);
 
@@ -140,7 +141,7 @@
       StreamCollection.prototype.model = Stream;
 
       StreamCollection.prototype.initialize = function() {
-        msgBus.reqres.setHandler("streams:fetchmore", (function(_this) {
+        appChannel.reply("streams:fetchmore", (function(_this) {
           return function() {
             return _this.moreStreams();
           };
@@ -162,7 +163,7 @@
         loaded = this.fetch({
           remove: false,
           data: {
-            oauth_token: msgBus.reqres.request("get:current:token"),
+            oauth_token: appChannel.request("get:current:token"),
             q: this.game,
             limit: this.limit,
             offset: this.offset * this.limit
@@ -182,7 +183,7 @@
 
       return StreamCollection;
 
-    })(_Backbone.Collection);
+    })(Backbone.Collection);
     games = new GamesCollection;
     games.timeStamp = new Date();
     API = {
@@ -194,7 +195,7 @@
         elapsedSeconds = Math.round(((new Date() - games.timeStamp) / 1000) % 60);
         if (elapsedSeconds > 45 || games.length === 0) {
           _.defaults(params, {
-            oauth_token: msgBus.reqres.request("get:current:token")
+            oauth_token: appChannel.request("get:current:token")
           });
           games = new GamesCollection;
           games.timeStamp = new Date();
@@ -212,7 +213,7 @@
           params = {};
         }
         _.defaults(params, {
-          oauth_token: msgBus.reqres.request("get:current:token")
+          oauth_token: appChannel.request("get:current:token")
         });
         sgames = new SearchCollection;
         sgames.url = "https://api.twitch.tv/kraken/" + url + "?callback=?";
@@ -228,7 +229,7 @@
           params = {};
         }
         _.defaults(params, {
-          oauth_token: msgBus.reqres.request("get:current:token")
+          oauth_token: appChannel.request("get:current:token")
         });
         streams = new StreamCollection;
         streams.game = params.q;
@@ -246,7 +247,7 @@
         }
         console.log("getStream", url, params);
         _.defaults(params, {
-          oauth_token: msgBus.reqres.request("get:current:token")
+          oauth_token: appChannel.request("get:current:token")
         });
         stream = new StreamGet;
         stream.url = "https://api.twitch.tv/kraken/" + url + "?callback=?";
@@ -256,30 +257,30 @@
         return stream;
       }
     };
-    msgBus.reqres.setHandler("games:top:entities", function() {
+    appChannel.reply("games:top:entities", function() {
       return API.getGames("games/top", {
         limit: 24,
         offset: 0
       });
     });
-    msgBus.reqres.setHandler("search:games", function(query) {
+    appChannel.reply("search:games", function(query) {
       return API.searchGames("search/games", {
         q: query,
         type: "suggest",
         live: false
       });
     });
-    msgBus.reqres.setHandler("games:searchName", function(query) {
+    appChannel.reply("games:searchName", function(query) {
       return games.searchName(query);
     });
-    msgBus.reqres.setHandler("search:stream:entities", function(game) {
+    appChannel.reply("search:stream:entities", function(game) {
       return API.getStreams("search/streams", {
         q: game,
         limit: 12,
         offset: 0
       });
     });
-    return msgBus.reqres.setHandler("search:stream:model", function(channel) {
+    return appChannel.reply("search:stream:model", function(channel) {
       return API.getStream("streams/" + channel);
     });
   });

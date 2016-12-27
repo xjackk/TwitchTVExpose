@@ -3,9 +3,8 @@
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(["msgbus", "apps/header/list/views", "controller/_base"], function(msgBus, Views, AppController) {
-    var Controller, appChannel;
-    appChannel = msgBus.appChannel;
+  define(["apps/header/list/views", "controller/_base", "entities/appstate"], function(Views, AppController, AppState) {
+    var Controller;
     return Controller = (function(superClass) {
       extend(Controller, superClass);
 
@@ -14,9 +13,18 @@
       }
 
       Controller.prototype.initialize = function() {
-        var layout;
-        layout = new Views.Layout;
-        return layout.render();
+        this.layout = new Views.Layout;
+        this.listenTo(AppState, "change:authState", function(model, status) {
+          var cv, loginRegion;
+          if (status === true) {
+            loginRegion = this.layout.getRegion('loginRegion');
+            return loginRegion.empty();
+          } else if (status === false) {
+            cv = this.layout.getChildView("loginRegion");
+            return cv.render();
+          }
+        });
+        return this.layout.render();
       };
 
       return Controller;

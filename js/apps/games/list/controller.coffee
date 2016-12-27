@@ -1,14 +1,22 @@
-define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (msgBus, Views, AppController, Backbone) ->
+define ["msgbus", "apps/games/list/views", "controller/_base","entities/twitchtv"], (msgBus, Views, AppController) ->
+    appChannel = msgBus.appChannel
+
+
     class Controller extends AppController
         initialize: (options={})->
-            @entities=msgBus.reqres.request "games:top:entities"
-            @layout = @getLayoutView()
+            @entities = appChannel.request "games:top:entities"
+            console.log @entities
 
-            @listenTo @layout, "show", =>
-                @gameRegion() # @entities
+            data=
+                collection: @entities
+            
+            @layout = @getLayoutView data
+
+            #@listenTo @layout, "show", =>
+            #   @gameRegion() # @entities
 
             @listenTo @layout, "show:bubble", =>
-                @gameBubbleRegion() # @entities
+                @gameBubbleRegion @entities
 
             @show @layout,
                 loading:
@@ -18,25 +26,25 @@ define ["msgbus", "apps/games/list/views", "controller/_base", "backbone" ], (ms
             view = @getGameView @entities
             @listenTo view, "childview:game:item:clicked", (child, args) ->  # listen to events from itemview (we've overridden the eventnamePrefix to childview)
                 #console.log "game:item:clicked => model", args.model
-                msgBus.events.trigger "app:game:detail", args.model
+                appChannel.trigger "app:game:detail", args.model
 
             @listenTo view, "scroll:more", ->
-                msgBus.reqres.request "games:fetchmore"
+                appChannel.request "games:fetchmore"
 
-            @layout.gameRegion.show view
+            @layout.getRegion("topGameList").show view
 
-        gameBubbleRegion:   ->
+        gameBubbleRegion:  (collection) ->
             view = @getBubbleView @entities
-            @layout.gameRegion.show view
+            @layout.getRegion("topGameList").show view
 
         getBubbleView: (collection) ->
             new Views.GamesBubbleView
                 collection: collection
 
 
-        getGameView: (collection) ->
-            new Views.TopGameList
-                collection: collection
+        #getGameView: (collection) ->
+        #    new Views.TopGameList
+        #        collection: collection
 
-        getLayoutView: ->
-            new Views.Layout
+        getLayoutView: (options={})->
+            new Views.Layout options

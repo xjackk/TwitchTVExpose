@@ -3,9 +3,9 @@ require.config
 
     paths:
         # note these are all AMD compliant versions
-        jquery: "../bower_components/jquery/dist/jquery" 
-        underscore: "../bower_components/underscore/underscore" 
-        backbone: "../bower_components/backbone/backbone" 
+        jquery: "../bower_components/jquery/dist/jquery"
+        underscore: "../bower_components/underscore/underscore"
+        backbone: "../bower_components/backbone/backbone"
         marionette: "../bower_components/backbone.marionette/lib/backbone.marionette"
         "backbone.radio": "../bower_components/backbone.radio/build/backbone.radio"
         moment: "../bower_components/moment/moment"
@@ -21,5 +21,6 @@ require.config
         #mockjson: ["jquery"]
         bootstrap: ["jquery"]
 
-	require ["config/load", "app" ], (_config, app) -> # ensure that base application settings are loaded before we can call the app.  Templates, settings and jquery plugins
+    require ["config/load", "apps/load", "app" ], (_config, _apps, app) ->
+    # ensure that base application settings are loaded before we can call the app.  Templates, settings and jquery plugins
         app.start()

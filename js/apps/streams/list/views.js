@@ -46,7 +46,7 @@
 
       return StreamListView;
 
-    })(Mn.CollectonView);
+    })(Mn.CollectionView);
     return {
       Layout: StreamLayout = (function(superClass) {
         extend(StreamLayout, superClass);

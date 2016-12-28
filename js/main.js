@@ -18,10 +18,8 @@
     shim: {
       bootstrap: ["jquery"]
     }
-  });
-
-  require(["config/load", "app"], function(_config, app) {
+  }, require(["config/load", "apps/load", "app"], function(_config, _apps, app) {
     return app.start();
-  });
+  }));
 
 }).call(this);

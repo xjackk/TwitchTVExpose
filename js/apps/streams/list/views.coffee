@@ -9,7 +9,7 @@ define ['msgbus', 'marionette', 'apps/streams/list/templates'], (msgBus, Mn, Tem
         triggers:
             "click" : "stream:item:clicked"
 
-    class StreamListView extends Mn.CollectonView
+    class StreamListView extends Mn.CollectionView
         childView: StreamItem
         tagName: "ul"
         className: "list-inline"

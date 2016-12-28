@@ -1,5 +1,5 @@
 # app startup.
-define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette, msgBus ) ->
+define ["backbone", "marionette", "msgbus" ], (Backbone, Marionette, msgBus ) ->
     appChannel= msgBus.appChannel
 
     app = new Marionette.Application

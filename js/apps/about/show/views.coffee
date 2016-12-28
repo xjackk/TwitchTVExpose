@@ -50,6 +50,7 @@ define ["marionette", "apps/about/show/templates"], (Mn, Templates) ->
             ossRegion:      "#oss-region"
 
         onRender: ->
+            console.log 'render About views'
             @showChildView "aboutRegion", new About()
             @showChildView "bookRegion", new BookTableView
                 collection: @getOption("bookEntities")

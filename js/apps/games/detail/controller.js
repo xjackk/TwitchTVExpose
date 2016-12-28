@@ -16,13 +16,16 @@
       Controller.prototype.initialize = function(options) {
         var gameModel, gameName;
         gameName = options.gameName, gameModel = options.gameModel;
+        console.log(options);
         if (gameModel === void 0) {
           gameModel = appChannel.request("games:searchName", gameName);
         }
-        this.layout = this.getLayoutView();
+        this.layout = this.getLayoutView({
+          gameModel: gameModel
+        });
         this.listenTo(this.layout, "show", (function(_this) {
           return function() {
-            return _this.gameRegion(gameModel);
+            return _this.showStreams(gameModel);
           };
         })(this));
         return this.show(this.layout, {
@@ -32,21 +35,12 @@
         });
       };
 
-      Controller.prototype.gameRegion = function(model) {
-        var view;
-        view = this.getGameView(model);
-        appChannel.trigger("app:streams:list", this.layout.getRegion('streamRegion'), model.get("game").name);
-        return this.layout.getRegion('gameRegion').show(view);
+      Controller.prototype.showStreams = function(model) {
+        return appChannel.trigger("app:streams:list", this.layout.getRegion('streamRegion'), model.get("game").name);
       };
 
-      Controller.prototype.getGameView = function(model) {
-        return new Views.Detail({
-          model: model
-        });
-      };
-
-      Controller.prototype.getLayoutView = function() {
-        return new Views.Layout;
+      Controller.prototype.getLayoutView = function(options) {
+        return new Views.Layout(options);
       };
 
       return Controller;

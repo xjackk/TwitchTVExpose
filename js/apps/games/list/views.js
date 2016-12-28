@@ -42,7 +42,7 @@
         TopGameList.prototype.className = "list-inline";
 
         TopGameList.prototype.onChildviewGameItemClicked = function(cv) {
-          console.log('hola!');
+          console.log(cv);
           return appChannel.trigger("app:game:detail", cv.model);
         };
 

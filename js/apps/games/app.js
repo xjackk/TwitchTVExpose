@@ -38,6 +38,7 @@
       }
     };
     appChannel.on("app:game:detail", function(model) {
+      console.log(model);
       Backbone.history.navigate("games/" + (model.get("game").name) + "/detail", {
         trigger: false
       });

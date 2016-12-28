@@ -15,7 +15,7 @@ define ['msgbus', 'apps/games/list/templates', 'marionette', 'views/bubble'], (m
         className: "list-inline"
 
         onChildviewGameItemClicked: (cv)->
-            console.log 'hola!'
+            console.log cv
             appChannel.trigger "app:game:detail", cv.model
 
         #childViewEvents:

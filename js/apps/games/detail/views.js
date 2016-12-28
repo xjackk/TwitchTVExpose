@@ -35,7 +35,10 @@
         };
 
         GamesLayout.prototype.onRender = function() {
-          return this.showChildView("gameRegion", new GameDetail());
+          console.log(this.model);
+          return this.showChildView("gameRegion", new GameDetail({
+            model: this.getOption("gameModel")
+          }));
         };
 
         return GamesLayout;

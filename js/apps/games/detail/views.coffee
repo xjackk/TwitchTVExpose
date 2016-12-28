@@ -10,9 +10,10 @@ define ['apps/games/detail/templates', 'marionette', 'msgbus'], (Templates, Mn, 
     Layout: class GamesLayout extends Mn.View
         template: _.template(Templates.layout)
         regions:
-            gameRegion:  "#game-region"
+            gameRegion:     "#game-region"
             streamRegion:   "#stream-region"
 
         onRender:->
-            @showChildView "gameRegion", new GameDetail()
-            
+            console.log @model
+            @showChildView "gameRegion", new GameDetail
+                model: @getOption "gameModel"

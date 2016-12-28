@@ -51,7 +51,7 @@ define ["marionette", "apps/about/show/templates"], (Mn, Templates) ->
 
         onRender: ->
             @showChildView "aboutRegion", new About()
-            @showChildView "bookRegion", new BookTableView 
+            @showChildView "bookRegion", new BookTableView
                 collection: @getOption("bookEntities")
-            @showChildView "ossRegion", new OSSTableView 
+            @showChildView "ossRegion", new OSSTableView
                 collection: @getOption("ossEntities")

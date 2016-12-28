@@ -9,12 +9,13 @@ body
     padding-top: 70px;
     padding-bottom: 70px;
 }
+
 [data-wrapper].opacity {
     opacity: 0.5;
 }
 
 .loading-container {
-    margin-top: 3em;
+    margin-top: 5em;
 }
 
 #wrap {
@@ -40,13 +41,13 @@ path {
 path:first-child {
   fill: yellow !important;
 }
-
+/*
 #circle {
 #  fill: #fff;
 #  stroke: #000;
 #  pointer-events: none;
 #}
-
+*/
 .text-responsive {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -57,7 +58,7 @@ path:first-child {
 }
 
 #gamesbubble {
-    /*z-index: 100;*/
+    z-index: 100;
 }
 #gamelist,#streamlist {
     overflow-y: scroll;
@@ -66,8 +67,8 @@ path:first-child {
 }
 
 #gameitems {
-    /*overflow-y: scroll;
-    max-height: 600px; */
+    *overflow-y: scroll;
+    max-height: 600px; 
 }
 
 .game {
@@ -86,6 +87,7 @@ path:first-child {
   /*  box-shadow: 0px 5px 15px rgba(0,0,0,0.5);
     -moz-box-shadow: 0px 5px 15px rgba(0,0,0,0.5);
     -webkit-box-shadow: 0px 5px 15px rgba(0,0,0,0.5);*/
+    transform: scale(1,1);
     -webkit-transform: scale(1.1);
     -moz-transform: scale(1.1);
 }

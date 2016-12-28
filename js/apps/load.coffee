@@ -6,6 +6,5 @@ define [
  "apps/d3/app"
  "apps/about/app"
  "apps/playa/app"
- #"apps/streams/app"
  
  ], ->

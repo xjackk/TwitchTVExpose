@@ -6,11 +6,11 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
         region: "#main-region"
 
         onBeforeStart: (options={})->
-            appChannel.trigger "start:about:app"
             appChannel.trigger "start:header:app"
             appChannel.trigger "start:footer:app"
-            appChannel.trigger "start:games:app"
             appChannel.trigger "start:d3:app"
+            appChannel.trigger "start:about:app"
+            appChannel.trigger "start:games:app"
             appChannel.trigger "start:playa:app"
 
         onStart:->

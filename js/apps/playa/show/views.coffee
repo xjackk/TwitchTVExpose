@@ -1,6 +1,6 @@
 define ['apps/playa/show/templates', 'marionette'], (Templates, Mn) ->
 
-    Player: class Player extends Mn.View
+    class PlayerView extends Mn.View
         template: _.template(Templates.player)
         ui:
             panelbody:      ".panel-body"
@@ -20,13 +20,13 @@ define ['apps/playa/show/templates', 'marionette'], (Templates, Mn) ->
 
 
 
-    User: class User extends Mn.View
+    class UserView extends Mn.View
         template: _.template(Templates.user)
 
-    Chat: class Chat extends Mn.View
+    class ChatView extends Mn.View
         template: _.template(Templates.chat)
 
-    Layout: class Layout extends Mn.View
+    Layout: class PlayerLayout extends Mn.View
         template: _.template(Templates.layout)
         regions:
             playerRegion: "#player-region"
@@ -34,6 +34,10 @@ define ['apps/playa/show/templates', 'marionette'], (Templates, Mn) ->
             chatRegion: "#chat-region"
 
         onRender: ->
-            #@showChildView "playerRegion", new Player
-            #    model: @model
-    
+            @showChildView "playerRegion", new PlayerView
+                model: @model
+            @showChildView "userRegion", new UserView
+                model: @model
+            @showChildView "chatRegion", new ChatView
+                model: @model
+  

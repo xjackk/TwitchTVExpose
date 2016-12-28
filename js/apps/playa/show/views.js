@@ -4,80 +4,90 @@
     hasProp = {}.hasOwnProperty;
 
   define(['apps/playa/show/templates', 'marionette'], function(Templates, Mn) {
-    var Chat, Layout, Player, User;
+    var ChatView, PlayerLayout, PlayerView, UserView;
+    PlayerView = (function(superClass) {
+      extend(PlayerView, superClass);
+
+      function PlayerView() {
+        return PlayerView.__super__.constructor.apply(this, arguments);
+      }
+
+      PlayerView.prototype.template = _.template(Templates.player);
+
+      PlayerView.prototype.ui = {
+        panelbody: ".panel-body"
+      };
+
+      PlayerView.prototype.modelEvents = {
+        "change:video_height": "render"
+      };
+
+      PlayerView.prototype.onDomRefresh = function() {
+        var ph, pw;
+        pw = this.ui.panelbody.outerWidth(false);
+        ph = Math.floor((pw - 30) * 9 / 16);
+        console.log("Video Height: " + (this.model.get('video_height')));
+        this.model.set("video_height", ph);
+        console.log("Video Height: AFTER RESIZE: " + (this.model.get('video_height')));
+        return console.log("Panel Width (var): " + pw);
+      };
+
+      return PlayerView;
+
+    })(Mn.View);
+    UserView = (function(superClass) {
+      extend(UserView, superClass);
+
+      function UserView() {
+        return UserView.__super__.constructor.apply(this, arguments);
+      }
+
+      UserView.prototype.template = _.template(Templates.user);
+
+      return UserView;
+
+    })(Mn.View);
+    ChatView = (function(superClass) {
+      extend(ChatView, superClass);
+
+      function ChatView() {
+        return ChatView.__super__.constructor.apply(this, arguments);
+      }
+
+      ChatView.prototype.template = _.template(Templates.chat);
+
+      return ChatView;
+
+    })(Mn.View);
     return {
-      Player: Player = (function(superClass) {
-        extend(Player, superClass);
+      Layout: PlayerLayout = (function(superClass) {
+        extend(PlayerLayout, superClass);
 
-        function Player() {
-          return Player.__super__.constructor.apply(this, arguments);
+        function PlayerLayout() {
+          return PlayerLayout.__super__.constructor.apply(this, arguments);
         }
 
-        Player.prototype.template = _.template(Templates.player);
+        PlayerLayout.prototype.template = _.template(Templates.layout);
 
-        Player.prototype.ui = {
-          panelbody: ".panel-body"
-        };
-
-        Player.prototype.modelEvents = {
-          "change:video_height": "render"
-        };
-
-        Player.prototype.onDomRefresh = function() {
-          var ph, pw;
-          pw = this.ui.panelbody.outerWidth(false);
-          ph = Math.floor((pw - 30) * 9 / 16);
-          console.log("Video Height: " + (this.model.get('video_height')));
-          this.model.set("video_height", ph);
-          console.log("Video Height: AFTER RESIZE: " + (this.model.get('video_height')));
-          return console.log("Panel Width (var): " + pw);
-        };
-
-        return Player;
-
-      })(Mn.View),
-      User: User = (function(superClass) {
-        extend(User, superClass);
-
-        function User() {
-          return User.__super__.constructor.apply(this, arguments);
-        }
-
-        User.prototype.template = _.template(Templates.user);
-
-        return User;
-
-      })(Mn.View),
-      Chat: Chat = (function(superClass) {
-        extend(Chat, superClass);
-
-        function Chat() {
-          return Chat.__super__.constructor.apply(this, arguments);
-        }
-
-        Chat.prototype.template = _.template(Templates.chat);
-
-        return Chat;
-
-      })(Mn.View),
-      Layout: Layout = (function(superClass) {
-        extend(Layout, superClass);
-
-        function Layout() {
-          return Layout.__super__.constructor.apply(this, arguments);
-        }
-
-        Layout.prototype.template = _.template(Templates.layout);
-
-        Layout.prototype.regions = {
+        PlayerLayout.prototype.regions = {
           playerRegion: "#player-region",
           userRegion: "#user-region",
           chatRegion: "#chat-region"
         };
 
-        Layout.prototype.onRender = function() {};
+        PlayerLayout.prototype.onRender = function() {
+          this.showChildView("playerRegion", new PlayerView({
+            model: this.model
+          }));
+          this.showChildView("userRegion", new UserView({
+            model: this.model
+          }));
+          return this.showChildView("chatRegion", new ChatView({
+            model: this.model
+          }));
+        };
 
-        return Layout;
+        return PlayerLayout;
 
       })(Mn.View)
     };

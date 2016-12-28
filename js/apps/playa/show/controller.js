@@ -19,63 +19,21 @@
           options = {};
         }
         channel = options.channel, model = options.model;
-        console.log("Player Controller  options", options);
         if (model === void 0) {
           model = appChannel.request("search:stream:model", channel);
         }
-        this.layout = this.getLayoutView();
-        this.listenTo(this.layout, "render", (function(_this) {
+        return appChannel.trigger("when:fetched", model, (function(_this) {
           return function() {
-            _this.playerRegion(model);
-            _this.userRegion(model);
-            return _this.chatRegion(model);
+            _this.layout = _this.getLayoutView(model);
+            return _this.show(_this.layout);
           };
         })(this));
-        return this.show(this.layout, {
-          loading: {
-            entities: model
-          }
-        });
       };
 
-      Controller.prototype.playerRegion = function(model) {
-        var player;
-        player = this.getPlayerView(model);
-        return this.layout.getRegion('playerRegion').show(player);
-      };
-
-      Controller.prototype.chatRegion = function(model) {
-        var chat;
-        chat = this.getChatView(model);
-        return this.layout.getRegion('chatRegion').show(chat);
-      };
-
-      Controller.prototype.userRegion = function(model) {
-        var userView;
-        userView = this.getUserView(model);
-        return this.layout.getRegion('userRegion').show(userView);
-      };
-
-      Controller.prototype.getPlayerView = function(model) {
-        return new Views.Player({
+      Controller.prototype.getLayoutView = function(model) {
+        return new Views.Layout({
           model: model
         });
-      };
-
-      Controller.prototype.getChatView = function(model) {
-        return new Views.Chat({
-          model: model
-        });
-      };
-
-      Controller.prototype.getUserView = function(model) {
-        return new Views.User({
-          model: model
-        });
-      };
-
-      Controller.prototype.getLayoutView = function() {
-        return new Views.Layout;
       };
 
       return Controller;

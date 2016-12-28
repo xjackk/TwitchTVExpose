@@ -6,7 +6,6 @@ define ["msgbus", "marionette", "backbone", "apps/games/list/controller","apps/g
         appRoutes:
             "games": "list"
             "games/:id/detail": "detail"
-        
             
     API =
         list: ->

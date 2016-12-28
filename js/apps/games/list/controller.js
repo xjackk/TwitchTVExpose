@@ -14,27 +14,26 @@
       }
 
       Controller.prototype.initialize = function(options) {
-        var data;
         if (options == null) {
           options = {};
         }
         this.entities = appChannel.request("games:top:entities");
-        console.log(this.entities);
-        data = {
+        this.layout = this.getLayoutView({
           collection: this.entities
-        };
-        this.layout = this.getLayoutView(data);
+        });
         this.listenTo(this.layout, "show:grid", (function(_this) {
           return function() {
-            return _this.gameRegion(_this.entities);
+            return _this.showGridView(_this.entities);
           };
         })(this));
         this.listenTo(this.layout, "show:bubble", (function(_this) {
           return function() {
-            return _this.gameBubbleRegion(_this.entities);
+            return _this.showBubbleView(_this.entities);
           };
         })(this));
-        this.listenTo(this.layout, "childview:game:item:clicked", function(cv) {});
+        this.listenTo(this.layout, "scroll:more", function() {
+          return appChannel.request("games:fetchmore");
+        });
         return this.show(this.layout, {
           loading: {
             entities: this.entities
@@ -42,19 +41,16 @@
         });
       };
 
-      Controller.prototype.gameRegion = function(games) {
-        var view;
-        view = this.getGameView(games);
-        this.listenTo(view, "scroll:more", function() {
-          return appChannel.request("games:fetchmore");
-        });
-        return this.layout.getRegion("topGameList").show(view);
+      Controller.prototype.showGridView = function(games) {
+        var gView;
+        gView = this.getGridView(games);
+        return this.layout.getRegion("topGameList").show(gView);
       };
 
-      Controller.prototype.gameBubbleRegion = function(collection) {
-        var view;
-        view = this.getBubbleView(this.entities);
-        return this.layout.getRegion("topGameList").show(view);
+      Controller.prototype.showBubbleView = function(collection) {
+        var bView;
+        bView = this.getBubbleView(this.entities);
+        return this.layout.getRegion("topGameList").show(bView);
       };
 
       Controller.prototype.getBubbleView = function(collection) {
@@ -63,8 +59,8 @@
         });
       };
 
-      Controller.prototype.getGameView = function(collection) {
-        return new Views.TopGameList({
+      Controller.prototype.getGridView = function(collection) {
+        return new Views.GameGridView({
           collection: collection
         });
       };

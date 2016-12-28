@@ -1,18 +1,31 @@
 # derive from base views and use templates for this app
-define ['views/_base', 'apps/streams/list/templates'], (AppViews, Templates) ->
+define ['msgbus', 'marionette', 'apps/streams/list/templates'], (msgBus, Mn, Templates) ->
+    appChannel = msgBus.appChannel
 
-    class StreamItem extends AppViews.ItemView
+    class StreamItem extends Mn.View
         template: _.template(Templates.streamitem)
         tagName: "li"
         className: "col-md-6 col-xs-12 streamitem"
         triggers:
             "click" : "stream:item:clicked"
 
-    ListView: class StreamList extends AppViews.CompositeView
+    class StreamListView extends Mn.CollectonView
+        childView: StreamItem
+        tagName: "ul"
+        className: "list-inline"
+
+        onChildviewStreamItemClicked: (cv)->
+            appChannel.trigger "app:playa:show", cv.model
+
+
+
+    Layout: class StreamLayout extends Mn.View
         template: _.template(Templates.streams)
-        itemView: StreamItem
-        itemViewContainer: "#items"
-        id: "streamlist"
+        
+        regions:
+            streams:
+                el: "ul"
+                replaceElement: true
 
         events:
             "scroll": "checkScroll"
@@ -25,3 +38,7 @@ define ['views/_base', 'apps/streams/list/templates'], (AppViews, Templates) ->
             if ((scrollTop + margin) >= virtualHeight)
                 #console.log "scroll:more"
                 @trigger "scroll:more"
+
+        onRender: ->
+            @showChildView "streams", new StreamListView
+                collection: @collection

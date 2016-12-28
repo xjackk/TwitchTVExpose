@@ -4,7 +4,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(["msgbus", "backbone", "marionette", "apps/playa/show/controller"], function(msgBus, Backbone, Marionette, Controller) {
-    var API, Router;
+    var API, Router, appChannel;
+    appChannel = msgBus.appChannel;
     Router = (function(superClass) {
       extend(Router, superClass);
 
@@ -27,12 +28,12 @@
         });
       }
     };
-    msgBus.commands.setHandler("start:playa:app", function() {
+    appChannel.on("start:playa:app", function() {
       return new Router({
         controller: API
       });
     });
-    return msgBus.events.on("app:playa:show", function(streamModel) {
+    return appChannel.on("app:playa:show", function(streamModel) {
       Backbone.history.navigate("player/" + (streamModel.get("game")) + "/" + (streamModel.get("channel").display_name), {
         trigger: false
       });

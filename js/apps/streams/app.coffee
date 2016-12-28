@@ -1,4 +1,5 @@
 define [ "msgbus", "apps/streams/list/controller" ], (msgBus, Controller) ->
+    appChannel = msgBus.appChannel
 
     API =
         list:(region, name) ->
@@ -6,5 +7,5 @@ define [ "msgbus", "apps/streams/list/controller" ], (msgBus, Controller) ->
                 region: region
                 name: name
 
-    msgBus.commands.setHandler "app:stream:list", (region, name) ->
+    appChannel.on "app:streams:list", (region, name) ->
         API.list region, name

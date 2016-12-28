@@ -5,9 +5,8 @@ define [
  "config/marionette/templatecache",		#marionette templatecache config
  #"config/marionette/application",		#marionette application overrides
  "config/backbone/sync",					#custom sync handling to trigger before send and complete events to better support form/controller
- #"entities/twitchtv",
+ "entities/twitchtv",
  "entities/appstate",
- #"entities/author",
  "entities/reference",
  "entities/oss",
  #"components/form/controller",			#form component

@@ -1,11 +1,12 @@
-define ["msgbus", "apps/games/detail/views", "controller/_base", "backbone" ], (msgBus, Views, AppController, Backbone) ->
+define ["msgbus", "apps/games/detail/views", "controller/_base" ], (msgBus, Views, AppController) ->
+    appChannel = msgBus.appChannel
+
     class Controller extends AppController
         initialize: (options) ->
             {gameName, gameModel} = options
-            #console.log "OPTIONS passed to detail controller", options
 
             if gameModel is undefined
-                gameModel = msgBus.reqres.request "games:searchName", gameName
+                gameModel = appChannel.request "games:searchName", gameName
                 #console.log "GameModel", gameModel
 
             @layout = @getLayoutView()
@@ -16,11 +17,10 @@ define ["msgbus", "apps/games/detail/views", "controller/_base", "backbone" ], (
                 loading:
                     entities: gameModel
 
-
         gameRegion: (model) ->
             view = @getGameView model
-            msgBus.commands.execute "app:stream:list", @layout.streamRegion, model.get("game").name
-            @layout.gameRegion.show view
+            appChannel.trigger "app:streams:list", @layout.getRegion('streamRegion'), model.get("game").name
+            @layout.getRegion('gameRegion').show view
 
 
         getGameView: (model) ->

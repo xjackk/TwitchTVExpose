@@ -1,6 +1,6 @@
-define ['apps/playa/show/templates', 'views/_base'], (Templates, AppView) ->
+define ['apps/playa/show/templates', 'marionette'], (Templates, Mn) ->
 
-    Player: class Player extends AppView.ItemView
+    Player: class Player extends Mn.View
         template: _.template(Templates.player)
         ui:
             panelbody:      ".panel-body"
@@ -8,7 +8,7 @@ define ['apps/playa/show/templates', 'views/_base'], (Templates, AppView) ->
         modelEvents:
             "change:video_height": "render"
 
-        onShow: ->
+        onDomRefresh: ->
             pw 	= @ui.panelbody.outerWidth(false)
             ph = Math.floor ((pw-30) * 9 / 16)
 
@@ -20,15 +20,20 @@ define ['apps/playa/show/templates', 'views/_base'], (Templates, AppView) ->
 
 
 
-    User: class User extends AppView.ItemView
+    User: class User extends Mn.View
         template: _.template(Templates.user)
 
-    Chat: class Chat extends AppView.ItemView
+    Chat: class Chat extends Mn.View
         template: _.template(Templates.chat)
 
-    Layout: class Layout extends AppView.Layout
+    Layout: class Layout extends Mn.View
         template: _.template(Templates.layout)
         regions:
             playerRegion: "#player-region"
             userRegion: "#user-region"
             chatRegion: "#chat-region"
+
+        onRender: ->
+            @showChildView "playerRegion", new Player
+                model: @model
+    

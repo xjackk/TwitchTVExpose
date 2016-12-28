@@ -1,4 +1,5 @@
 define ["apps/playa/show/views", "controller/_base","msgbus"], (Views, AppController, msgBus) ->
+    appChannel = msgBus.appChannel
 
     class Controller extends AppController
         initialize:(options={})->
@@ -8,7 +9,7 @@ define ["apps/playa/show/views", "controller/_base","msgbus"], (Views, AppContro
 
             #if model is undefined
             #    console.log "searching for ", channel
-            model = msgBus.reqres.request "search:stream:model", channel if model is undefined
+            model = appChannel.request "search:stream:model", channel if model is undefined
 
             @layout = @getLayoutView()
             @listenTo @layout, "show", =>
@@ -22,15 +23,15 @@ define ["apps/playa/show/views", "controller/_base","msgbus"], (Views, AppContro
 
         playerRegion: (model)  ->
             player = @getPlayerView model
-            @layout.playerRegion.show player
+            @layout.getRegion('playerRegion').show player
 
         chatRegion: (model)  ->
             chat = @getChatView model
-            @layout.chatRegion.show chat
+            @layout.getRegion('chatRegion').show chat
 
         userRegion: (model)  ->
             userView = @getUserView model
-            @layout.userRegion.show userView
+            @layout.getRegion('userRegion').show userView
 
         getPlayerView: (model)  ->
             new Views.Player

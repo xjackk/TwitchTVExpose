@@ -4,7 +4,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(["apps/playa/show/views", "controller/_base", "msgbus"], function(Views, AppController, msgBus) {
-    var Controller;
+    var Controller, appChannel;
+    appChannel = msgBus.appChannel;
     return Controller = (function(superClass) {
       extend(Controller, superClass);
 
@@ -20,7 +21,7 @@
         channel = options.channel, model = options.model;
         console.log("Player Controller  options", options);
         if (model === void 0) {
-          model = msgBus.reqres.request("search:stream:model", channel);
+          model = appChannel.request("search:stream:model", channel);
         }
         this.layout = this.getLayoutView();
         this.listenTo(this.layout, "show", (function(_this) {
@@ -40,19 +41,19 @@
       Controller.prototype.playerRegion = function(model) {
         var player;
         player = this.getPlayerView(model);
-        return this.layout.playerRegion.show(player);
+        return this.layout.getRegion('playerRegion').show(player);
       };
 
       Controller.prototype.chatRegion = function(model) {
         var chat;
         chat = this.getChatView(model);
-        return this.layout.chatRegion.show(chat);
+        return this.layout.getRegion('chatRegion').show(chat);
       };
 
       Controller.prototype.userRegion = function(model) {
         var userView;
         userView = this.getUserView(model);
-        return this.layout.userRegion.show(userView);
+        return this.layout.getRegion('userRegion').show(userView);
       };
 
       Controller.prototype.getPlayerView = function(model) {

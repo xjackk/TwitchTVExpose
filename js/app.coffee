@@ -11,6 +11,7 @@ define ["backbone", "marionette", "msgbus", "apps/load" ], (Backbone, Marionette
             appChannel.trigger "start:footer:app"
             appChannel.trigger "start:games:app"
             appChannel.trigger "start:d3:app"
+            appChannel.trigger "start:playa:app"
 
         onStart:->
             appstate = appChannel.request  "get:current:appstate"

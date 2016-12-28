@@ -13,7 +13,8 @@
         appChannel.trigger("start:header:app");
         appChannel.trigger("start:footer:app");
         appChannel.trigger("start:games:app");
-        return appChannel.trigger("start:d3:app");
+        appChannel.trigger("start:d3:app");
+        return appChannel.trigger("start:playa:app");
       },
       onStart: function() {
         var appstate, frag, match;

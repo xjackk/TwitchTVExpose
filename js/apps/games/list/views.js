@@ -28,11 +28,10 @@
 
     })(Mn.View);
     return {
-      TopGameList: TopGameList = (function(superClass) {
+      GameGridView: TopGameList = (function(superClass) {
         extend(TopGameList, superClass);
 
         function TopGameList() {
-          this.checkScroll = bind(this.checkScroll, this);
           return TopGameList.__super__.constructor.apply(this, arguments);
         }
 
@@ -42,26 +41,9 @@
 
         TopGameList.prototype.className = "list-inline";
 
-        TopGameList.prototype.childViewEvents = {
-          'game:item:clicked': function(cv) {
-            return appChannel.trigger("app:game:detail", cv.model);
-          }
-        };
-
-        TopGameList.prototype.events = {
-          "scroll": "checkScroll"
-        };
-
-        TopGameList.prototype.checkScroll = function(e) {
-          var margin, scrollTop, virtualHeight;
-          console.log(e);
-          virtualHeight = this.$("> div").height();
-          console.log(virtualHeight);
-          scrollTop = this.$el.scrollTop() + this.$el.height();
-          margin = 200;
-          if ((scrollTop + margin) >= virtualHeight) {
-            return this.trigger("scroll:more");
-          }
+        TopGameList.prototype.onChildviewGameItemClicked = function(cv) {
+          console.log('hola!');
+          return appChannel.trigger("app:game:detail", cv.model);
         };
 
         return TopGameList;
@@ -94,6 +76,7 @@
         extend(GamesLayout, superClass);
 
         function GamesLayout() {
+          this.checkScroll = bind(this.checkScroll, this);
           return GamesLayout.__super__.constructor.apply(this, arguments);
         }
 
@@ -116,14 +99,26 @@
           "click @ui.btnGrid": "show:grid"
         };
 
-        GamesLayout.prototype.onShowGrid = function() {
-          return console.log("showGrid!");
-        };
-
         GamesLayout.prototype.onRender = function() {
           return this.showChildView("topGameList", new TopGameList({
             collection: this.collection
           }));
+        };
+
+        GamesLayout.prototype.events = {
+          "scroll": "checkScroll"
+        };
+
+        GamesLayout.prototype.checkScroll = function(e) {
+          var margin, scrollTop, virtualHeight;
+          console.log(e);
+          virtualHeight = this.$("> div").height();
+          console.log(virtualHeight);
+          scrollTop = this.$el.scrollTop() + this.$el.height();
+          margin = 200;
+          if ((scrollTop + margin) >= virtualHeight) {
+            return this.trigger("scroll:more");
+          }
         };
 
         return GamesLayout;

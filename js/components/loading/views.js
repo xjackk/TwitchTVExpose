@@ -17,7 +17,7 @@
 
         _LoadingView.prototype.className = "loading-container";
 
-        _LoadingView.prototype.onShow = function() {
+        _LoadingView.prototype.onRender = function() {
           var opts;
           opts = this._getOptions();
           return this.$el.spin(opts);

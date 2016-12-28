@@ -4,8 +4,9 @@
     hasProp = {}.hasOwnProperty,
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['views/_base', 'apps/streams/list/templates'], function(AppViews, Templates) {
-    var StreamItem, StreamList;
+  define(['msgbus', 'marionette', 'apps/streams/list/templates'], function(msgBus, Mn, Templates) {
+    var StreamItem, StreamLayout, StreamListView, appChannel;
+    appChannel = msgBus.appChannel;
     StreamItem = (function(superClass) {
       extend(StreamItem, superClass);
 
@@ -25,29 +26,50 @@
 
       return StreamItem;
 
-    })(AppViews.ItemView);
-    return {
-      ListView: StreamList = (function(superClass) {
-        extend(StreamList, superClass);
+    })(Mn.View);
+    StreamListView = (function(superClass) {
+      extend(StreamListView, superClass);
 
-        function StreamList() {
+      function StreamListView() {
+        return StreamListView.__super__.constructor.apply(this, arguments);
+      }
+
+      StreamListView.prototype.childView = StreamItem;
+
+      StreamListView.prototype.tagName = "ul";
+
+      StreamListView.prototype.className = "list-inline";
+
+      StreamListView.prototype.onChildviewStreamItemClicked = function(cv) {
+        return appChannel.trigger("app:playa:show", cv.model);
+      };
+
+      return StreamListView;
+
+    })(Mn.CollectonView);
+    return {
+      Layout: StreamLayout = (function(superClass) {
+        extend(StreamLayout, superClass);
+
+        function StreamLayout() {
           this.checkScroll = bind(this.checkScroll, this);
-          return StreamList.__super__.constructor.apply(this, arguments);
+          return StreamLayout.__super__.constructor.apply(this, arguments);
         }
 
-        StreamList.prototype.template = _.template(Templates.streams);
+        StreamLayout.prototype.template = _.template(Templates.streams);
 
-        StreamList.prototype.itemView = StreamItem;
+        StreamLayout.prototype.regions = {
+          streams: {
+            el: "ul",
+            replaceElement: true
+          }
+        };
 
-        StreamList.prototype.itemViewContainer = "#items";
-
-        StreamList.prototype.id = "streamlist";
-
-        StreamList.prototype.events = {
+        StreamLayout.prototype.events = {
           "scroll": "checkScroll"
         };
 
-        StreamList.prototype.checkScroll = function(e) {
+        StreamLayout.prototype.checkScroll = function(e) {
           var margin, scrollTop, virtualHeight;
           virtualHeight = this.$("> div").height();
           scrollTop = this.$el.scrollTop() + this.$el.height();
@@ -57,9 +79,15 @@
           }
         };
 
-        return StreamList;
+        StreamLayout.prototype.onRender = function() {
+          return this.showChildView("streams", new StreamListView({
+            collection: this.collection
+          }));
+        };
 
-      })(AppViews.CompositeView)
+        return StreamLayout;
+
+      })(Mn.View)
     };
   });
 

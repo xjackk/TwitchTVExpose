@@ -6,7 +6,7 @@
   define(["msgbus", "controller/_base", "components/loading/views"], function(msgBus, AppController, Views) {
     var LoadingController, appChannel;
     appChannel = msgBus.appChannel;
-    return LoadingController = (function(superClass) {
+    LoadingController = (function(superClass) {
       extend(LoadingController, superClass);
 
       function LoadingController() {
@@ -64,17 +64,16 @@
         return new Views.Loading;
       };
 
-      appChannel.on("show:loading", function(view, options) {
-        return new LoadingController({
-          view: view,
-          region: options.region,
-          config: options.loading
-        });
-      });
-
       return LoadingController;
 
     })(AppController);
+    return appChannel.on("show:loading", function(view, options) {
+      return new LoadingController({
+        view: view,
+        region: options.region,
+        config: options.loading
+      });
+    });
   });
 
 }).call(this);

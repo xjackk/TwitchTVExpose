@@ -3,7 +3,7 @@
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(['apps/playa/show/templates', 'views/_base'], function(Templates, AppView) {
+  define(['apps/playa/show/templates', 'marionette'], function(Templates, Mn) {
     var Chat, Layout, Player, User;
     return {
       Player: Player = (function(superClass) {
@@ -23,7 +23,7 @@
           "change:video_height": "render"
         };
 
-        Player.prototype.onShow = function() {
+        Player.prototype.onDomRefresh = function() {
           var ph, pw;
           pw = this.ui.panelbody.outerWidth(false);
           ph = Math.floor((pw - 30) * 9 / 16);
@@ -35,7 +35,7 @@
 
         return Player;
 
-      })(AppView.ItemView),
+      })(Mn.View),
       User: User = (function(superClass) {
         extend(User, superClass);
 
@@ -47,7 +47,7 @@
 
         return User;
 
-      })(AppView.ItemView),
+      })(Mn.View),
       Chat: Chat = (function(superClass) {
         extend(Chat, superClass);
 
@@ -59,7 +59,7 @@
 
         return Chat;
 
-      })(AppView.ItemView),
+      })(Mn.View),
       Layout: Layout = (function(superClass) {
         extend(Layout, superClass);
 
@@ -75,9 +75,15 @@
           chatRegion: "#chat-region"
         };
 
+        Layout.prototype.onRender = function() {
+          return this.showChildView("playerRegion", new Player({
+            model: this.model
+          }));
+        };
+
         return Layout;
 
-      })(AppView.Layout)
+      })(Mn.View)
     };
   });
 

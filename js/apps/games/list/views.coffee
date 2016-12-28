@@ -9,27 +9,19 @@ define ['msgbus', 'apps/games/list/templates', 'marionette', 'views/bubble'], (m
             "click" : "game:item:clicked"
 
 
-    TopGameList: class TopGameList extends Mn.CollectionView
+    GameGridView: class TopGameList extends Mn.CollectionView
         childView: GameItem
         tagName: "ul"
         className: "list-inline"
-        childViewEvents:
-            'game:item:clicked': (cv)->
-                appChannel.trigger "app:game:detail", cv.model
 
-        events:
-            "scroll": "checkScroll"
+        onChildviewGameItemClicked: (cv)->
+            console.log 'hola!'
+            appChannel.trigger "app:game:detail", cv.model
 
-        checkScroll: (e) =>
-            console.log e
-            virtualHeight = @$("> div").height()    #important this div must have css height: 100% to enable calculattion of virtual height scroll
-            console.log virtualHeight
+        #childViewEvents:
+        #    'game:item:clicked': (gameItem)->
+        #        appChannel.trigger "app:game:detail", gameItem.model
 
-            scrollTop = @$el.scrollTop() + @$el.height()
-            margin = 200
-            #console.log "virtualHeight:", virtualHeight, "scrollTop:", scrollTop, "elHeight", @$el.height()
-            if ((scrollTop + margin) >= virtualHeight)
-                @trigger "scroll:more"
 
 
     GamesBubbleView: class GamesBubbleView extends Mn.View
@@ -58,18 +50,20 @@ define ['msgbus', 'apps/games/list/templates', 'marionette', 'views/bubble'], (m
             "click @ui.btnBubble":  "show:bubble"
             "click @ui.btnGrid":    "show:grid"
 
-        onShowGrid:->
-            console.log "showGrid!"
         onRender:->
             @showChildView "topGameList", new TopGameList
                 collection: @collection
 
-        #events:
-        #        "click button.bubble":    "bubble"
-        #        "click button.grid":      "grid"
+        events:
+            "scroll": "checkScroll"
 
-        #bubble:->
-        #    @trigger "show:bubble"
+        checkScroll: (e) =>
+            console.log e
+            virtualHeight = @$("> div").height()    #important this div must have css height: 100% to enable calculattion of virtual height scroll
+            console.log virtualHeight
 
-        #grid:->
-        #    @trigger "show"
+            scrollTop = @$el.scrollTop() + @$el.height()
+            margin = 200
+            #console.log "virtualHeight:", virtualHeight, "scrollTop:", scrollTop, "elHeight", @$el.height()
+            if ((scrollTop + margin) >= virtualHeight)
+                @trigger "scroll:more"

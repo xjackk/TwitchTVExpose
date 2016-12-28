@@ -34,6 +34,10 @@
           streamRegion: "#stream-region"
         };
 
+        GamesLayout.prototype.onRender = function() {
+          return this.showChildView("gameRegion", new GameDetail());
+        };
+
         return GamesLayout;
 
       })(Mn.View)

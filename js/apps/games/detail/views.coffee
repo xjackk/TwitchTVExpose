@@ -12,3 +12,7 @@ define ['apps/games/detail/templates', 'marionette', 'msgbus'], (Templates, Mn, 
         regions:
             gameRegion:  "#game-region"
             streamRegion:   "#stream-region"
+
+        onRender:->
+            @showChildView "gameRegion", new GameDetail()
+            

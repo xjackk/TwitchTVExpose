@@ -1,6 +1,6 @@
 # list currency views
 define ['marionette', 'components/loading/templates', 'spin', 'jqueryspin'], (Mn, Templates) ->
-    Loading: class _LoadingView extends Mn.View
+    class LoadingView extends Mn.View
         template: _.template(Templates.main)
         className: "loading-container"
 

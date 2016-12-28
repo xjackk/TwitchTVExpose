@@ -12,7 +12,7 @@ define ["apps/playa/show/views", "controller/_base","msgbus"], (Views, AppContro
             model = appChannel.request "search:stream:model", channel if model is undefined
 
             @layout = @getLayoutView()
-            @listenTo @layout, "show", =>
+            @listenTo @layout, "render", =>
                 @playerRegion model
                 @userRegion model
                 @chatRegion model

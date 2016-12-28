@@ -24,7 +24,7 @@
           model = appChannel.request("search:stream:model", channel);
         }
         this.layout = this.getLayoutView();
-        this.listenTo(this.layout, "show", (function(_this) {
+        this.listenTo(this.layout, "render", (function(_this) {
           return function() {
             _this.playerRegion(model);
             _this.userRegion(model);

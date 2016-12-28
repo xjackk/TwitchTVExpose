@@ -75,11 +75,7 @@
           chatRegion: "#chat-region"
         };
 
-        Layout.prototype.onRender = function() {
-          return this.showChildView("playerRegion", new Player({
-            model: this.model
-          }));
-        };
+        Layout.prototype.onRender = function() {};
 
         return Layout;
 

@@ -1,6 +1,6 @@
 # form component controller
 # the module API will pass in the glogal collection of ccys
-define ["msgbus", "controller/_base", "components/loading/views" ], (msgBus, AppController, Views) ->
+define ["msgbus", "controller/_base", "components/loading/views" ], (msgBus, AppController, LoadingView) ->
     appChannel = msgBus.appChannel
 
     class LoadingController extends AppController
@@ -32,14 +32,16 @@ define ["msgbus", "controller/_base", "components/loading/views" ], (msgBus, App
                         @region.currentView.$el.removeAttr "style"
                     when "spinner"
                         #return realView.close() if @region?.currentView isnt loadingView
-                        return @region.empty() if @region?.currentView isnt loadingView
-                        
+                        return @region.empty() if @region.currentView isnt loadingView
+
                 @show realView unless config.debug
+
         getEntities: (view) ->
             _.chain(view).pick("model", "collection").toArray().compact().value()
 
         getLoadingView: ->
-            new Views.Loading
+            new LoadingView
+
 
     appChannel.on "show:loading", (view, options) ->
         new LoadingController

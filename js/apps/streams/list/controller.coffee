@@ -15,7 +15,8 @@ define ["msgbus", "controller/_base", "apps/streams/list/views" ], (msgBus, AppC
                 appChannel.request "streams:fetchmore"  # event handled by the streams entitiy
 
             @show view,
-                loading: true
+                loading:
+                    entities: streamEntities
 
         getLayoutView: (collection) ->
             new Views.Layout

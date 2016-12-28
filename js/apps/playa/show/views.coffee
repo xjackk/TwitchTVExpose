@@ -34,6 +34,6 @@ define ['apps/playa/show/templates', 'marionette'], (Templates, Mn) ->
             chatRegion: "#chat-region"
 
         onRender: ->
-            @showChildView "playerRegion", new Player
-                model: @model
+            #@showChildView "playerRegion", new Player
+            #    model: @model
     

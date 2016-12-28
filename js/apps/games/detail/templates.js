@@ -3,6 +3,7 @@
   define(function(require) {
     return {
       gamedetail: require("text!apps/games/detail/templates/gamedetail.htm"),
+      streamitem: require("text!apps/games/detail/templates/streamitem.htm"),
       layout: require("text!apps/games/detail/templates/layout.htm")
     };
   });

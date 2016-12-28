@@ -4,54 +4,52 @@
     hasProp = {}.hasOwnProperty;
 
   define(['marionette', 'components/loading/templates', 'spin', 'jqueryspin'], function(Mn, Templates) {
-    var _LoadingView;
-    return {
-      Loading: _LoadingView = (function(superClass) {
-        extend(_LoadingView, superClass);
+    var LoadingView;
+    return LoadingView = (function(superClass) {
+      extend(LoadingView, superClass);
 
-        function _LoadingView() {
-          return _LoadingView.__super__.constructor.apply(this, arguments);
-        }
+      function LoadingView() {
+        return LoadingView.__super__.constructor.apply(this, arguments);
+      }
 
-        _LoadingView.prototype.template = _.template(Templates.main);
+      LoadingView.prototype.template = _.template(Templates.main);
 
-        _LoadingView.prototype.className = "loading-container";
+      LoadingView.prototype.className = "loading-container";
 
-        _LoadingView.prototype.onRender = function() {
-          var opts;
-          opts = this._getOptions();
-          return this.$el.spin(opts);
+      LoadingView.prototype.onRender = function() {
+        var opts;
+        opts = this._getOptions();
+        return this.$el.spin(opts);
+      };
+
+      LoadingView.prototype.onClose = function() {
+        return this.$el.spin(false);
+      };
+
+      LoadingView.prototype._getOptions = function() {
+        return {
+          lines: 10,
+          length: 6,
+          width: 2.5,
+          radius: 7,
+          corners: 1,
+          rotate: 9,
+          direction: 1,
+          color: '#000',
+          speed: 1,
+          trail: 60,
+          shadow: false,
+          hwaccel: true,
+          className: 'spinner',
+          zIndex: 2e9,
+          top: 'auto',
+          left: 'auto'
         };
+      };
 
-        _LoadingView.prototype.onClose = function() {
-          return this.$el.spin(false);
-        };
+      return LoadingView;
 
-        _LoadingView.prototype._getOptions = function() {
-          return {
-            lines: 10,
-            length: 6,
-            width: 2.5,
-            radius: 7,
-            corners: 1,
-            rotate: 9,
-            direction: 1,
-            color: '#000',
-            speed: 1,
-            trail: 60,
-            shadow: false,
-            hwaccel: true,
-            className: 'spinner',
-            zIndex: 2e9,
-            top: 'auto',
-            left: 'auto'
-          };
-        };
-
-        return _LoadingView;
-
-      })(Mn.View)
-    };
+    })(Mn.View);
   });
 
 }).call(this);

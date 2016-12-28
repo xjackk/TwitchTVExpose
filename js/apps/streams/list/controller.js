@@ -29,7 +29,9 @@
           return appChannel.request("streams:fetchmore");
         });
         return this.show(view, {
-          loading: true
+          loading: {
+            entities: streamEntities
+          }
         });
       };
 

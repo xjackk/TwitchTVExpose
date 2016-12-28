@@ -14,35 +14,27 @@
       }
 
       Controller.prototype.initialize = function(options) {
-        var data, gameModel;
         if (options == null) {
           options = {};
         }
-        this.gameName = options.gameName, gameModel = options.gameModel;
-        if (gameModel === void 0) {
-          gameModel = appChannel.request("games:searchName", this.gameName);
+        this.gameName = options.gameName, this.gameModel = options.gameModel;
+        console.log('start fetch');
+        if (this.gameModel === void 0) {
+          this.gameModel = appChannel.request("games:searchName", this.gameName);
         }
-        data = {
-          gameModel: gameModel
-        };
-        this.mergeOptions(options, data);
-        this.layout = this.getLayoutView(options);
-        this.listenTo(this.layout, "render", (function(_this) {
+        this.streamEntities = appChannel.request("search:stream:entities", this.gameName);
+        return appChannel.trigger("when:fetched", [this.streamEntities], (function(_this) {
           return function() {
-            console.log("controller listen render:", _this.gameName);
-            return _this.showStreams(_this.gameName);
+            var data;
+            console.log('end fetch');
+            data = {
+              gameModel: _this.gameModel,
+              streams: _this.streamEntities
+            };
+            _this.layout = _this.getLayoutView(data);
+            return _this.show(_this.layout);
           };
         })(this));
-        return this.show(this.layout, {
-          loading: {
-            entities: gameModel
-          }
-        });
-      };
-
-      Controller.prototype.showStreams = function(name) {
-        console.log("Name:", name);
-        return appChannel.trigger("app:streams:list", this.layout.getRegion('streamRegion'), name);
       };
 
       Controller.prototype.getLayoutView = function(options) {

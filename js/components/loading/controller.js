@@ -3,7 +3,7 @@
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(["msgbus", "controller/_base", "components/loading/views"], function(msgBus, AppController, Views) {
+  define(["msgbus", "controller/_base", "components/loading/views"], function(msgBus, AppController, LoadingView) {
     var LoadingController, appChannel;
     appChannel = msgBus.appChannel;
     LoadingController = (function(superClass) {
@@ -39,13 +39,12 @@
       LoadingController.prototype.showRealView = function(realView, loadingView, config) {
         return appChannel.trigger("when:fetched", config.entities, (function(_this) {
           return function() {
-            var ref;
             switch (config.loadingType) {
               case "opacity":
                 _this.region.currentView.$el.removeAttr("style");
                 break;
               case "spinner":
-                if (((ref = _this.region) != null ? ref.currentView : void 0) !== loadingView) {
+                if (_this.region.currentView !== loadingView) {
                   return _this.region.empty();
                 }
             }
@@ -61,7 +60,7 @@
       };
 
       LoadingController.prototype.getLoadingView = function() {
-        return new Views.Loading;
+        return new LoadingView;
       };
 
       return LoadingController;

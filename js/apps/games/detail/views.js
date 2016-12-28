@@ -3,8 +3,9 @@
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(['apps/games/detail/templates', 'marionette', 'msgbus'], function(Templates, Mn, msgBus) {
-    var GameDetail, GamesLayout;
+  define(['marionette', 'msgbus', 'apps/games/detail/templates'], function(Mn, msgBus, Templates) {
+    var GameDetail, GamesLayout, appChannel;
+    appChannel = msgBus.appChannel;
     return {
       Detail: GameDetail = (function(superClass) {
         extend(GameDetail, superClass);
@@ -34,10 +35,13 @@
           streamRegion: "#stream-region"
         };
 
-        GamesLayout.prototype.onRender = function() {
-          console.log(this.model);
+        GamesLayout.prototype.onDomRefresh = function() {
+          var model, region;
+          model = this.getOption("gameModel");
+          region = this.getRegion('streamRegion');
+          console.log("REGION", region);
           return this.showChildView("gameRegion", new GameDetail({
-            model: this.getOption("gameModel")
+            model: model
           }));
         };
 

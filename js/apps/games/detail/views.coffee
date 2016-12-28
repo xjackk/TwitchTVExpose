@@ -1,4 +1,5 @@
-define ['apps/games/detail/templates', 'marionette', 'msgbus'], (Templates, Mn, msgBus) ->
+define ['marionette', 'msgbus', 'apps/games/detail/templates', ], (Mn, msgBus, Templates ) ->
+    appChannel = msgBus.appChannel
 
     Detail: class GameDetail extends Mn.View
         template: _.template(Templates.gamedetail)
@@ -13,7 +14,12 @@ define ['apps/games/detail/templates', 'marionette', 'msgbus'], (Templates, Mn, 
             gameRegion:     "#game-region"
             streamRegion:   "#stream-region"
 
-        onRender:->
-            console.log @model
+        onDomRefresh: ->
+            model =  @getOption "gameModel"
+            region = @getRegion 'streamRegion'
+            console.log "REGION", region
+
             @showChildView "gameRegion", new GameDetail
-                model: @getOption "gameModel"
+                model: model
+
+            #appChannel.trigger "app:streams:list", @getRegion('streamRegion'), model.get("game").name

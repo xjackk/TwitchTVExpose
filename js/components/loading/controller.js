@@ -46,7 +46,7 @@
                 break;
               case "spinner":
                 if (((ref = _this.region) != null ? ref.currentView : void 0) !== loadingView) {
-                  return realView.close();
+                  return _this.region.empty();
                 }
             }
             if (!config.debug) {

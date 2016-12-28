@@ -2,30 +2,33 @@ define ["msgbus", "apps/games/detail/views", "controller/_base" ], (msgBus, View
     appChannel = msgBus.appChannel
 
     class Controller extends AppController
-        initialize: (options) ->
-            {gameName, gameModel} = options
-            console.log options
-            if gameModel is undefined
-                gameModel = appChannel.request "games:searchName", gameName
-                #console.log "GameModel", gameModel
+        initialize: (options={}) ->
+            {@gameName, gameModel} = options
 
-            @layout = @getLayoutView gameModel: gameModel
-            @listenTo @layout, "show", =>
-                @showStreams gameModel
+            # need to request if we get here via routing (back button via history...)
+            gameModel = appChannel.request "games:searchName", @gameName if gameModel is undefined
+
+            # pass this into our layout
+            data =
+                gameModel: gameModel
+
+            # merge with passed in options
+            @mergeOptions options, data
+
+            @layout = @getLayoutView options
+
+            @listenTo @layout, "render", =>
+                console.log "controller listen render:", @gameName
+                @showStreams @gameName
 
             @show @layout,
-                loading:
+                loading: 
                     entities: gameModel
 
-        showStreams: (model) ->
-            #view = @getGameView model
-            appChannel.trigger "app:streams:list", @layout.getRegion('streamRegion'), model.get("game").name
-            #@layout.getRegion('gameRegion').show view
+        showStreams: (name) ->
+            console.log "Name:", name
+            appChannel.trigger "app:streams:list", @layout.getRegion('streamRegion'), name
 
-
-        #getGameView: (model) ->
-        #    new Views.Detail
-        #        model: model
 
         getLayoutView: (options)->
             new Views.Layout options

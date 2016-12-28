@@ -14,18 +14,23 @@
       }
 
       Controller.prototype.initialize = function(options) {
-        var gameModel, gameName;
-        gameName = options.gameName, gameModel = options.gameModel;
-        console.log(options);
-        if (gameModel === void 0) {
-          gameModel = appChannel.request("games:searchName", gameName);
+        var data, gameModel;
+        if (options == null) {
+          options = {};
         }
-        this.layout = this.getLayoutView({
+        this.gameName = options.gameName, gameModel = options.gameModel;
+        if (gameModel === void 0) {
+          gameModel = appChannel.request("games:searchName", this.gameName);
+        }
+        data = {
           gameModel: gameModel
-        });
-        this.listenTo(this.layout, "show", (function(_this) {
+        };
+        this.mergeOptions(options, data);
+        this.layout = this.getLayoutView(options);
+        this.listenTo(this.layout, "render", (function(_this) {
           return function() {
-            return _this.showStreams(gameModel);
+            console.log("controller listen render:", _this.gameName);
+            return _this.showStreams(_this.gameName);
           };
         })(this));
         return this.show(this.layout, {
@@ -35,8 +40,9 @@
         });
       };
 
-      Controller.prototype.showStreams = function(model) {
-        return appChannel.trigger("app:streams:list", this.layout.getRegion('streamRegion'), model.get("game").name);
+      Controller.prototype.showStreams = function(name) {
+        console.log("Name:", name);
+        return appChannel.trigger("app:streams:list", this.layout.getRegion('streamRegion'), name);
       };
 
       Controller.prototype.getLayoutView = function(options) {

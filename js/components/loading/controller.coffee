@@ -31,7 +31,9 @@ define ["msgbus", "controller/_base", "components/loading/views" ], (msgBus, App
                     when "opacity"
                         @region.currentView.$el.removeAttr "style"
                     when "spinner"
-                        return realView.close() if @region?.currentView isnt loadingView
+                        #return realView.close() if @region?.currentView isnt loadingView
+                        return @region.empty() if @region?.currentView isnt loadingView
+                        
                 @show realView unless config.debug
         getEntities: (view) ->
             _.chain(view).pick("model", "collection").toArray().compact().value()

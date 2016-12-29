@@ -126,7 +126,7 @@
         options = {
           html: true,
           title: data.name,
-          placement: "top",
+          placement: "auto",
           trigger: "manual",
           container: "body",
           content: function() {

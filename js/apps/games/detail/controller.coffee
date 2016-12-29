@@ -1,7 +1,7 @@
-define ["msgbus", "apps/games/detail/views", "controller/_base" ], (msgBus, Views, AppController) ->
+define ["msgbus", "apps/games/detail/views", "marionette" ], (msgBus, Views, Mn) ->
     appChannel = msgBus.appChannel
 
-    class Controller extends AppController
+    class Controller extends Mn.Object
         initialize: (options={}) ->
             {@gameName, @gameModel} = options
 

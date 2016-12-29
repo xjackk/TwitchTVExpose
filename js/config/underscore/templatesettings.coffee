@@ -2,5 +2,5 @@
 # {[ if(true) ]}
 define ['underscore'], ( _ ) ->
     _.templateSettings =
-    	evaluate: /\{\[([\s\S]+?)\]\}/g
-    	interpolate: /\{\{(.+?)\}\}/g
+        evaluate: /\{\[([\s\S]+?)\]\}/g
+        interpolate: /\{\{(.+?)\}\}/g

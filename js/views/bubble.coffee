@@ -120,7 +120,7 @@ define ['underscore', 'msgbus', 'd3' ], (_, msgBus) ->
             options =
                 html: true
                 title: data.name
-                placement: "top"
+                placement: "auto"
                 trigger: "manual"
                 container: "body"
                 content: ->

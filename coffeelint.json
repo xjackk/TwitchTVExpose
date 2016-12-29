@@ -45,7 +45,7 @@
     "value": "unix"
   },
   "max_line_length": {
-    "value": 180,
+    "value": 500,
     "level": "error",
     "limitComments": true
   },

@@ -56,21 +56,15 @@ define ['marionette', 'msgbus', 'apps/games/detail/templates', 'slimscroll' ], (
             @ui.scrollPanel.slimScroll
                 height: '800px'
                 color: '#00f'
-                wheelStep: 25
-                size: 10
-                distance: '1px'
                 railVisible: true
                 alwaysVisible:  true
-            .bind 'slimscroll', (e,pos)->
-                console.log "slimscroll @ #{pos}"
-                appChannel.request "streams:fetchmore" if pos is 'top'
+            .bind 'slimscroll', (e, pos)->
+                appChannel.request "streams:fetchmore" # if pos is 'bottom' (not firing)
 
 
         onRender: ->
             @showChildView "gameRegion", new GameDetail
-                model: @getOption("gameModel")
+                model: @getOption "gameModel"
 
             @showChildView "streamRegion", new StreamListView
-                collection: @getOption("streams")
-
-
+                collection: @getOption "streams"

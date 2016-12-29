@@ -107,16 +107,10 @@
           return this.ui.scrollPanel.slimScroll({
             height: '800px',
             color: '#00f',
-            wheelStep: 25,
-            size: 10,
-            distance: '1px',
             railVisible: true,
             alwaysVisible: true
           }).bind('slimscroll', function(e, pos) {
-            console.log("slimscroll @ " + pos);
-            if (pos === 'top') {
-              return appChannel.request("streams:fetchmore");
-            }
+            return appChannel.request("streams:fetchmore");
           });
         };
 

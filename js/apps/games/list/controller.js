@@ -3,7 +3,7 @@
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(["msgbus", "apps/games/list/views", "controller/_base", "entities/twitchtv"], function(msgBus, Views, AppController) {
+  define(["msgbus", "apps/games/list/views", "marionette", "entities/twitchtv"], function(msgBus, Views, Mn) {
     var Controller, appChannel;
     appChannel = msgBus.appChannel;
     return Controller = (function(superClass) {
@@ -75,7 +75,7 @@
 
       return Controller;
 
-    })(AppController);
+    })(Mn.Object);
   });
 
 }).call(this);

@@ -5,7 +5,7 @@ define ['marionette', 'apps/d3/list/templates', 'd3'], (Mn, Templates) ->
 
 
     class D3View extends Mn.View
-        template: false #_.template(Templates.d3)
+        template: false
         className: "well"
 
         # use D3 to render a canvas on our view

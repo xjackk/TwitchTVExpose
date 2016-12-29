@@ -1,8 +1,8 @@
-define ["msgbus", "apps/games/list/views", "controller/_base","entities/twitchtv"], (msgBus, Views, AppController) ->
+define ["msgbus", "apps/games/list/views", "marionette","entities/twitchtv"], (msgBus, Views, Mn) ->
     appChannel = msgBus.appChannel
 
 
-    class Controller extends AppController
+    class Controller extends Mn.Object
         initialize: (options={})->
             mainRegion = appChannel.request "default:region"
 

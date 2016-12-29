@@ -1,7 +1,7 @@
-define ["marionette", "msgbus", "apps/about/show/views", "controller/_base"], (Mn, msgBus, Views, AppController) ->
+define ["marionette", "msgbus", "apps/about/show/views"], (Mn, msgBus, Views) ->
     appChannel = msgBus.appChannel
 
-    class Controller extends AppController
+    class Controller extends Mn.Object
         initialize:(options={})->
             region = appChannel.request "default:region"
 

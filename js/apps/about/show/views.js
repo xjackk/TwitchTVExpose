@@ -140,7 +140,6 @@
         };
 
         AppLayout.prototype.onRender = function() {
-          console.log('render About views');
           this.showChildView("aboutRegion", new About());
           this.showChildView("bookRegion", new BookTableView({
             collection: this.getOption("bookEntities")

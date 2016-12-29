@@ -26,10 +26,7 @@
         var ph, pw;
         pw = this.ui.panelbody.outerWidth(false);
         ph = Math.floor((pw - 30) * 9 / 16);
-        console.log("Video Height: " + (this.model.get('video_height')));
-        this.model.set("video_height", ph);
-        console.log("Video Height: AFTER RESIZE: " + (this.model.get('video_height')));
-        return console.log("Panel Width (var): " + pw);
+        return this.model.set("video_height", ph);
       };
 
       return PlayerView;

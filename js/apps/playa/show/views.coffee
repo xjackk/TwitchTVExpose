@@ -12,11 +12,11 @@ define ['apps/playa/show/templates', 'marionette'], (Templates, Mn) ->
             pw 	= @ui.panelbody.outerWidth(false)
             ph = Math.floor ((pw-30) * 9 / 16)
 
-            console.log "Video Height: #{@model.get 'video_height'}"
+            #console.log "Video Height: #{@model.get 'video_height'}"
 
             @model.set "video_height", ph
-            console.log "Video Height: AFTER RESIZE: #{@model.get 'video_height'}"
-            console.log "Panel Width (var): #{pw}"
+            #console.log "Video Height: AFTER RESIZE: #{@model.get 'video_height'}"
+            #console.log "Panel Width (var): #{pw}"
 
 
 

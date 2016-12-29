@@ -161,7 +161,6 @@ define ["backbone", "msgbus", "nprogress"], (Backbone, msgBus, NP) ->
 
         # get stream by channel
         getStream: (url, params = {}) ->
-            console.log "getStream", url, params
             _.defaults params,
                 oauth_token: appChannel.request "get:current:token"
             stream = new StreamGet # model

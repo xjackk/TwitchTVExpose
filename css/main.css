@@ -7,7 +7,7 @@ html,body
 body
 {
     padding-top: 70px;
-    padding-bottom: 70px;
+    padding-bottom: 50px;
 }
 
 [data-wrapper].opacity {

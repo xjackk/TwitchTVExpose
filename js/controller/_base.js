@@ -47,11 +47,10 @@
       };
 
       AppController.prototype._manageView = function(view, options) {
-        var ref;
         if (options.loading) {
           return appChannel.trigger("show:loading", view, options);
         } else {
-          return (ref = options.region) != null ? ref.show(view) : void 0;
+          return options.region.show(view);
         }
       };
 

@@ -4,22 +4,27 @@ define ["msgbus", "apps/games/list/views", "controller/_base","entities/twitchtv
 
     class Controller extends AppController
         initialize: (options={})->
+            mainRegion = appChannel.request "default:region"
+
             @entities = appChannel.request "games:top:entities"
-            
-            @layout = @getLayoutView collection: @entities
+            appChannel.trigger "when:fetched", @entities, =>
+                @layout = @getLayoutView collection: @entities
 
-            @listenTo @layout, "show:grid", =>
-                @showGridView @entities
+                @listenTo @layout, "show:grid", =>
+                    @showGridView @entities
 
-            @listenTo @layout, "show:bubble", =>
-                @showBubbleView @entities
+                @listenTo @layout, "show:bubble", =>
+                    @showBubbleView @entities
 
-            @listenTo @layout, "scroll:more", ->
-                appChannel.request "games:fetchmore"
+                @listenTo @layout, "more:games", ->
+                    appChannel.request "games:fetchmore"
 
-            @show @layout,
-                loading:
-                    entities: @entities
+                @listenTo @layout, "scroll:more", ->
+                    appChannel.request "games:fetchmore"
+
+                mainRegion.show @layout
+                #    loading:
+                #        entities: @entities
 
         showGridView:  (games) ->
             gView = @getGridView games

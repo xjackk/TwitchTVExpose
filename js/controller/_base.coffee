@@ -28,4 +28,4 @@ define ["marionette", "msgbus"], (Marionette, msgBus) ->
             if options.loading
                 appChannel.trigger "show:loading", view, options
             else
-                options.region?.show view
+                options.region.show view

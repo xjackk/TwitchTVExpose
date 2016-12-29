@@ -1,4 +1,4 @@
-define ["backbone", "msgbus"], (Backbone, msgBus ) ->
+define ["backbone", "msgbus", "nprogress"], (Backbone, msgBus, NP) ->
     appChannel = msgBus.appChannel
 
     # this _fetch is our private property added to overridden config backbone sync
@@ -16,19 +16,36 @@ define ["backbone", "msgbus"], (Backbone, msgBus ) ->
         parse: (response) ->
             response.streams
 
+        initialize: ->
+            @listenTo @, 'request',->
+                NP.start()
+            @listenTo @, 'sync error',->
+                NP.done()
+
     class SearchCollection extends Backbone.Collection
         model: Game
         parse: (response) ->
             response.games
 
+        initialize: ->
+            @listenTo @, 'request',->
+                NP.start()
+            @listenTo @, 'sync error',->
+                NP.done()
+
     class GamesCollection extends Backbone.Collection
         model: Game
 
         initialize: ->
+            @listenTo @, 'request',->
+                NP.start()
+            @listenTo @, 'sync error',->
+                NP.done()
+
             appChannel.reply "games:fetchmore", =>
                 @moreGames()
 
-            @limit = 50
+            @limit = 24
             @offset = 0
             @loading = false
             @previousSearch = null
@@ -48,7 +65,7 @@ define ["backbone", "msgbus"], (Backbone, msgBus ) ->
 
             $.when(loaded).then =>
                 @loading=false
-                console.log "Loaded page", @offset+1, "Games fetched so far", @length, "Total games available to fetch ", @_total,
+                #console.log "Loaded page", @offset+1, "Games fetched so far", @length, "Total games available to fetch ", @_total,
 
 
         searchName: (_name)->
@@ -65,10 +82,15 @@ define ["backbone", "msgbus"], (Backbone, msgBus ) ->
         model: Stream
 
         initialize: ->
+            @listenTo @, 'request',->
+                NP.start()
+            @listenTo @, 'sync error',->
+                NP.done()
+        
             appChannel.reply "streams:fetchmore", =>
                 @moreStreams()
 
-            @limit = 12
+            @limit = 24
             @offset = 0
             @loading = false
             @previousSearch = null
@@ -87,6 +109,7 @@ define ["backbone", "msgbus"], (Backbone, msgBus ) ->
                     offset: @offset * @limit
             $.when(loaded).then =>
                 @loading=false
+                #console.log "Loaded page", @offset+1, "Streams fetched so far", @length, "Total streams available to fetch ", @_total,
 
 
         parse: (resp) ->
@@ -168,7 +191,7 @@ define ["backbone", "msgbus"], (Backbone, msgBus ) ->
     appChannel.reply "search:stream:entities", (game)->
         API.getStreams "search/streams",
             q: game
-            limit: 12
+            limit: 20
             offset: 0
 
     # twitchAPI, grab a channels live stream

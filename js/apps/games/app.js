@@ -38,7 +38,6 @@
       }
     };
     appChannel.on("app:game:detail", function(model) {
-      console.log("game detail event:", model);
       Backbone.history.navigate("games/" + (model.get("game").name) + "/detail", {
         trigger: false
       });

@@ -14,31 +14,32 @@
       }
 
       Controller.prototype.initialize = function(options) {
+        var mainRegion;
         if (options == null) {
           options = {};
         }
+        mainRegion = appChannel.request("default:region");
         this.entities = appChannel.request("games:top:entities");
-        this.layout = this.getLayoutView({
-          collection: this.entities
-        });
-        this.listenTo(this.layout, "show:grid", (function(_this) {
+        return appChannel.trigger("when:fetched", this.entities, (function(_this) {
           return function() {
-            return _this.showGridView(_this.entities);
+            _this.layout = _this.getLayoutView({
+              collection: _this.entities
+            });
+            _this.listenTo(_this.layout, "show:grid", function() {
+              return _this.showGridView(_this.entities);
+            });
+            _this.listenTo(_this.layout, "show:bubble", function() {
+              return _this.showBubbleView(_this.entities);
+            });
+            _this.listenTo(_this.layout, "more:games", function() {
+              return appChannel.request("games:fetchmore");
+            });
+            _this.listenTo(_this.layout, "scroll:more", function() {
+              return appChannel.request("games:fetchmore");
+            });
+            return mainRegion.show(_this.layout);
           };
         })(this));
-        this.listenTo(this.layout, "show:bubble", (function(_this) {
-          return function() {
-            return _this.showBubbleView(_this.entities);
-          };
-        })(this));
-        this.listenTo(this.layout, "scroll:more", function() {
-          return appChannel.request("games:fetchmore");
-        });
-        return this.show(this.layout, {
-          loading: {
-            entities: this.entities
-          }
-        });
       };
 
       Controller.prototype.showGridView = function(games) {

@@ -14,18 +14,20 @@
       }
 
       Controller.prototype.initialize = function(options) {
-        var channel, model;
+        var channel, mainRegion, model;
         if (options == null) {
           options = {};
         }
         channel = options.channel, model = options.model;
+        mainRegion = appChannel.request("default:region");
         if (model === void 0) {
           model = appChannel.request("search:stream:model", channel);
         }
         return appChannel.trigger("when:fetched", model, (function(_this) {
           return function() {
-            _this.layout = _this.getLayoutView(model);
-            return _this.show(_this.layout);
+            var layout;
+            layout = _this.getLayoutView(model);
+            return mainRegion.show(layout);
           };
         })(this));
       };

@@ -1,9 +1,9 @@
 define ["marionette", "msgbus", "apps/about/show/views", "controller/_base"], (Mn, msgBus, Views, AppController) ->
     appChannel = msgBus.appChannel
 
-
     class Controller extends AppController
         initialize:(options={})->
+            region = appChannel.request "default:region"
 
             data=
                 bookEntities:   appChannel.request "reference:entities"
@@ -11,9 +11,7 @@ define ["marionette", "msgbus", "apps/about/show/views", "controller/_base"], (M
 
             layout = @getLayoutView data
 
-            @show layout,
-                loading:
-                    entities: [data.bookEntities, data.ossEntities]
+            region.show layout
 
         getLayoutView: (options)->
             new Views.LayoutView options

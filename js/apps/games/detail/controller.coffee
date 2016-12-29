@@ -5,38 +5,36 @@ define ["msgbus", "apps/games/detail/views", "controller/_base" ], (msgBus, View
         initialize: (options={}) ->
             {@gameName, @gameModel} = options
 
-            console.log 'start fetch'
+            mainRegion = appChannel.request "default:region"
+            
             # need to request if we get here via routing (back button via history...)
             @gameModel = appChannel.request "games:searchName", @gameName if @gameModel is undefined
             @streamEntities = appChannel.request "search:stream:entities", @gameName
 
-            appChannel.trigger "when:fetched", [@streamEntities], =>
-                console.log 'end fetch'
-                data=
+            appChannel.trigger "when:fetched", [@gameModel, @streamEntities], =>
+                viewdata=
                     gameModel:  @gameModel
                     streams:    @streamEntities
 
-                # merge with passed in options
-                #@mergeOptions options, data
+                layout = @getLayoutView viewdata
 
-                @layout = @getLayoutView data
+                mainRegion.show layout
 
-                #@gRegion = @layout.getRegion "gameRegion"
 
-                #@listenTo @gRegion, "show", (reg,view)=>
-                #    console.log "region show:region:", reg
-                #    console.log "region show:view:", view.model.get('game').name
-                #    @showStreams view.model.get('game').name
+            #@gRegion = @layout.getRegion "gameRegion"
 
-                #@listenTo @layout, "render", =>
-                #    console.log "controller listen render:", @gameName
-                @show @layout #,
-                    #loading:
-                    #    entities: [data.dameModel, data.streams]
+            #@listenTo @gRegion, "show", (reg,view)=>
+            #    console.log "region show:region:", reg
+            #    console.log "region show:view:", view.model.get('game').name
+            #    @showStreams view.model.get('game').name
 
-        #showStreams: (name) ->
-        #    console.log "show streams for:", name
-        #    appChannel.trigger "app:streams:list", @layout.getRegion('streamRegion'), name
+            #@listenTo @layout, "render", =>
+            #    console.log "controller listen render:", @gameName
+            #$.wait(200) ->
+            #@show @layout,
+            #    loading:
+            #        entities: [@gameModel, @streamEntities]
+
 
 
         getLayoutView: (options)->

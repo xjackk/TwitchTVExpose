@@ -14,25 +14,25 @@
       }
 
       Controller.prototype.initialize = function(options) {
+        var mainRegion;
         if (options == null) {
           options = {};
         }
         this.gameName = options.gameName, this.gameModel = options.gameModel;
-        console.log('start fetch');
+        mainRegion = appChannel.request("default:region");
         if (this.gameModel === void 0) {
           this.gameModel = appChannel.request("games:searchName", this.gameName);
         }
         this.streamEntities = appChannel.request("search:stream:entities", this.gameName);
-        return appChannel.trigger("when:fetched", [this.streamEntities], (function(_this) {
+        return appChannel.trigger("when:fetched", [this.gameModel, this.streamEntities], (function(_this) {
           return function() {
-            var data;
-            console.log('end fetch');
-            data = {
+            var layout, viewdata;
+            viewdata = {
               gameModel: _this.gameModel,
               streams: _this.streamEntities
             };
-            _this.layout = _this.getLayoutView(data);
-            return _this.show(_this.layout);
+            layout = _this.getLayoutView(viewdata);
+            return mainRegion.show(layout);
           };
         })(this));
       };

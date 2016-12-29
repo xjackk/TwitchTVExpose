@@ -4,51 +4,14 @@ define ["apps/playa/show/views", "controller/_base","msgbus"], (Views, AppContro
     class Controller extends AppController
         initialize:(options={})->
             {channel, model} = options
-            #console.log "Player Controller  options", options
-            #console.log "game", game, "channel", channel, "model", model
+            mainRegion = appChannel.request "default:region"
 
-            #if model is undefined
-            #    console.log "searching for ", channel
             model = appChannel.request "search:stream:model", channel if model is undefined
             appChannel.trigger "when:fetched", model, =>
-                @layout = @getLayoutView model
+                layout = @getLayoutView model
 
-                @show @layout
-                #    loading:
-                #        entities: model
+                mainRegion.show layout
 
         getLayoutView: (model)->
             new Views.Layout
                 model: model
-
-            
-            #@listenTo @layout, "render", =>
-            #    @playerRegion model
-            ##    @userRegion model
-            #    @chatRegion model
-
-
-#        playerRegion: (model)  ->
-#            player = @getPlayerView model
-#            @layout.getRegion('playerRegion').show player
-
-#        chatRegion: (model)  ->
-#            chat = @getChatView model
-#            @layout.getRegion('chatRegion').show chat
-
-#        userRegion: (model)  ->
-#            userView = @getUserView model
-#            @layout.getRegion('userRegion').show userView
-
-#        getPlayerView: (model)  ->
-#            new Views.Player
-#                model: model
-
-#        getChatView: (model)  ->
-#            new Views.Chat
-#                model: model
-
-#        getUserView: (model)  ->
-#            new Views.User
-#                model: model
-

@@ -14,20 +14,17 @@
       }
 
       Controller.prototype.initialize = function(options) {
-        var data, layout;
+        var data, layout, region;
         if (options == null) {
           options = {};
         }
+        region = appChannel.request("default:region");
         data = {
           bookEntities: appChannel.request("reference:entities"),
           ossEntities: appChannel.request("oss:entities")
         };
         layout = this.getLayoutView(data);
-        return this.show(layout, {
-          loading: {
-            entities: [data.bookEntities, data.ossEntities]
-          }
-        });
+        return region.show(layout);
       };
 
       Controller.prototype.getLayoutView = function(options) {

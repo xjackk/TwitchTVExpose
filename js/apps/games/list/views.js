@@ -91,12 +91,14 @@
 
         GamesLayout.prototype.ui = {
           btnBubble: "button.bubble",
-          btnGrid: "button.grid"
+          btnGrid: "button.grid",
+          btnMore: "button.more"
         };
 
         GamesLayout.prototype.triggers = {
           "click @ui.btnBubble": "show:bubble",
-          "click @ui.btnGrid": "show:grid"
+          "click @ui.btnGrid": "show:grid",
+          "click @ui.btnMore": "more:games"
         };
 
         GamesLayout.prototype.onRender = function() {

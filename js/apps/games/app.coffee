@@ -20,7 +20,6 @@ define ["msgbus", "marionette", "backbone", "apps/games/list/controller","apps/g
 
 
     appChannel.on "app:game:detail", (model) ->
-        console.log "game detail event:", model
         Backbone.history.navigate "games/#{model.get("game").name}/detail", trigger:false
         API.detail model.get("game").name, model
 

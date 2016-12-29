@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty,
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['marionette', 'msgbus', 'apps/games/detail/templates'], function(Mn, msgBus, Templates) {
+  define(['marionette', 'msgbus', 'apps/games/detail/templates', 'slimscroll'], function(Mn, msgBus, Templates) {
     var GameDetail, GamesLayout, StreamItem, StreamListView, appChannel;
     appChannel = msgBus.appChannel;
     StreamItem = (function(superClass) {
@@ -39,11 +39,10 @@
 
       StreamListView.prototype.tagName = "ul";
 
-      StreamListView.prototype.className = "list-inline scrollable-container scrollable-inner";
+      StreamListView.prototype.className = "list-inline scrollable-inner";
 
       StreamListView.prototype.ui = {
-        scroll: ".scrollable-inner",
-        scrollContainer: ".scrollable-container"
+        scroll: ".scrollable-inner"
       };
 
       StreamListView.prototype.events = {
@@ -62,8 +61,6 @@
       };
 
       StreamListView.prototype.onChildviewStreamItemClicked = function(cv) {
-        console.log(cv.model);
-        console.log(this.$el);
         return appChannel.trigger("app:playa:show", cv.model);
       };
 
@@ -89,7 +86,6 @@
         extend(GamesLayout, superClass);
 
         function GamesLayout() {
-          this.checkScroll = bind(this.checkScroll, this);
           return GamesLayout.__super__.constructor.apply(this, arguments);
         }
 
@@ -104,23 +100,24 @@
         };
 
         GamesLayout.prototype.ui = {
-          scroll: ".scrollable-inner",
-          scrollContainer: ".scrollable-container"
+          scrollPanel: ".scrollable-container"
         };
 
-        GamesLayout.prototype.events = {
-          "scroll": "checkScroll"
-        };
-
-        GamesLayout.prototype.checkScroll = function(e) {
-          var margin, scrollTop, virtualHeight;
-          console.log("scroll", e);
-          virtualHeight = this.ui.scroll.height();
-          margin = .07 * virtualHeight;
-          scrollTop = this.ui.scrollContainer.scrollTop() + this.ui.scrollContainer.height();
-          if ((scrollTop + margin) >= virtualHeight) {
-            return this.trigger("scroll:more");
-          }
+        GamesLayout.prototype.onDomRefresh = function() {
+          return this.ui.scrollPanel.slimScroll({
+            height: '800px',
+            color: '#00f',
+            wheelStep: 25,
+            size: 10,
+            distance: '1px',
+            railVisible: true,
+            alwaysVisible: true
+          }).bind('slimscroll', function(e, pos) {
+            console.log("slimscroll @ " + pos);
+            if (pos === 'top') {
+              return appChannel.request("streams:fetchmore");
+            }
+          });
         };
 
         GamesLayout.prototype.onRender = function() {

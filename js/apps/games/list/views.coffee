@@ -45,10 +45,13 @@ define ['msgbus', 'apps/games/list/templates', 'marionette', 'views/bubble'], (m
         ui:
             btnBubble:  "button.bubble"
             btnGrid:    "button.grid"
+            btnMore:    "button.more"
         
         triggers:
             "click @ui.btnBubble":  "show:bubble"
             "click @ui.btnGrid":    "show:grid"
+            "click @ui.btnMore":    "more:games"
+
 
         onRender:->
             @showChildView "topGameList", new TopGameList

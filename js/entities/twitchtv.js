@@ -4,8 +4,23 @@
     hasProp = {}.hasOwnProperty;
 
   define(["backbone", "msgbus", "nprogress"], function(Backbone, msgBus, NP) {
-    var API, Game, GamesCollection, SearchCollection, SearchStreams, Stream, StreamCollection, StreamGet, appChannel, games;
+    var API, Game, GamesCollection, SearchCollection, SearchStreams, Stream, StreamCollection, StreamGet, StreamSummary, appChannel, games, streamSummary;
     appChannel = msgBus.appChannel;
+    StreamSummary = (function(superClass) {
+      extend(StreamSummary, superClass);
+
+      function StreamSummary() {
+        return StreamSummary.__super__.constructor.apply(this, arguments);
+      }
+
+      StreamSummary.prototype.defaults = {
+        fetched: 0,
+        total: 0
+      };
+
+      return StreamSummary;
+
+    })(Backbone.Model);
     Game = (function(superClass) {
       extend(Game, superClass);
 
@@ -200,13 +215,19 @@
         });
         return $.when(loaded).then((function(_this) {
           return function() {
-            return _this.loading = false;
+            _this.loading = false;
+            return console.log("Loaded page", _this.offset + 1, "Streams fetched so far", _this.length, "Total streams available to fetch ", _this._total);
           };
         })(this));
       };
 
       StreamCollection.prototype.parse = function(resp) {
         this._total = resp._total;
+        streamSummary.set({
+          "fetched": this.length + resp.streams.length,
+          "total": this._total
+        });
+        console.log(streamSummary);
         return resp.streams;
       };
 
@@ -215,6 +236,7 @@
     })(Backbone.Collection);
     games = new GamesCollection;
     games.timeStamp = new Date();
+    streamSummary = new StreamSummary;
     API = {
       getGames: function(url, params) {
         var elapsedSeconds;
@@ -308,8 +330,11 @@
         offset: 0
       });
     });
-    return appChannel.reply("search:stream:model", function(channel) {
+    appChannel.reply("search:stream:model", function(channel) {
       return API.getStream("streams/" + channel);
+    });
+    return appChannel.reply("stream:summary:model", function() {
+      return streamSummary;
     });
   });
 

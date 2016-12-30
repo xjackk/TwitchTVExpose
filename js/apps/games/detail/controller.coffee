@@ -1,4 +1,4 @@
-define ["msgbus", "apps/games/detail/views", "marionette" ], (msgBus, Views, Mn) ->
+define ["msgbus", "apps/games/detail/views", "marionette", "backbone" ], (msgBus, Views, Mn, Backbone) ->
     appChannel = msgBus.appChannel
 
     class Controller extends Mn.Object
@@ -10,14 +10,16 @@ define ["msgbus", "apps/games/detail/views", "marionette" ], (msgBus, Views, Mn)
             # need to request if we get here via routing (back button via history...)
             @gameModel = appChannel.request "games:searchName", @gameName if @gameModel is undefined
             @streamEntities = appChannel.request "search:stream:entities", @gameName
-
+            streamSummary = appChannel.request "stream:summary:model"
+            
             appChannel.trigger "when:fetched", [@gameModel, @streamEntities], =>
                 viewdata=
                     gameModel:  @gameModel
                     streams:    @streamEntities
+                    summary:    streamSummary
 
+                
                 layout = @getLayoutView viewdata
-
                 mainRegion.show layout
 
 

@@ -3,7 +3,7 @@
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(["msgbus", "apps/games/detail/views", "marionette"], function(msgBus, Views, Mn) {
+  define(["msgbus", "apps/games/detail/views", "marionette", "backbone"], function(msgBus, Views, Mn, Backbone) {
     var Controller, appChannel;
     appChannel = msgBus.appChannel;
     return Controller = (function(superClass) {
@@ -14,7 +14,7 @@
       }
 
       Controller.prototype.initialize = function(options) {
-        var mainRegion;
+        var mainRegion, streamSummary;
         if (options == null) {
           options = {};
         }
@@ -24,12 +24,14 @@
           this.gameModel = appChannel.request("games:searchName", this.gameName);
         }
         this.streamEntities = appChannel.request("search:stream:entities", this.gameName);
+        streamSummary = appChannel.request("stream:summary:model");
         return appChannel.trigger("when:fetched", [this.gameModel, this.streamEntities], (function(_this) {
           return function() {
             var layout, viewdata;
             viewdata = {
               gameModel: _this.gameModel,
-              streams: _this.streamEntities
+              streams: _this.streamEntities,
+              summary: streamSummary
             };
             layout = _this.getLayoutView(viewdata);
             return mainRegion.show(layout);

@@ -1,6 +1,14 @@
 define ['marionette', 'msgbus', 'apps/games/detail/templates', 'slimscroll' ], (Mn, msgBus, Templates ) ->
     appChannel = msgBus.appChannel
 
+
+    class StreamSummary extends Mn.View
+        template: _.template(Templates.streamsummary)
+        tagName: "span"
+        modelEvents:
+            "change:fetched": "render"
+   
+
     class StreamItem extends Mn.View
         template: _.template(Templates.streamitem)
         tagName: "li"
@@ -41,16 +49,24 @@ define ['marionette', 'msgbus', 'apps/games/detail/templates', 'slimscroll' ], (
 
     Layout: class GamesLayout extends Mn.View
         template: _.template(Templates.layout)
+
         regions:
             gameRegion:     "#game-region"
             streamRegion:
                 el: "ul"
                 replaceElement: true
+            summaryRegion:
+                el: "#streamsummary"
+                replaceElement: false
+
         ui:
             scrollPanel: ".scrollable-container"
 
         #render happens first
         onRender: ->
+            @showChildView "summaryRegion", new StreamSummary
+                model: @getOption "summary"
+        
             @showChildView "gameRegion", new GameDetail
                 model: @getOption "gameModel"
 

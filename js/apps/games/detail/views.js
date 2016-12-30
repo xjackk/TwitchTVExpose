@@ -4,8 +4,26 @@
     hasProp = {}.hasOwnProperty;
 
   define(['marionette', 'msgbus', 'apps/games/detail/templates', 'slimscroll'], function(Mn, msgBus, Templates) {
-    var GameDetail, GamesLayout, StreamItem, StreamListView, appChannel;
+    var GameDetail, GamesLayout, StreamItem, StreamListView, StreamSummary, appChannel;
     appChannel = msgBus.appChannel;
+    StreamSummary = (function(superClass) {
+      extend(StreamSummary, superClass);
+
+      function StreamSummary() {
+        return StreamSummary.__super__.constructor.apply(this, arguments);
+      }
+
+      StreamSummary.prototype.template = _.template(Templates.streamsummary);
+
+      StreamSummary.prototype.tagName = "span";
+
+      StreamSummary.prototype.modelEvents = {
+        "change:fetched": "render"
+      };
+
+      return StreamSummary;
+
+    })(Mn.View);
     StreamItem = (function(superClass) {
       extend(StreamItem, superClass);
 
@@ -79,6 +97,10 @@
           streamRegion: {
             el: "ul",
             replaceElement: true
+          },
+          summaryRegion: {
+            el: "#streamsummary",
+            replaceElement: false
           }
         };
 
@@ -87,6 +109,9 @@
         };
 
         GamesLayout.prototype.onRender = function() {
+          this.showChildView("summaryRegion", new StreamSummary({
+            model: this.getOption("summary")
+          }));
           this.showChildView("gameRegion", new GameDetail({
             model: this.getOption("gameModel")
           }));

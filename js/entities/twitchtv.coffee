@@ -3,6 +3,11 @@ define ["backbone", "msgbus", "nprogress"], (Backbone, msgBus, NP) ->
 
     # this _fetch is our private property added to overridden config backbone sync
 
+    class StreamSummary extends Backbone.Model
+        defaults:
+            fetched: 0
+            total: 0
+    
     class Game extends Backbone.Model
     class Stream extends Backbone.Model
 
@@ -109,16 +114,22 @@ define ["backbone", "msgbus", "nprogress"], (Backbone, msgBus, NP) ->
                     offset: @offset * @limit
             $.when(loaded).then =>
                 @loading=false
-                #console.log "Loaded page", @offset+1, "Streams fetched so far", @length, "Total streams available to fetch ", @_total,
+                console.log "Loaded page", @offset+1, "Streams fetched so far", @length, "Total streams available to fetch ", @_total,
 
 
         parse: (resp) ->
             {@_total}=resp
+            streamSummary.set "fetched": @length+resp.streams.length, "total": @_total
+            console.log streamSummary
+            
             resp.streams
 
     # caching timers initialize
     games = new GamesCollection
     games.timeStamp = new Date()
+
+    streamSummary = new StreamSummary
+
 
 
     #PUBLIC API
@@ -196,3 +207,7 @@ define ["backbone", "msgbus", "nprogress"], (Backbone, msgBus, NP) ->
     # twitchAPI, grab a channels live stream
     appChannel.reply "search:stream:model", (channel)->
         API.getStream "streams/#{channel}"
+
+    appChannel.reply "stream:summary:model", ->
+        streamSummary
+

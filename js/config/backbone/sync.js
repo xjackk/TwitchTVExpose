@@ -21,10 +21,10 @@
     };
     methods = {
       beforeSend: function() {
-        return this.trigger("sync:start", this);
+        return appChannel.trigger("sync:start", this);
       },
       complete: function() {
-        return this.trigger("sync:stop", this);
+        return appChannel.trigger("sync:stop", this);
       }
     };
     return appChannel.on("when:fetched", function(entities, callback) {

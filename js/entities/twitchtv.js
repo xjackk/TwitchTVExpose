@@ -3,7 +3,7 @@
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
-  define(["backbone", "msgbus", "nprogress"], function(Backbone, msgBus, NP) {
+  define(["backbone", "msgbus"], function(Backbone, msgBus) {
     var API, Game, GamesCollection, SearchCollection, SearchStreams, Stream, StreamCollection, StreamGet, StreamSummary, appChannel, games, streamSummary;
     appChannel = msgBus.appChannel;
     StreamSummary = (function(superClass) {
@@ -68,15 +68,6 @@
         return response.streams;
       };
 
-      SearchStreams.prototype.initialize = function() {
-        this.listenTo(this, 'request', function() {
-          return NP.start();
-        });
-        return this.listenTo(this, 'sync error', function() {
-          return NP.done();
-        });
-      };
-
       return SearchStreams;
 
     })(Backbone.Collection);
@@ -93,15 +84,6 @@
         return response.games;
       };
 
-      SearchCollection.prototype.initialize = function() {
-        this.listenTo(this, 'request', function() {
-          return NP.start();
-        });
-        return this.listenTo(this, 'sync error', function() {
-          return NP.done();
-        });
-      };
-
       return SearchCollection;
 
     })(Backbone.Collection);
@@ -115,12 +97,6 @@
       GamesCollection.prototype.model = Game;
 
       GamesCollection.prototype.initialize = function() {
-        this.listenTo(this, 'request', function() {
-          return NP.start();
-        });
-        this.listenTo(this, 'sync error', function() {
-          return NP.done();
-        });
         appChannel.reply("games:fetchmore", (function(_this) {
           return function() {
             return _this.moreGames();
@@ -179,12 +155,6 @@
       StreamCollection.prototype.model = Stream;
 
       StreamCollection.prototype.initialize = function() {
-        this.listenTo(this, 'request', function() {
-          return NP.start();
-        });
-        this.listenTo(this, 'sync error', function() {
-          return NP.done();
-        });
         appChannel.reply("streams:fetchmore", (function(_this) {
           return function() {
             return _this.moreStreams();
@@ -227,7 +197,6 @@
           "fetched": this.length + resp.streams.length,
           "total": this._total
         });
-        console.log(streamSummary);
         return resp.streams;
       };
 

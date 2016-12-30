@@ -3,6 +3,7 @@ define ["backbone", "msgbus"], (Backbone, msgBus) ->
 
     _sync = Backbone.sync
     
+    # override .sync to add xhr/._fetch promise property
     Backbone.sync = (method, entity, options = {}) ->
         _.defaults options,
             beforeSend: _.bind(methods.beforeSend, entity)
@@ -13,11 +14,13 @@ define ["backbone", "msgbus"], (Backbone, msgBus) ->
             entity._fetch = sync
         sync
 
+    # trigger custom messages on our radio channel
+    # used by NProgress UI start/stop globally
     methods =
         beforeSend: ->
-            @trigger "sync:start", @
+            appChannel.trigger "sync:start", @  #NP.start()
         complete: ->
-            @trigger "sync:stop", @
+            appChannel.trigger "sync:stop", @   #NP.done()
 
     appChannel.on "when:fetched", (entities, callback) ->
         xhrs = _.chain([entities]).flatten().pluck("_fetch").value()

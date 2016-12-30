@@ -1,4 +1,4 @@
-define ["backbone", "msgbus", "nprogress"], (Backbone, msgBus, NP) ->
+define ["backbone", "msgbus"], (Backbone, msgBus) ->
     appChannel = msgBus.appChannel
 
     # this _fetch is our private property added to overridden config backbone sync
@@ -21,32 +21,17 @@ define ["backbone", "msgbus", "nprogress"], (Backbone, msgBus, NP) ->
         parse: (response) ->
             response.streams
 
-        initialize: ->
-            @listenTo @, 'request',->
-                NP.start()
-            @listenTo @, 'sync error',->
-                NP.done()
 
     class SearchCollection extends Backbone.Collection
         model: Game
         parse: (response) ->
             response.games
 
-        initialize: ->
-            @listenTo @, 'request',->
-                NP.start()
-            @listenTo @, 'sync error',->
-                NP.done()
 
     class GamesCollection extends Backbone.Collection
         model: Game
 
         initialize: ->
-            @listenTo @, 'request',->
-                NP.start()
-            @listenTo @, 'sync error',->
-                NP.done()
-
             appChannel.reply "games:fetchmore", =>
                 @moreGames()
 
@@ -87,11 +72,6 @@ define ["backbone", "msgbus", "nprogress"], (Backbone, msgBus, NP) ->
         model: Stream
 
         initialize: ->
-            @listenTo @, 'request',->
-                NP.start()
-            @listenTo @, 'sync error',->
-                NP.done()
-        
             appChannel.reply "streams:fetchmore", =>
                 @moreStreams()
 
@@ -120,7 +100,7 @@ define ["backbone", "msgbus", "nprogress"], (Backbone, msgBus, NP) ->
         parse: (resp) ->
             {@_total}=resp
             streamSummary.set "fetched": @length+resp.streams.length, "total": @_total
-            console.log streamSummary
+            #console.log streamSummary
             
             resp.streams
 

@@ -94,7 +94,7 @@ define ["backbone", "msgbus"], (Backbone, msgBus) ->
                     offset: @offset * @limit
             $.when(loaded).then =>
                 @loading=false
-                console.log "Loaded page", @offset+1, "Streams fetched so far", @length, "Total streams available to fetch ", @_total,
+                #console.log "Loaded page", @offset+1, "Streams fetched so far", @length, "Total streams available to fetch ", @_total,
 
 
         parse: (resp) ->

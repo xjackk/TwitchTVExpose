@@ -185,8 +185,7 @@
         });
         return $.when(loaded).then((function(_this) {
           return function() {
-            _this.loading = false;
-            return console.log("Loaded page", _this.offset + 1, "Streams fetched so far", _this.length, "Total streams available to fetch ", _this._total);
+            return _this.loading = false;
           };
         })(this));
       };

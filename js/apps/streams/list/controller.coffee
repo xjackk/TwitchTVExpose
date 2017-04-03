@@ -1,8 +1,8 @@
-define ["msgbus", "apps/streams/list/views", "controller/_base"  ], (msgBus, Views, AppController) ->
+define ["msgbus", "apps/streams/list/views", "controller/_base", "entities/appstate"  ], (msgBus, Views, AppController, AppState) ->
     class Controller extends AppController
         initialize:(options={})->
             {name} = options
-            #console.log "streams:list:controller OPTIONS", options
+            console.log "streams:list:controller OPTIONS", options
             streamEntities = msgBus.reqres.request "search:stream:entities", name
             view = @getListView streamEntities
 

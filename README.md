@@ -9,7 +9,3 @@ Please use the project as a proof of concept.
 
 **Check it out here.**
 [Twitch Tv Expose](https://leanpub.com/marionetteexpose/)
-
-## Live Site
-
-[http://twitchtvexpose.herokuapp.com - Live Site](http://twitchtvexpose.herokuapp.com)
